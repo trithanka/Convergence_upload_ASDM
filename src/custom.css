@@ -1,0 +1,31 @@
+
+.custom-scrollbar {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #000 #E5E7EB; /* Thumb and Track colors for Firefox */
+
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #000 #E5E7EB; /* Thumb and Track colors for Firefox */
+
+}
+
+::-webkit-scrollbar-track {
+  background: #003B5C; /* Light gray track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4F46E5; /* Indigo thumb */
+  border-radius: 4px;
+  
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3730A3; /* Darker indigo when hovered */
+}
+  .react-datepicker-wrapper {
+    width: 100%!important;
+  }
