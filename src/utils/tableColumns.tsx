@@ -889,6 +889,7 @@ interface DepartmentListData {
   createdDate: string;
   userName: string;
   bEnable: number;
+  dtLastLogin: string;
   password: string;
   Action: unknown;
   pklDepartmentId: number;
@@ -924,13 +925,9 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
   // },
  
   {
-    Header: "Status",
-    accessor: "bEnable",
-    Cell: ({ value }) => (
-      <span style={{ color: value === 0 ? "red" : "green" }}>
-        {value === 0 ? "Inactive" : "Active"}
-      </span>
-    ),
+    Header: "Last Login",
+    accessor: "dtLastLogin",
+    Cell: ({ value }) => value ?? "-",
     // Cell: ({ row }) => {
     //   if (!row || !row) {
     //     return <span style={{ color: "red" }}>No Data</span>;
