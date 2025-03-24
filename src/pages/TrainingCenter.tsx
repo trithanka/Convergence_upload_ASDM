@@ -80,7 +80,7 @@ const TrainingCenter: React.FC = () => {
       vsBlock: "Block",
       vsAddress: "Address",
       vsSpocName: "SPOC Name",
-      iPartnerCode: "Partner Code",
+      vsTcCode: "Center Code",
       vsLongitude: "Longitude",
       vsLatitude: "Latitude",
       vsDepartmentName: "Department Name"
@@ -197,7 +197,7 @@ const TrainingCenter: React.FC = () => {
               options={[
                 { label: "All", value: "" },
                 { label: "TC Name", value: "vsTcName" },
-                { label: "Partner Code", value: "iPartnerCode" },
+                { label: "Center Code", value: "vsTcCode" },
 
                 // { label: "TP ID", value: "fklTpId" },
                 // { label: "District", value: "vsDistrict" },

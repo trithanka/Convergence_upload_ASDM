@@ -96,14 +96,8 @@ export const courseSchema = Joi.object({
   vsCourseName: Joi.string().required().label("Job Role Name").messages({
     "string.empty": "Job Role Name is required.",
   }),
-  iTheoryDurationInHours: Joi.number().required().messages({
-    "number.base": "Total Theory Hours must be a number.",
-    "any.required": "Total Theory Hours is required.",
-  }),
-  iPracticalDurationInHours: Joi.number().required().messages({
-    "number.base": "Total Practical Hours must be a number.",
-    "any.required": "Total Practical Hours is required.",
-  }),
+  iTheoryDurationInHours: Joi.number().optional(),
+  iPracticalDurationInHours: Joi.number().optional(),
   dtFromDate: Joi.optional(),
   dtToDate: Joi.optional(),
 });
@@ -171,10 +165,10 @@ export const trainingCenterSchema = Joi.object({
   //   "string.empty": "Training Partner Name is required.",
   //   "any.required": "Training Partner Name is required.",
   // }),
-  partnerCode: Joi.string().required().label("Partner Code").messages({
-    "string.empty": "Partner Code is required.",
-    "any.required": "Partner Code is required.",
-  }),
+  // partnerCode: Joi.string().required().label("Partner Code").messages({
+  //   "string.empty": "Partner Code is required.",
+  //   "any.required": "Partner Code is required.",
+  // }),
   fklTpId: Joi.string().required().label("Training Center Name").messages({
     "string.empty": "Training Center Name is required.",
     "any.required": "Training Center Name is required.",
@@ -183,10 +177,10 @@ export const trainingCenterSchema = Joi.object({
     "string.empty": "Training Center Name is required.",
     "any.required": "Training Center Name is required.",
   }),
-  // vsTcCode: Joi.string().required().label("Training Center Code").messages({
-  //   "string.empty": "Training Center Code is required.",
-  //   "any.required": "Training Center Code is required.",
-  // }),
+  vsTcCode: Joi.string().required().label("Training Center Code").messages({
+    "string.empty": "Training Center Code is required.",
+    "any.required": "Training Center Code is required.",
+  }),
   vsSpocEmail: Joi.string()
     .email({ tlds: { allow: false } })
     .required()

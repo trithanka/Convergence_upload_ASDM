@@ -421,7 +421,7 @@ export const centerColumns = (
   { Header: "Training Center Name", accessor: "vsTcName" },
   // { Header: "TC Code", accessor: "vsTcCode" },
   { Header: "SPOC Name", accessor: "vsSpocName" },
-  { Header: "Partner Code", accessor: "iPartnerCode" }, 
+  { Header: "Center Code", accessor: "vsTcCode" }, 
   { Header: "District", accessor: "vsDistrict" },
   // {
   //   Header: "Action",
@@ -459,7 +459,7 @@ export const centerDuplicateColumns = (
     Cell: ({ row }) => `${row.vsLatitude} , ${row.vsLongitude}`
   },
   
-  { Header: "Partner Code", accessor: "iPartnerCode" },
+  { Header: "Center Code", accessor: "vsTcCode" },
   
   {
     Header: "Department Name",

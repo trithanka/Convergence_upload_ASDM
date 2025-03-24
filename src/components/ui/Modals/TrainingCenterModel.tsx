@@ -234,20 +234,20 @@ const queryClient = useQueryClient();
         </div>
 
         <div>
-          <Label text="Partner / Center Code" required/>
+          <Label text="Center Code" required/>
           <Controller
-            name="partnerCode"
+            name="vsTcCode"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.partnerCode ? "border-red-500" : ""}
+                className={errors.vsTcCode ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.partnerCode && (
-            <p className="text-red-500">{errors.partnerCode.message}</p>
+          {errors.vsTcCode && (
+            <p className="text-red-500">{errors.vsTcCode.message}</p>
           )}
         </div>
 

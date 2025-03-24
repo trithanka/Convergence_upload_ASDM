@@ -49,10 +49,10 @@ export interface TrainingPartnerFormData {
 
 export interface TrainingCenterFormData {
   // vsTpName: string;
-  partnerCode: string;
+  // partnerCode: string;
   vsTcName: string;
   fklTpId: string
-  // vsTcCode: string;
+  vsTcCode: string;
   vsLongitude: string;
   vsLatitude: string;
   vsSpocEmail: string;

@@ -12,9 +12,7 @@ import { Column } from "react-table";
 
 
 const CreateDepartment = () => {
-  const [selectedDepartmentId
-    // , setSelectedDepartmentId
-  ] = useState(null);
+  const [selectedDepartmentId  ] = useState(null);
   const { data, refetch } = useQuery({
     queryKey: ["getCreatedDepartments"],
     queryFn: () =>

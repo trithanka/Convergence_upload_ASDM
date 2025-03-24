@@ -159,7 +159,7 @@ const CourseModal: React.FC = () => {
         {/* Total Theory and Practical Hours */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
           <div>
-            <Label text="Total Theory Hours" required/>
+            <Label text="Total Theory Hours" />
             <Controller
               name="iTheoryDurationInHours"
               control={control}
@@ -180,7 +180,7 @@ const CourseModal: React.FC = () => {
             )}
           </div>
           <div>
-            <Label text="Total Practical Hours"required />
+            <Label text="Total Practical Hours" />
             <Controller
               name="iPracticalDurationInHours"
               control={control}
