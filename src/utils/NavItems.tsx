@@ -1,7 +1,8 @@
 import {
-  Home, Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline, Receipt,
+  Home, Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline,
   // Settings2,
-  Target
+  Target, 
+  UserPlus,
 } from "lucide-react";
 import { ElementType } from "react";
 
@@ -15,13 +16,29 @@ interface NavItem {
   link?: string;
   icon?: ElementType , 
   subItems?: NavSubItems[];
+  target?: string;
+  rel?: string;
 }
 
 export const NavItems: NavItem[] = [
   {
-    name: "Dashboard",
+    name: "Department Status",
     link: "/Dashboard",
     icon: Home,
+  },
+  {
+    name :"Convergence Dashboard",
+    link: "https://convergence.skillmissionassam.org/",
+    target: "_blank",
+    rel:"noopener noreferrer",
+    icon: Home,
+
+  },
+  {
+    name: "Summary Report",
+    link: "/Summary Report",
+    icon: UserPlus,
+   
   },
   // {
   //   name: "Masters",
@@ -132,16 +149,22 @@ export const NavItems: NavItem[] = [
     // ],
   },
 
-  {
-    name: "Invoice",
-    link: "/Invoice",
-    icon: Receipt,
-    // subItems: [
-    //   { name: "Manage Users", link: "/manage-users" },
-    //   { name: "User Roles", link: "/user-roles" },
-    // ],
-  },
+  // {
+  //   name: "Invoice",
+  //   link: "/Invoice",
+  //   icon: Receipt,
+  //   // subItems: [
+  //   //   { name: "Manage Users", link: "/manage-users" },
+  //   //   { name: "User Roles", link: "/user-roles" },
+  //   // ],
+  // },
 
+  // {
+  //   name: "Candidate",
+  //   link: "/Candidate-Registration",
+  //   icon: UserPlus,
+   
+  // }
 
 
  

@@ -33,7 +33,8 @@ export const getTableData = async (
     take: pageSize, 
     duplicate_skip: duplicateCurrentPage - 1,
     duplicate_take: duplicatePageSize,
-    duplicateType
+    duplicateType,
+    search : searchValue
   };
 
   if (duplicateQuery && duplicateQuery.length > 0) {

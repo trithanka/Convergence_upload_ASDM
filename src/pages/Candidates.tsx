@@ -1,291 +1,300 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-
+import{ getSummaryReport }from "../services/state/api/summaryReportCreationApi";
 import {
   AlertCircle,
   CheckCircle,
   DownloadCloud,
-  UploadCloud,
+  // DownloadCloud,
+  // UploadCloud,
   X,
 } from "lucide-react";
 
 import { Add } from "@mui/icons-material";
-import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+
+
+// import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import Loader from "../components/ui/Loader";
-import { getTableData } from "../services/state/api/tableDataApi";
+
+
 import { useQuery } from "@tanstack/react-query";
 import useDebounce from "../services/state/useDebounce";
-import { candidateColumns, CrossCandidateColumns } from "../utils/tableColumns";
-import { useNavigate } from "react-router-dom";
-import { Column } from "react-table"; // Ensure this matches the library you're using for tables
-import SearchInputBox from "../components/ui/SearchInputBox";
-import SearchDropdown from "../components/ui/SearchDropdown";
-import CentralizedTable from "../components/CentralizedTable";
-import * as XLSX from "xlsx";
-import { useErrorStore } from "../services/useErrorStore";
-import { format } from "date-fns";
 
-const Candidate: React.FC = () => {
+
+// import SearchInputBox from "../components/ui/SearchInputBox";
+// import SearchDropdown from "../components/ui/SearchDropdown";
+
+// import * as XLSX from "xlsx";
+import { useErrorStore } from "../services/useErrorStore";
+import CentralizedTable from "../components/CentralizedTable";
+import { summaryColumns } from "../utils/tableColumns";
+import { Column } from "react-table"; // Ensure this matches the library you're using
+import { useNavigate } from "react-router-dom";
+import SearchInputBox from "../components/ui/SearchInputBox";
+
+
+const Candidates: React.FC = () => {
   const navigate = useNavigate();
 
-  const columns = useMemo(() => candidateColumns(navigate), [navigate]);
+  const columns = useMemo(() => summaryColumns(navigate), [navigate]);
+
   const errorMessage = useErrorStore((state) => state.errorMessage);
   const successMessage = useErrorStore((state) => state.successMessage);
   const { bulkName } = useErrorStore();
-  //   const totalRows = useErrorStore((state) => state.totalRows);
-  // const insertedRows = useErrorStore((state) => state.insertedRows);
+
+
+  
+
+
   const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
   const clearSuccessMessage = useErrorStore(
     (state) => state.clearSuccessMessage
   );
-  const { statusColor } = useErrorStore();
 
-  const [searchKey, setSearchKey] = useState<string>("");
+  const { statusColor } = useErrorStore(); 
+  // const { data : summaryData ,isLoading : isLoadingSummary ,error: errorSummary } =  useQuery({
+  //   queryKey: ["summaryData"],
+  //   queryFn: () => getSummaryReport({
+  //     vsSchemeName: "Scheme Name",
+  //     itotalTrainingCandidate: 0,
+  //     itotalCertifiedCandidate: 0,
+  //     itotalPlacedCandidate: 0,
+  //     itotalTarget: 0,
+  //     iMaleCount: 0,
+  //     iFemaleCount: 0,
+  //     iScCount: 0,
+  //     iStHCount: 0,
+  //     iStPCount: 0,
+  //     iObcCount: 0,
+  //     iGeneralCount: 0,
+  //     iMinorityCount: 0,
+  //     iTeaTribeCount: 0,
+  //     iPwdCount: 0,
+  //     iTotalJobRoleCount: 0,
+  //     fklDepartmentId: 0,
+  //     dtFinancialYear: "Financial Year",
+  //   }),
+  // }); 
+
+  // console.log(summaryData);
+
+ 
   const [searchValue, setSearchValue] = useState<string>("");
-  const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+
   const [filteredData, setFilteredData] = useState([]);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [totalDupCount, setTotalDupCount] = useState<number>(0);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage,] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [duplicateData, setDuplicateData] = useState([]);
-  const [duplicatePageSize, setDuplicatePageSize] = useState(25);
-  const [duplicateCurrentPage, setDuplicateCurrentPage] = useState(1);
-  const [totalDuplicateCount, setSuplicateTotalCount] = useState(0);
 
-  const [selectedDuplicates, setSelectedDuplicates] = useState<{
-    vsCandidateName: boolean;
-    vsDOB: boolean;
-    vsUUID: boolean;
-    vsMobile: boolean;
-    vsGender: boolean;
-  }>({
-    vsCandidateName: true,
-    vsDOB: true,
-    vsUUID: true,
-    vsMobile: false,
-    vsGender: true,
-  });
 
-  const [duplicateType, setDuplicateType] = useState<string>("ownDept");
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
 
-    setSelectedDuplicates((prevState) => ({
-      ...prevState,
-      [name]: checked,
-    }));
-  };
 
-  console.log(handleCheckboxChange);
 
-  const duplicateQuery = Object.keys(selectedDuplicates)
-    .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
-    .map((key) => key as string);
 
+  
+
+ 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
-  const duplicateTablecolumns = useMemo(
-    () => CrossCandidateColumns(navigate, duplicateQuery),
-    [navigate, duplicateQuery]
-  );
+
 
   const {
-    data: fetchedData,
+    data: summaryData,
     isLoading,
     isSuccess,
   } = useQuery({
     queryKey: [
-      "candidateData",
-      searchKey,
+      "summaryData",
+       
       debouncedSearchValue,
       currentPage,
       pageSize,
-      ...duplicateQuery,
-      duplicateCurrentPage,
-      duplicatePageSize,
-      duplicateType,
+     
     ],
-    queryFn: () =>
-      getTableData(
-        "candidate",
-        searchKey,
-        debouncedSearchValue,
-        currentPage,
-        pageSize,
-        duplicateQuery,
-        duplicateCurrentPage,
-        duplicatePageSize,
-        duplicateType
-      ),
+    queryFn: () => getSummaryReport({
+          vsSchemeName: "Scheme Name",
+          itotalTrainingCandidate: 0,
+          itotalCertifiedCandidate: 0,
+          itotalPlacedCandidate: 0,
+          itotalTarget: 0,
+          iMaleCount: 0,
+          iFemaleCount: 0,
+          iScCount: 0,
+          iStHCount: 0,
+          iStPCount: 0,
+          iObcCount: 0,
+          iGeneralCount: 0,
+          iMinorityCount: 0,
+          iTeaTribeCount: 0,
+          iPwdCount: 0,
+          iTotalJobRoleCount: 0,
+          fklDepartmentId: 0,
+          dtFinancialYear: "Financial Year",
+          take : pageSize,
+          skip : 0 ,
+          search : searchValue
+          
+        }),
   });
 
   useEffect(() => {
     if (isSuccess) {
-      if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
-        setFilteredData(fetchedData.data.data);
-        setTotalCount(fetchedData.data.total_count);
-        setTotalDupCount(fetchedData.data.duplicate_total_count);
+      if (summaryData && summaryData.length > 0) {
+        setFilteredData(summaryData as any);
+        setTotalCount(summaryData.length);
+      
       } else {
         setFilteredData([]);
       }
 
-      if (
-        fetchedData?.data?.duplicate_candidate &&
-        fetchedData.data.duplicate_candidate.length > 0
-      ) {
-        setDuplicateData(fetchedData.data.duplicate_candidate);
-        setSuplicateTotalCount(fetchedData.data.duplicate_total_count);
-      } else {
-        setDuplicateData([]);
-      }
-    }
-  }, [fetchedData, isSuccess]);
+      // if (
+      //   fetchedData?.data?.duplicate_candidate &&
+      //   fetchedData.data.duplicate_candidate.length > 0
+      // ) {
+      //   setDuplicateData(fetchedData.data.duplicate_candidate);
+      //   setSuplicateTotalCount(fetchedData.data.duplicate_total_count);
+      // } else {
+      //   setDuplicateData([]);
+      // }
+    } 
+  }, [summaryData, isSuccess ,searchValue]);
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "";
-    try {
-      return format(new Date(dateString), "dd/MM/yyyy");
-    } catch {
-      return dateString;
-    }
-  };
 
-  const exportToExcel = () => {
-    if (!filteredData || filteredData.length === 0) {
-      alert("No data available to export");
-      return;
-    }
+  // const exportToExcel = () => {
+  //   if (!filteredData || filteredData.length === 0) {
+  //     alert("No data available to export");
+  //     return;
+  //   }
 
-    const headersMap = {
-      vsCandidateName: "Candidate Name",
-      vsDOB: "Date Of Birth",
-      UUID: "UUID(Aadhar last 4 DIGIT)",
-      vsMobile: "Mobile",
-      vsDepartmentName: "Department Name",
-      // vsFatherName: "FATHER 2",
-      vsGenderName: "Gender",
-      // vsQualificaion: "Education attained",
-      // UUID: "UUID",
-      religion: "Religion",
-      caste: "Caste",
-      vsQualification: "Qualification",
-      disability: "Disability",
-      teaTribe: "Tea Tribe",
-      BPLcardHolder: "BPL Card Holder",
-      Minority: "Minority",
-      batchNo: "Batch No",
-      // SDMSBatchId: "SDMS Batch ID",
-      startDate: "Batch Start Date",
-      endDate: "Batch End Date",
-      courseName: "Course Name",
-      courseCode: "Course Code",
-      TC: "TC",
-      // tcPartnerCode: "TP Code",
-      // tcSpocName: "TC SPOC Name",
-      // tcSpocContactNo: "TC SPOC Contact No",
-      tcAddress: "TC Address",
-      // tcSpocEmail: "SPOC Email",
-      // tcVillage: "TC Village",
-      // tcCity: "TC City",
-      // tcState: "TC State",
-      tcDistrict: "TC District",
-      // tcBlock: "TC Block",
-      // tcUlb: "TC ULB",
-      // smartId: "Smart ID",
-      // tcLongitude: "TC Longitude",
-      // tcLatitude: "TC Latitude",
-      // tcAssembly: "TC Asembly",
-      // tcLoksabha: "TC Loksabha",
-      TP: "TP",
-      // tpCode: "TP Code",
-      // tpSpocName: "TP SPOC Name",
-      // tpSpocContactNo: "TP SPOC Contact No",
-      // tpSpocEmail: "TP SPOC Email",
-      // state: "State",
-      district: "Dsitrict",
-      tpAddress: "TP Address",
-      // tpVillage: "TP VIllage",
-      // tpCity: "TP CIty",
-      // tpBlock: "TP BLock",
-      // tpULB: "TP ULB",
-      // tpSmartId: "TP Smart ID",
-      sector: "Sector",
-      candidatePlaced: "Candidate PLaced",
-      employeerName: "Employee Name",
-      // EmployeerContactNumber: "Employer Contact Number",
-      placementType: "Placement Type",
-      placementState: "Placement State",
-      placementDistrict: "Placement District",
-    };
+  //   const headersMap = {
+  //     vsCandidateName: "Candidate Name",
+  //     vsDOB: "Date Of Birth",
+  //     UUID: "UUID(Aadhar last 4 DIGIT)",
+  //     vsMobile: "Mobile",
+  //     vsDepartmentName: "Department Name",
+  //     // vsFatherName: "FATHER 2",
+  //     vsGenderName: "Gender",
+  //     // vsQualificaion: "Education attained",
+  //     // UUID: "UUID",
+  //     religion: "Religion",
+  //     caste: "Caste",
+  //     vsQualification: "Qualification",
+  //     disability: "Disability",
+  //     teaTribe: "Tea Tribe",
+  //     BPLcardHolder: "BPL Card Holder",
+  //     Minority: "Minority",
+  //     batchNo: "Batch No",
+  //     // SDMSBatchId: "SDMS Batch ID",
+  //     startDate: "Batch Start Date",
+  //     endDate: "Batch End Date",
+  //     courseName: "Course Name",
+  //     courseCode: "Course Code",
+  //     TC: "TC",
+  //     // tcPartnerCode: "TP Code",
+  //     // tcSpocName: "TC SPOC Name",
+  //     // tcSpocContactNo: "TC SPOC Contact No",
+  //     tcAddress: "TC Address",
+  //     // tcSpocEmail: "SPOC Email",
+  //     // tcVillage: "TC Village",
+  //     // tcCity: "TC City",
+  //     // tcState: "TC State",
+  //     tcDistrict: "TC District",
+  //     // tcBlock: "TC Block",
+  //     // tcUlb: "TC ULB",
+  //     // smartId: "Smart ID",
+  //     // tcLongitude: "TC Longitude",
+  //     // tcLatitude: "TC Latitude",
+  //     // tcAssembly: "TC Asembly",
+  //     // tcLoksabha: "TC Loksabha",
+  //     TP: "TP",
+  //     // tpCode: "TP Code",
+  //     // tpSpocName: "TP SPOC Name",
+  //     // tpSpocContactNo: "TP SPOC Contact No",
+  //     // tpSpocEmail: "TP SPOC Email",
+  //     // state: "State",
+  //     district: "Dsitrict",
+  //     tpAddress: "TP Address",
+  //     // tpVillage: "TP VIllage",
+  //     // tpCity: "TP CIty",
+  //     // tpBlock: "TP BLock",
+  //     // tpULB: "TP ULB",
+  //     // tpSmartId: "TP Smart ID",
+  //     sector: "Sector",
+  //     candidatePlaced: "Candidate PLaced",
+  //     employeerName: "Employee Name",
+  //     // EmployeerContactNumber: "Employer Contact Number",
+  //     placementType: "Placement Type",
+  //     placementState: "Placement State",
+  //     placementDistrict: "Placement District",
+  //   };
 
-    const formattedData = filteredData.map((item) => {
-      return Object.keys(headersMap).reduce((acc, key) => {
-        const headerKey = key as keyof typeof headersMap;
-        const itemKey = key as keyof typeof item;
-        let value = item[itemKey] ?? "";
-        
-        // Format dates
-        if (["vsDOB", "startDate", "endDate"].includes(key)) {
-          acc[headersMap[headerKey]] = formatDate(value as string);
-          return acc;
-        }
-        
-        acc[headersMap[headerKey]] = value;
-        return acc;
-      }, {} as Record<string, unknown>);
-    });
+  //   const formattedData = filteredData.map((item) => {
+  //     return Object.keys(headersMap).reduce((acc, key) => {
+  //       const headerKey = key as keyof typeof headersMap;
+  //       const itemKey = key as keyof typeof item;
+  //       let value = item[itemKey] ?? "";
 
-    const worksheet = XLSX.utils.json_to_sheet(formattedData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+  //       // Format dates
+  //       if (["vsDOB", "startDate", "endDate"].includes(key)) {
+  //         acc[headersMap[headerKey]] = formatDate(value as string);
+  //         return acc;
+  //       }
 
-    XLSX.writeFile(workbook, "CandidateData.xlsx");
-  };
+  //       acc[headersMap[headerKey]] = value;
+  //       return acc;
+  //     }, {} as Record<string, unknown>);
+  //   });
 
-  const exportToExcelDuplicate = () => {
-    if (
-      !fetchedData?.data?.duplicate_candidate ||
-      fetchedData?.data?.duplicate_candidate.length === 0
-    ) {
-      alert("No data available to export");
-      return;
-    }
+  //   const worksheet = XLSX.utils.json_to_sheet(formattedData);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
 
-    const headersMap = {
-      vsCandidateName: "Candidate Name",
-      vsDOB: "Date Of Birth",
+  //   XLSX.writeFile(workbook, "CandidateData.xlsx");
+  // };
 
-      vsUUID: "UUID",
+  // const exportToExcelDuplicate = () => {
+  //   if (
+  //     !fetchedData?.data?.duplicate_candidate ||
+  //     fetchedData?.data?.duplicate_candidate.length === 0
+  //   ) {
+  //     alert("No data available to export");
+  //     return;
+  //   }
 
-      vsDepartmentName: "Department Name",
+  //   const headersMap = {
+  //     vsCandidateName: "Candidate Name",
+  //     vsDOB: "Date Of Birth",
 
-      vsGenderName: "Gender",
-    };
+  //     vsUUID: "UUID",
 
-    const formattedData = fetchedData?.data?.duplicate_candidate.map(
-      (item: { [x: string]: unknown }) => {
-        return Object.keys(headersMap).reduce((acc, key) => {
-          acc[headersMap[key as keyof typeof headersMap]] = item[key];
-          return acc;
-        }, {} as Record<string, unknown>);
-      }
-    );
+  //     vsDepartmentName: "Department Name",
 
-    const worksheet = XLSX.utils.json_to_sheet(formattedData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+  //     vsGenderName: "Gender",
+  //   };
 
-    XLSX.writeFile(workbook, "CandidateDuplicateData.xlsx");
-  };
+  //   const formattedData = fetchedData?.data?.duplicate_candidate.map(
+  //     (item: { [x: string]: unknown }) => {
+  //       return Object.keys(headersMap).reduce((acc, key) => {
+  //         acc[headersMap[key as keyof typeof headersMap]] = item[key];
+  //         return acc;
+  //       }, {} as Record<string, unknown>);
+  //     }
+  //   );
 
-  const handleDropdownSelect = (option: { label: string; value: string }) => {
-    setSearchKey(option.value);
-    setSearchKeyLabel(option.label);
-    setSearchValue("");
-  };
+  //   const worksheet = XLSX.utils.json_to_sheet(formattedData);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+  //   XLSX.writeFile(workbook, "CandidateDuplicateData.xlsx");
+  // };
+
+  // const handleDropdownSelect = (option: { label: string; value: string }) => {
+  //   setSearchKey(option.value);
+  //   setSearchKeyLabel(option.label);
+  //   setSearchValue("");
+  // };
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -298,7 +307,7 @@ const Candidate: React.FC = () => {
   return (
     <>
       <div className="">
-        <p className="text-2xl font-bold mb-4">List Of Candidates</p>
+        <p className="text-2xl font-bold mb-4">Summary Report </p>
         {bulkName === "candidate" && (
           <>
             {successMessage && (
@@ -364,17 +373,17 @@ const Candidate: React.FC = () => {
           </>
         )}
 
-        <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
+        {/* <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
           <span className="text-red-500 text-2xl mr-2">⚠️</span>
           Only the last four digits of the candidate's Aadhar number should be
           Insert.{<br></br>}The Candidate Unique ID is generated using the first
           4 letters of the name, the last 4 digit of the Aadhaar number, DOB
           (YYYYMMDD), and gender (M/F) to ensure accuracy and uniqueness.
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-            <SearchDropdown
+            {/* <SearchDropdown
               options={[
                 { label: "All", value: "" },
                 { label: "Candidate Name", value: "vsCandidateName" },
@@ -412,11 +421,11 @@ const Candidate: React.FC = () => {
                   Clear
                 </button>
               </>
-            )}
+            )} */}
           </div>
 
           <div className="flex gap-1">
-            <TemplateDownloadButton
+            {/* <TemplateDownloadButton
               templateType={8}
               templateTitle="Candidate Template"
               Icon={DownloadCloud}
@@ -427,17 +436,17 @@ const Candidate: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="candidate"
               Icon={UploadCloud}
-            />
+            /> */}
             <ModalOpenButton
-              modalType={5}
-              modalTitle="Add Candidate"
+              modalType={15}
+              modalTitle="Add Report"
               bulkName="Candidate"
               Icon={Add}
             />
           </div>
         </div>
       </div>
-      <div className="pt-10">
+      {/* <div className="pt-10">
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
           <button
@@ -450,29 +459,46 @@ const Candidate: React.FC = () => {
         </div>
         <div className="py-2 text-lg text-green-600">
           Total Department Entries: {totalCount}
-        </div>
-        {/* Table Component */}
-        <CentralizedTable
-          columns={columns as Column<any>[]}
-          data={filteredData}
-          pageSize={pageSize}
-          currentPage={currentPage}
-          totalCount={totalCount}
-          onPageChange={setCurrentPage}
-          onPageSizeChange={setPageSize}
-        />
+        </div> */}
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-2xl font-bold"></p>
+        <button
+          className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+        // onClick={exportToExcel}
+        >
+          <DownloadCloud size={18} />
+          Download Report
+        </button>
       </div>
+      {/* Table Component */}
+      <SearchInputBox
+        value={searchValue}
+        onChange={(e) => handleSearch(e.target.value)}
+        placeholder={`Search by scheme name ....`}
+      />
+      <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
+      <CentralizedTable
 
-      <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        columns={columns as Column<any>[]}
+        data={filteredData}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        totalCount={totalCount}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+      {/* </div> */}
+
+      {/* <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
         NOTE: Duplicate checks are performed using a generated unique ID, which
         is created only when an Aadhaar number is provided.
-      </div>
+      </div> */}
       <div className="pt-10">
-        <p className="text-2xl font-bold mb-4">Check Duplicate Candidates</p>
-        <div className="py-3 text-lg text-green-600">
+        <p className="text-2xl font-bold mb-4"></p>
+        {/* <div className="py-3 text-lg text-green-600">
           Total Duplicate Entries: {totalDupCount}
-        </div>
+        </div> */}
         <div className="mb-4 flex justify-between">
           {/* <div>
             <label className="mr-6">
@@ -531,7 +557,7 @@ const Candidate: React.FC = () => {
             </label>
           </div> */}
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <SearchDropdown
               options={[
                 { label: "Own Department", value: "ownDept" },
@@ -550,9 +576,9 @@ const Candidate: React.FC = () => {
               <DownloadCloud size={18} />
               Download Report
             </button>
-          </div>
+          </div> */}
         </div>
-        <CentralizedTable
+        {/* <CentralizedTable
           columns={duplicateTablecolumns}
           data={duplicateData}
           pageSize={duplicatePageSize}
@@ -560,10 +586,10 @@ const Candidate: React.FC = () => {
           totalCount={totalDuplicateCount}
           onPageChange={setDuplicateCurrentPage}
           onPageSizeChange={setDuplicatePageSize}
-        />
+        /> */}
       </div>
     </>
   );
 };
 
-export default Candidate;
+export default Candidates;

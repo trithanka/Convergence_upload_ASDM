@@ -661,3 +661,75 @@ export const departmentCreationSchema = Joi.object({
       "string.pattern.base": "Phone Number must be a valid 10-digit number.",
     }),
 });
+
+
+
+export const summaryReportSchema = Joi.object({
+  vsSchemeName: Joi.string().required().label("Scheme Name").messages({
+    "string.empty": "Scheme Name is required.",
+  }),
+  itotalTrainingCandidate: Joi.number().required().label("Total Training Candidate").messages({
+    "number.base": "Total Training Candidate must be a number.",
+    "any.required": "Total Training Candidate is required.",
+  }),
+  itotalCertifiedCandidate: Joi.number().required().label("Total Certified Candidate").messages({
+    "number.base": "Total Certified Candidate must be a number.",
+    "any.required": "Total Certified Candidate is required.",
+  }), itotalPlacedCandidate: Joi.number().required().label("Total Placed Candidate").messages({
+    "number.base": "Total Placed Candidate must be a number.",
+    "any.required": "Total Placed Candidate is required.",
+  }),
+  itotalTarget: Joi.number().required().label("Total Target").messages({
+    "number.base": "Total Target must be a number.",
+    "any.required": "Total Target is required.",
+  }),
+  iMaleCount: Joi.number().required().label("Male Count").messages({
+    "number.base": "Male Count must be a number.",
+    "any.required": "Male Count is required.",
+  }),
+  iFemaleCount: Joi.number().required().label("Female Count").messages({
+    "number.base": "Female Count must be a number.",
+    "any.required": "Female Count is required.",
+  }),
+  iScCount: Joi.number().required().label("SC Count").messages({
+    "number.base": "SC Count must be a number.",
+    "any.required": "SC Count is required.",
+  }),
+  iStHCount: Joi.number().required().label("ST H Count").messages({
+    "number.base": "ST H Count must be a number.",
+    "any.required": "ST H Count is required.",
+  }),
+  iStPCount: Joi.number().required().label("ST P Count").messages({
+    "number.base": "ST P Count must be a number.",
+    "any.required": "ST P Count is required.",
+  }),
+  iObcCount: Joi.number().required().label("OBC Count").messages({
+    "number.base": "OBC Count must be a number.",
+    "any.required": "OBC Count is required.",
+  }), iGeneralCount: Joi.number().required().label("General Count").messages({
+    "number.base": "General Count must be a number.",
+    "any.required": "General Count is required.",
+  }),
+  iMinorityCount: Joi.number().required().label("Minority Count").messages({
+    "number.base": "Minority Count must be a number.",
+    "any.required": "Minority Count is required.",
+  }),
+  iTeaTribeCount: Joi.number().required().label("Tea Tribe Count").messages({
+    "number.base": "Tea Tribe Count must be a number.",
+    "any.required": "Tea Tribe Count is required.",
+  }),
+  iPwdCount: Joi.number().required().label("PWD Count").messages({
+    "number.base": "PWD Count must be a number.",
+    "any.required": "PWD Count is required.",
+  }), iTotalJobRoleCount: Joi.number().required().label("Total Job Role Count").messages({
+    "number.base": "Total Job Role Count must be a number.",
+    "any.required": "Total Job Role Count is required.",
+  }),
+  fklDepartmentId: Joi.number().required().label("Department ID").messages({
+    "number.base": "Department ID must be a number.",
+    "any.required": "Department ID is required.",
+  }),
+  dtFinancialYear: Joi.string().required().label("Financial Year").messages({
+    "string.empty": "Financial Year is required.",
+  }),
+});

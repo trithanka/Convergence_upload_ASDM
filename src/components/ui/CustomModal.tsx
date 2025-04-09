@@ -10,6 +10,7 @@ import TrainingPartnerModal from './Modals/TrainingPartnerModal';
 import { X } from 'lucide-react';
 import BatchModal from './Modals/BatchModal';
 import CandidateModal from './Modals/CandidateModal';
+import NewCandidateModal from './Modals/New-Candidate-Model';
 import TrainerModal from "./Modals/TrainerModal";
 import AssessorsModal from './Modals/AssessorsModal';
 import AssessmentModal from './Modals/AssessmentModal';
@@ -57,6 +58,10 @@ const CustomModal: React.FC = () => {
         return <LoginCreationModal />;
         case 14:
           return <SectorModal />;
+
+        case 15:
+          return <NewCandidateModal />;
+          
 
 
       default:

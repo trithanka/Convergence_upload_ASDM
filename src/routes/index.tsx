@@ -21,6 +21,7 @@ import CreateDepartment from "../pages/department-creation/CreateDepartment";
 import States from "../pages/masters/States";
 import Sectors from "../pages/masters/Sectors";
 import Departments from "../pages/masters/Departments";
+import  Candidates  from "../pages/Candidates";
 
 const Index = () => {
   return (
@@ -46,6 +47,7 @@ const Index = () => {
         />
         <Route path="Batch" element={<Batch />} />
         <Route path="Candidate" element={<Candidate />} />
+        <Route path="Summary Report" element={<Candidates />} />
         <Route path="Trainer" element={<Trainer />} />
         <Route path="Assessors" element={<Assessors />} />
         <Route path="Assessment" element={<Assessment />} />

@@ -5,6 +5,8 @@ import { NavItems } from "../../utils/NavItems";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import logo from "../../assets/ASDMLOGO.png";
 import "../../custom.css";
+import Cookies from "js-cookie";
+
 
 const Sidebar = ({
   isCollapsed,
@@ -27,6 +29,7 @@ const Sidebar = ({
     "/Scheme": "Scheme",
     "/Assessors": "Assessors",
     "/Trainer": "Trainer",
+    
   };
 
   const currentPageTitle = routeTitles[location.pathname] || "Default Title";
@@ -45,7 +48,20 @@ const Sidebar = ({
     if (item.subItems) {
       setActiveMenu(activeMenu === item.name ? null : item.name || null);
     } else if (item.link) {
-      navigate(item.link);
+      if (item.link.startsWith("http")) {
+        // Get the token from cookies
+        const token = Cookies.get("token"); // <-- replace with actual cookie name
+  
+        // Append token as query parameter if it exists
+        const url = token
+          ? `${item.link}${item.link.includes("?") ? "&" : "?"}token=${encodeURIComponent(token)}`
+          : item.link;
+  
+        // Open the external link in a new tab
+        window.open(url, item.target || "_blank", item.rel || "noopener noreferrer");
+      } else {
+        navigate(item.link);
+      }
     }
   };
 

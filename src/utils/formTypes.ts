@@ -171,12 +171,19 @@ export interface targetFormData {
 }
 
 export interface candidateFormData {
+  totalCandidateTrainned: number;
   candidateId: string;
+  FinalcialYear: string;
+  schemeName: string;
   vsCandidateName: string;
+  jobRole: string;
+  vsQualification: string;
+  isPlaced: string;
   vsDOB: string;
   iAge: string;
   vsFatherName: string;
   vsGender: number;
+  isCertified: string;
   fklIdType: number;
   vsUUID: string;
   fklReligionId: number;

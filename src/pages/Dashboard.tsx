@@ -13,8 +13,9 @@ import {
   Group,
   FileSignature,
   Spline,
-  Receipt,
+
   Settings2,
+  Target,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -107,7 +108,7 @@ const Dashboard: React.FC = () => {
       label: "Targets",
       href: "/Target",
       count: convergenceCounts.targetCount?.[0]?.count || 0,
-      icon: Receipt,
+      icon: Target,
     },
     {
       label: "Assessments",
@@ -115,12 +116,12 @@ const Dashboard: React.FC = () => {
       count: convergenceCounts.assessmentCount?.[0]?.count || 0,
       icon: FileSignature,
     },
-    {
-      label: "Invoices",
-      href: "/Invoice",
-      count: convergenceCounts.invoiceCount?.[0]?.count || 0,
-      icon: Receipt,
-    },
+    // {
+    //   label: "Invoices",
+    //   href: "/Invoice",
+    //   count: convergenceCounts.invoiceCount?.[0]?.count || 0,
+    //   icon: Receipt,
+    // },
     {
       label: "Placements",
       href: "/Placement",
