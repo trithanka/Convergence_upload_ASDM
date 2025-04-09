@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import{ getSummaryReport }from "../services/state/api/summaryReportCreationApi";
+
+import * as XLSX from "xlsx";
 import {
   AlertCircle,
   CheckCircle,
@@ -162,139 +164,51 @@ const Candidates: React.FC = () => {
   }, [summaryData, isSuccess ,searchValue]);
 
 
-  // const exportToExcel = () => {
-  //   if (!filteredData || filteredData.length === 0) {
-  //     alert("No data available to export");
-  //     return;
-  //   }
+  const exportToExcel = () => {
+    if (!summaryData || summaryData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
 
-  //   const headersMap = {
-  //     vsCandidateName: "Candidate Name",
-  //     vsDOB: "Date Of Birth",
-  //     UUID: "UUID(Aadhar last 4 DIGIT)",
-  //     vsMobile: "Mobile",
-  //     vsDepartmentName: "Department Name",
-  //     // vsFatherName: "FATHER 2",
-  //     vsGenderName: "Gender",
-  //     // vsQualificaion: "Education attained",
-  //     // UUID: "UUID",
-  //     religion: "Religion",
-  //     caste: "Caste",
-  //     vsQualification: "Qualification",
-  //     disability: "Disability",
-  //     teaTribe: "Tea Tribe",
-  //     BPLcardHolder: "BPL Card Holder",
-  //     Minority: "Minority",
-  //     batchNo: "Batch No",
-  //     // SDMSBatchId: "SDMS Batch ID",
-  //     startDate: "Batch Start Date",
-  //     endDate: "Batch End Date",
-  //     courseName: "Course Name",
-  //     courseCode: "Course Code",
-  //     TC: "TC",
-  //     // tcPartnerCode: "TP Code",
-  //     // tcSpocName: "TC SPOC Name",
-  //     // tcSpocContactNo: "TC SPOC Contact No",
-  //     tcAddress: "TC Address",
-  //     // tcSpocEmail: "SPOC Email",
-  //     // tcVillage: "TC Village",
-  //     // tcCity: "TC City",
-  //     // tcState: "TC State",
-  //     tcDistrict: "TC District",
-  //     // tcBlock: "TC Block",
-  //     // tcUlb: "TC ULB",
-  //     // smartId: "Smart ID",
-  //     // tcLongitude: "TC Longitude",
-  //     // tcLatitude: "TC Latitude",
-  //     // tcAssembly: "TC Asembly",
-  //     // tcLoksabha: "TC Loksabha",
-  //     TP: "TP",
-  //     // tpCode: "TP Code",
-  //     // tpSpocName: "TP SPOC Name",
-  //     // tpSpocContactNo: "TP SPOC Contact No",
-  //     // tpSpocEmail: "TP SPOC Email",
-  //     // state: "State",
-  //     district: "Dsitrict",
-  //     tpAddress: "TP Address",
-  //     // tpVillage: "TP VIllage",
-  //     // tpCity: "TP CIty",
-  //     // tpBlock: "TP BLock",
-  //     // tpULB: "TP ULB",
-  //     // tpSmartId: "TP Smart ID",
-  //     sector: "Sector",
-  //     candidatePlaced: "Candidate PLaced",
-  //     employeerName: "Employee Name",
-  //     // EmployeerContactNumber: "Employer Contact Number",
-  //     placementType: "Placement Type",
-  //     placementState: "Placement State",
-  //     placementDistrict: "Placement District",
-  //   };
+    const headersMap = {
+      vsSchemeName: "Scheme Name",
+      itotalTrainingCandidate: "Total Training Candidate",
+      itotalCertifiedCandidate: "Total Certified Candidate",
+      itotalPlacedCandidate: "Total Placed Candidate",
+      itotalTarget: "Total Target", 
+      iMaleCount: "Male Count",
+      iFemaleCount: "Female Count",
+      iScCount: "SC Count",
+      iStHCount: "ST H Count",
+      iStPCount: "ST P Count",
+      iObcCount: "OBC Count",
+      iGeneralCount: "General Count",
+      iMinorityCount: "Minority Count",
+      iTeaTribeCount: "Tea Tribe Count",
+      iPwdCount: "PwD Count",
+      iTotalJobRoleCount: "Total Job Role Count",
+      department_names: "Department",
+      dtFinancialYear: "Financial Year",
+      
+    };
 
-  //   const formattedData = filteredData.map((item) => {
-  //     return Object.keys(headersMap).reduce((acc, key) => {
-  //       const headerKey = key as keyof typeof headersMap;
-  //       const itemKey = key as keyof typeof item;
-  //       let value = item[itemKey] ?? "";
+    const formattedData = filteredData.map((item) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item;
+        let value = item[itemKey] ?? "";
+        acc[headersMap[headerKey]] = value;
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
 
-  //       // Format dates
-  //       if (["vsDOB", "startDate", "endDate"].includes(key)) {
-  //         acc[headersMap[headerKey]] = formatDate(value as string);
-  //         return acc;
-  //       }
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+    XLSX.writeFile(workbook, "SummaryReportData.xlsx");
+  };
 
-  //       acc[headersMap[headerKey]] = value;
-  //       return acc;
-  //     }, {} as Record<string, unknown>);
-  //   });
-
-  //   const worksheet = XLSX.utils.json_to_sheet(formattedData);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
-
-  //   XLSX.writeFile(workbook, "CandidateData.xlsx");
-  // };
-
-  // const exportToExcelDuplicate = () => {
-  //   if (
-  //     !fetchedData?.data?.duplicate_candidate ||
-  //     fetchedData?.data?.duplicate_candidate.length === 0
-  //   ) {
-  //     alert("No data available to export");
-  //     return;
-  //   }
-
-  //   const headersMap = {
-  //     vsCandidateName: "Candidate Name",
-  //     vsDOB: "Date Of Birth",
-
-  //     vsUUID: "UUID",
-
-  //     vsDepartmentName: "Department Name",
-
-  //     vsGenderName: "Gender",
-  //   };
-
-  //   const formattedData = fetchedData?.data?.duplicate_candidate.map(
-  //     (item: { [x: string]: unknown }) => {
-  //       return Object.keys(headersMap).reduce((acc, key) => {
-  //         acc[headersMap[key as keyof typeof headersMap]] = item[key];
-  //         return acc;
-  //       }, {} as Record<string, unknown>);
-  //     }
-  //   );
-
-  //   const worksheet = XLSX.utils.json_to_sheet(formattedData);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
-
-  //   XLSX.writeFile(workbook, "CandidateDuplicateData.xlsx");
-  // };
-
-  // const handleDropdownSelect = (option: { label: string; value: string }) => {
-  //   setSearchKey(option.value);
-  //   setSearchKeyLabel(option.label);
-  //   setSearchValue("");
-  // };
+ 
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -464,7 +378,7 @@ const Candidates: React.FC = () => {
         <p className="text-2xl font-bold"></p>
         <button
           className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-        // onClick={exportToExcel}
+        onClick={exportToExcel}
         >
           <DownloadCloud size={18} />
           Download Report
@@ -478,7 +392,6 @@ const Candidates: React.FC = () => {
       />
       <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       <CentralizedTable
-
         columns={columns as Column<any>[]}
         data={filteredData}
         pageSize={pageSize}
