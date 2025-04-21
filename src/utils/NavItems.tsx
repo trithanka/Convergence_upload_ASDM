@@ -28,7 +28,7 @@ export const NavItems: NavItem[] = [
   },
   {
     name :"Convergence Dashboard",
-    link: "https://convergence.skillmissionassam.org/",
+    link: "http://localhost:5173/",
     target: "_blank",
     rel:"noopener noreferrer",
     icon: Home,
