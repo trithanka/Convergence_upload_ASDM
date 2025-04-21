@@ -28,7 +28,7 @@ export const NavItems: NavItem[] = [
   },
   {
     name :"Convergence Dashboard",
-    link: "http://localhost:5173/",
+    link: import.meta.env.VITE_REDIRECT_URL,
     target: "_blank",
     rel:"noopener noreferrer",
     icon: Home,
