@@ -228,6 +228,18 @@ const BatchModel: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
+
+        <div>
+          <Label text="Batch ID" required />
+          <Controller
+            name="iBatchNumber"
+            control={control}
+            render={({ field }) => <Input {...field} type="text" className={errors.iBatchNumber ? "border-red-500" : ""} />}
+
+          />
+          {errors.iBatchNumber && <p className="text-red-500">{errors.iBatchNumber.message}</p>}
+        </div>
+
         <div className="col-span-1">
           <Label text="Training Center" required />
           <Controller
@@ -254,32 +266,6 @@ const BatchModel: React.FC = () => {
           )}
         </div>
         <div className="col-span-1">
-          <Label text="Trainer" required />
-          <Controller
-            name="fklTrainerId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={trainerOptions}
-                getOptionLabel={(option: { label: string }) => option.label}
-                getOptionValue={(option: { value: number }) => option.value}
-                onSelect={(selectedValue: { label: string; value: number }) => {
-                  field.onChange(selectedValue.value);
-
-                  setValue("fklTrainerId", selectedValue.value);
-                }}
-                placeholder="-- Select Trainer --"
-                className={errors.fklTrainerId ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.fklTrainerId && (
-            <p className="text-red-500">{errors.fklTrainerId.message}</p>
-          )}
-        </div>
-
-        <div className="col-span-1">
           <Label text="Courses" required />
           <Controller
             name="fklCourseId"
@@ -302,7 +288,50 @@ const BatchModel: React.FC = () => {
           {errors.fklCourseId && (
             <p className="text-red-500">{errors.fklCourseId.message}</p>
           )}
-        </div>
+        </div> 
+       
+        
+
+
+        {/* Trainer Name */}
+        <div className="col-span-1">
+          <Label text="Trainer Name" required />
+          <Controller
+            name="vsTrainerName"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsTrainerName ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsTrainerName && (
+            <p className="text-red-500">{errors.vsTrainerName.message}</p>
+          )}
+        </div> 
+         {/* ID Card (PAN/Voter) */}
+                <div className="col-span-1">
+                  <Label text="Trainer PAN" required/>
+                  <Controller
+                    name="vsPAN"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        className={errors.vsPAN ? "border-red-500" : ""}
+                      />
+                    )}
+                  />
+                  {errors.vsPAN && (
+                    <p className="text-red-500">{errors.vsPAN.message}</p>
+                  )}
+                </div>
+        
+
+   
 
         <div className="col-span-1">
           <Label text="Target Order Number" required />
@@ -349,20 +378,20 @@ const BatchModel: React.FC = () => {
         <div>
           <Label text="Batch Size Enrolled" required />
           <Controller
-  name="iBatchTarget"
-  control={control}
-  render={({ field }) => (
-    <Input
-      {...field}
-      type="number"
-      className={errors.iBatchTarget ? "border-red-500" : ""}
-      onChange={(e) => {
-        field.onChange(e); // Update form state
-        handleBatchTargetChange(e.target.value); // Update remaining target
-      }}
-    />
-  )}
-/>
+            name="iBatchTarget"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="number"
+                className={errors.iBatchTarget ? "border-red-500" : ""}
+                onChange={(e) => {
+                  field.onChange(e); // Update form state
+                  handleBatchTargetChange(e.target.value); // Update remaining target
+                }}
+              />
+            )}
+          />
           {errors.iBatchTarget && <p className="text-red-500">{errors.iBatchTarget.message}</p>}
           <div className="mt-1 mb-2 flex gap-2 items-center justify-between">
             <p className="text-gray-500 text-xs">Remaining </p>
@@ -381,26 +410,7 @@ const BatchModel: React.FC = () => {
           </div>
         </div>
 
-        <div>
-          <Label text="Batch Number" required />
-          <Controller
-            name="iBatchNumber"
-            control={control}
-            render={({ field }) => <Input {...field} type="text" className={errors.iBatchNumber ? "border-red-500" : ""} />}
-
-          />
-          {errors.iBatchNumber && <p className="text-red-500">{errors.iBatchNumber.message}</p>}
-        </div>
-        <div>
-          <Label text="SDMS Batch Id" />
-          <Controller
-            name="SDMSid"
-            control={control}
-            render={({ field }) => <Input {...field} type="text" className={errors.SDMSid ? "border-red-500" : ""} />}
-
-          />
-          {errors.SDMSid && <p className="text-red-500">{errors.SDMSid.message}</p>}
-        </div>
+       
 
         <div className="col-span-1">
           <Label text="Batch Start Date" required />

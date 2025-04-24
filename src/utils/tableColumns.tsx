@@ -36,12 +36,12 @@ export const schemeColumns: (
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Name", accessor: "vsSchemeName" },
   
-  { Header: "Scheme Type", accessor: "vsSchemeType" },
+  // { Header: "Scheme Type", accessor: "vsSchemeType" },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
-  { Header: "Fund Name", accessor: "vsFundName" },
-  { Header: "Fund Type", accessor: "vsSchemeFundingType" },
-  { Header: "Fund Ratio", accessor: "vsSchemeFUndingRatio" },
-  { Header: "Sanction Order Number", accessor: "sanctionOrderNo" },
+  // { Header: "Fund Name", accessor: "vsFundName" },
+  // { Header: "Fund Type", accessor: "vsSchemeFundingType" },
+  // { Header: "Fund Ratio", accessor: "vsSchemeFUndingRatio" },
+  // { Header: "Sanction Order Number", accessor: "sanctionOrderNo" },
   {
     Header: "Sanction Date",
     accessor: "dtSanctionDate",
@@ -76,39 +76,39 @@ export const schemeDuplicateColumns: (
     ),
   },
  
-  {
-    Header: "Scheme Type",
-    accessor: "vsSchemeType",
-    Cell: ({ value }) => (
-      <span
-        className={duplicateQuery.includes("vsSchemeType") ? "bg-yellow-200" : ""}
-      >
-        {value}
-      </span>
-    ),
-  },
-  {
-    Header: "Fund Name",
-    accessor: "vsFundName",
-    Cell: ({ value }) => (
-      <span
-        className={duplicateQuery.includes("vsFundName") ? "bg-yellow-200" : ""}
-      >
-        {value}
-      </span>
-    ),
-  },
-  {
-    Header: "Fund Type",
-    accessor: "vsFundingType",
-    Cell: ({ value }) => (
-      <span
-        className={duplicateQuery.includes("vsSchemeFundingType") ? "bg-yellow-200" : ""}
-      >
-        {value}
-      </span>
-    ),
-  },
+  // {
+  //   Header: "Scheme Type",
+  //   accessor: "vsSchemeType",
+  //   Cell: ({ value }) => (
+  //     <span
+  //       className={duplicateQuery.includes("vsSchemeType") ? "bg-yellow-200" : ""}
+  //     >
+  //       {value}
+  //     </span>
+  //   ),
+  // },
+  // {
+  //   Header: "Fund Name",
+  //   accessor: "vsFundName",
+  //   Cell: ({ value }) => (
+  //     <span
+  //       className={duplicateQuery.includes("vsFundName") ? "bg-yellow-200" : ""}
+  //     >
+  //       {value}
+  //     </span>
+  //   ),
+  // },
+  // {
+  //   Header: "Fund Type",
+  //   accessor: "vsFundingType",
+  //   Cell: ({ value }) => (
+  //     <span
+  //       className={duplicateQuery.includes("vsSchemeFundingType") ? "bg-yellow-200" : ""}
+  //     >
+  //       {value}
+  //     </span>
+  //   ),
+  // },
   {
     Header: "Department Name",
     accessor: "vsDepartmentName",
@@ -308,14 +308,14 @@ export const trainingColumns: (
 ) => Column<TrainingPartnerData>[] = (_navigate) => [
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
 
-  { Header: "Partner Name", accessor: "vsTpName" },
+  { Header: "Training Partner", accessor: "vsTpName" },
   { Header: "PAN", accessor: "vsPan" },
-  { Header: "SPOC Name", accessor: "vsSpocName" },
+  // { Header: "SPOC Name", accessor: "vsSpocName" },
  
-  { Header: "SPOC Contact", accessor: "iSpocContactNum" },
+  // { Header: "SPOC Contact", accessor: "iSpocContactNum" },
   { Header: "Address", accessor: "vsAddress" },
-  { Header: "State", accessor: "vsState" },
-  { Header: "District", accessor: "vsDistrict" },
+  // { Header: "State", accessor: "vsState" },
+  // { Header: "District", accessor: "vsDistrict" },
 
 ];
 
@@ -325,7 +325,7 @@ export const DuplicateTrainingColumns = (
   isCrossDepartmentDuplicate: boolean = false
 ): Column<TrainingPartnerData>[] => {
   const columns: Column<TrainingPartnerData>[] = [
-    { Header: "Sl No", accessor: (_row, rowIndex) => rowIndex + 1 },
+    // { Header: "Sl No", accessor: (_row, rowIndex) => rowIndex + 1 },
     // {
     //   Header: "Centers",
     //   accessor: "count",
@@ -419,11 +419,13 @@ export const centerColumns = (
   navigate: (path: string) => void
 ): Column<TrainingCenterData>[] => [
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Training Center Name", accessor: "vsTcName" },
-  // { Header: "TC Code", accessor: "vsTcCode" },
-  { Header: "SPOC Name", accessor: "vsSpocName" },
-  { Header: "Center Code", accessor: "vsTcCode" }, 
-  { Header: "District", accessor: "vsDistrict" },
+  { Header: "Training Partner", accessor: "vsTpName" },
+  { Header: "Training Center ", accessor: "vsTcName" },
+  { Header: "Center Address", accessor: "vsTcAddress" },
+  { Header: "Center State", accessor: "vsState" },
+ 
+ 
+  { Header: "Center District", accessor: "vsDistrict" },
   // {
   //   Header: "Action",
   //   accessor: "Action",
@@ -512,11 +514,19 @@ export const batchColumns = (
   navigate: (path: string) => void
 ): Column<BatchData>[] => [
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "TC Name", accessor: "tcName" },
-  { Header: "Batch Number", accessor: "iBatchNumber" },
-  { Header: "SDMS  ID", accessor: "SDMSid" },
-  { Header: "Start Date", accessor: "dtStartDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
-  { Header: "End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
+  { Header: "Batch ID", accessor: "iBatchNumber" },
+  { Header: " Batch Start Date", accessor: "dtStartDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
+  { Header: "Batch End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
+  { Header: "Batch Size", accessor: "iBatchSize" },
+  { Header: "Training Center", accessor: "tcName" },
+  {Header :"Course " , accessor:"courseName"},
+  {
+    Header: "Trainer",
+    accessor: "vsTrainerName",
+  }
+
+  // { Header: "SDMS  ID", accessor: "SDMSid" },
+
   // {
   //   Header: "Action",
   //   accessor: "Action",
@@ -1046,11 +1056,11 @@ export const candidateColumns = (
     accessor: "vsGenderName",
     Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
-  {
-    Header: "Mobile",
-    accessor: "vsMobile",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
-  },
+  // {
+  //   Header: "Mobile",
+  //   accessor: "vsMobile",
+  //   Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
+  // },
   {
     Header: "Qualification",
     accessor: "vsQualification",

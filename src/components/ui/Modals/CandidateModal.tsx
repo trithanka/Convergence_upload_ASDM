@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { candidateSchema } from "../../../utils/validation";
 import { candidateFormData } from "../../../utils/formTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Select from "../Select";
 import {
   // getBranchByBank,
   // getDistrictByState,
@@ -42,6 +43,31 @@ const CandidateModal: React.FC = () => {
   } = useForm<candidateFormData>({
     resolver: joiResolver(candidateSchema),
   });
+
+  const resultType = [
+    { value: "", label: "-- Select Result Type --", disabled: true },
+    { value: 1, label: "Yes" },
+    { value: 0, label: "No" },
+  ];
+
+  const result = [
+    { value: "", label: "-- Select Result --", disabled: true },
+    { value: "Pass", label: "Pass" },
+    { value: "Fail", label: "Fail" },
+  ];
+
+  const placement =[
+    { value: "", label: "-- Select Placement --", disabled: true },
+    { value: 1, label: "Yes" },
+    { value: 0,label: "No" },
+  ]
+
+  const placementType = [
+    { value: "", label: "-- Select Placement Type --", disabled: true },
+    { value: 1, label: "Wage-Employement" },
+    { value:2, label: "Self-Employement" },
+  ]
+  const vsResultValue = watch("bAssessed");
 
   const queryClient = useQueryClient()
 
@@ -331,50 +357,6 @@ const CandidateModal: React.FC = () => {
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 py-4"
       >
         {/* Basic Details */}
-        <div className="col-span-1">
-          <Label text="Candidate ID" required />
-          <Controller
-            name="candidateId"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.candidateId ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.candidateId && (
-            <p className="text-red-500">{errors.candidateId.message}</p>
-          )}
-        </div>
-
-        <div className="col-span-1">
-          <Label text="Batch ID"  />
-          <Controller
-            name="batchId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={batchOptions}
-                getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value}
-                onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value);
-
-                  setValue("fklCategoryId", selectedOption.value);
-                }}
-                className={errors.fklCategoryId ? "border-red-500" : ""}
-                placeholder="-- Select Batch--"
-              />
-            
-            )}
-          />
-          {errors.batchId && (
-            <p className="text-red-500">{errors.batchId.message}</p>
-          )}
-        </div>
 
         <div className="col-span-1">
           <Label text="Name" required />
@@ -391,6 +373,26 @@ const CandidateModal: React.FC = () => {
           />
           {errors.vsCandidateName && (
             <p className="text-red-500">{errors.vsCandidateName.message}</p>
+          )}
+        </div>
+
+
+
+        <div className="col-span-1">
+          <Label text="Candidate ID" required />
+          <Controller
+            name="candidateId"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.candidateId ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.candidateId && (
+            <p className="text-red-500">{errors.candidateId.message}</p>
           )}
         </div>
 
@@ -419,40 +421,7 @@ const CandidateModal: React.FC = () => {
           />
           {errors.vsDOB && <p className="text-red-500">{errors.vsDOB.message}</p>}
         </div>
-        <div className="col-span-1">
-          <Label text="Age" required />
-          <Controller
-            name="iAge"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="number"
-                disabled={!!field.value}
-                className={errors.iAge ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.iAge && <p className="text-red-500">{errors.iAge.message}</p>}
-        </div>
 
-        <div className="col-span-1">
-          <Label text="Father's Name" />
-          <Controller
-            name="vsFatherName"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.vsFatherName ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsFatherName && (
-            <p className="text-red-500">{errors.vsFatherName.message}</p>
-          )}
-        </div>
 
         <div className="col-span-1">
           <Label text="Gender" required />
@@ -479,7 +448,91 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsGender.message}</p>
           )}
         </div>
-        <div>
+
+        <div className="col-span-1">
+          <Label text="Religion" required />
+          <Controller
+            name="fklReligionId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={religionOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+
+                  setValue("fklReligionId", selectedOption.value);
+                }}
+                className={errors.fklReligionId ? "border-red-500" : ""}
+                placeholder="-- Select Religion --"
+              />
+            )}
+          />
+          {errors.fklReligionId && (
+            <p className="text-red-500">{errors.fklReligionId.message}</p>
+          )}
+        </div>
+
+        <div className="col-span-2">
+          <Label text="Category" required />
+          <Controller
+            name="fklCategoryId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={categoryOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+
+                  setValue("fklCategoryId", selectedOption.value);
+                }}
+                className={errors.fklCategoryId ? "border-red-500" : ""}
+                placeholder="-- Select Category--"
+              />
+            )}
+          />
+          {errors.fklCategoryId && (
+            <p className="text-red-500">{errors.fklCategoryId.message}</p>
+          )}
+        </div>
+
+
+        <div className="col-span-2">
+          <Label text="Education Attained" required />
+          <Controller
+            name="vsEducationAttained"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={qualificationData?.data?.result?.qualification}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("vsEducationAttained", selectedOption.value);
+                }}
+                className={errors.fklCategoryId ? "border-red-500" : ""}
+                placeholder="-- Select Qualification--"
+              />
+            )}
+          />
+          {errors.vsEducationAttained && (
+            <p className="text-red-500">{errors.vsEducationAttained.message}</p>
+          )}
+        </div>
+
+
+
+
+
+
+        <div className="col-span-2">
           <Label text="Aadhar?" required />
           <Controller
             name="fklIdType"
@@ -545,59 +598,82 @@ const CandidateModal: React.FC = () => {
         )}
 
 
+
+        
+
+
+
+
+
+        
+      
+{/*         
         <div className="col-span-1">
-          <Label text="Religion" required />
+          <Label text="Age" required />
           <Controller
-            name="fklReligionId"
+            name="iAge"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="number"
+                disabled={!!field.value}
+                className={errors.iAge ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.iAge && <p className="text-red-500">{errors.iAge.message}</p>}
+        </div> */}
+
+        {/* <div className="col-span-1">
+          <Label text="Father's Name" />
+          <Controller
+            name="vsFatherName"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsFatherName ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsFatherName && (
+            <p className="text-red-500">{errors.vsFatherName.message}</p>
+          )}
+        </div> */}
+
+        {/* <div className="col-span-1">
+          <Label text="Gender" required />
+          <Controller
+            name="vsGender"
             control={control}
             render={({ field }) => (
               <Dropdown
                 {...field}
-                options={religionOptions}
+                options={genderOptions}
                 getOptionLabel={(option) => option.label}
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
 
-                  setValue("fklReligionId", selectedOption.value);
+                  setValue("vsGender", selectedOption.value);
                 }}
-                className={errors.fklReligionId ? "border-red-500" : ""}
-                placeholder="-- Select Religion --"
+                className={errors.vsGender ? "border-red-500" : ""}
+                placeholder="-- Select Gender --"
               />
             )}
           />
-          {errors.fklReligionId && (
-            <p className="text-red-500">{errors.fklReligionId.message}</p>
+          {errors.vsGender && (
+            <p className="text-red-500">{errors.vsGender.message}</p>
           )}
-        </div>
+        </div> */}
+     
 
-        <div className="col-span-1">
-          <Label text="Category" required />
-          <Controller
-            name="fklCategoryId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={categoryOptions}
-                getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value}
-                onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value);
 
-                  setValue("fklCategoryId", selectedOption.value);
-                }}
-                className={errors.fklCategoryId ? "border-red-500" : ""}
-                placeholder="-- Select Category--"
-              />
-            )}
-          />
-          {errors.fklCategoryId && (
-            <p className="text-red-500">{errors.fklCategoryId.message}</p>
-          )}
-        </div>
+        
 
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Mobile Number" required />
           <Controller
             name="vsMobile"
@@ -614,8 +690,8 @@ const CandidateModal: React.FC = () => {
           {errors.vsMobile && (
             <p className="text-red-500">{errors.vsMobile.message}</p>
           )}
-        </div>
-        <div className="col-span-1">
+        </div> */}
+        {/* <div className="col-span-1">
           <Label text="Email ID" />
           <Controller
             name="vsEmail"
@@ -631,36 +707,13 @@ const CandidateModal: React.FC = () => {
           {errors.vsEmail && (
             <p className="text-red-500">{errors.vsEmail.message}</p>
           )}
-        </div>
-        <div className="col-span-2">
-          <Label text="Education Attained" required />
-          <Controller
-            name="vsEducationAttained"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={qualificationData?.data?.result?.qualification}
-                getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value}
-                onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value);
-                  setValue("vsEducationAttained", selectedOption.value);
-                }}
-                className={errors.fklCategoryId ? "border-red-500" : ""}
-                placeholder="-- Select Qualification--"
-              />
-            )}
-          />
-          {errors.vsEducationAttained && (
-            <p className="text-red-500">{errors.vsEducationAttained.message}</p>
-          )}
-        </div>
+        </div> */}
+       
 
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
       
-        <div className="col-span-1">
-          <Label text="Disability" />
+        <div className="col-span-2">
+          <Label text=" Does He/She Personally Disabled ?" />
           <Controller
             name="bDisability"
             control={control}
@@ -692,8 +745,8 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div>
-          <Label text="Tea Tribe" />
+        <div className="col-span-2">
+          <Label text="Does He/She belong to Tea Tribe minority ?" />
           <Controller
             name="bTeaTribe"
             control={control}
@@ -726,8 +779,8 @@ const CandidateModal: React.FC = () => {
         </div>
 
       
-        <div>
-          <Label text="BPL Card Holder" />
+        <div className="col-span-2">
+          <Label text="Does He/She hold BPL Card Holder ?" />
           <Controller
             name="bBPLcardHolder"
             control={control}
@@ -760,8 +813,8 @@ const CandidateModal: React.FC = () => {
         </div>
 
     
-        <div>
-          <Label text="Minority" />
+        <div className="col-span-2">
+          <Label text="Does He/She belong to Minority Community ?" />
           <Controller
             name="bMinority"
             control={control}
@@ -792,7 +845,143 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.bMinority.message}</p>
           )}
         </div>
-  {/* 
+
+
+        <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
+
+        <div className="col-span-2">
+          <Label text="Batch ID"  />
+          <Controller
+            name="batchId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={batchOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+
+                  setValue("fklCategoryId", selectedOption.value);
+                }}
+                className={errors.fklCategoryId ? "border-red-500" : ""}
+                placeholder="-- Select Batch--"
+              />
+            
+            )}
+          />
+          {errors.batchId && (
+            <p className="text-red-500">{errors.batchId.message}</p>
+          )}
+        </div>
+        
+
+        {watch("batchId") && (
+          <>
+            <div className="col-span-1">
+              <Label text="Is Assesment Complete ?" />
+              <Controller
+                name="assesmentComplete"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={resultType}
+                    placeholder="-- Select --"
+                    className="w-full"
+                  />
+                )}
+              />
+            </div>
+                {
+                  watch("assesmentComplete") && 
+                  <div className="col-span-1">
+                  <Label text="Is Result Declared ?" />
+                  <Controller
+                    name="bAssessed"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={resultType}
+                        placeholder="-- Select --"
+                        className="w-full"
+                      />
+                    )}
+                  />
+                  {errors.bAssessed && <p className="text-red-500">{errors.bAssessed.message}</p>}
+                </div>
+                }
+          
+
+            {Number(vsResultValue) === 1 && (
+              <div className="col-span-1">
+                <Label text="Result" />
+                <Controller
+                  name="vsResult"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={result}
+                      placeholder="-- Select --"
+                      className="w-full"
+                    />
+                  )}
+                />
+                {errors.vsResult && <p className="text-red-500">{errors.vsResult.message}</p>}
+              </div>
+            )}
+
+            {
+              watch("vsResult") &&
+              <div className="col-span-1">
+              <Label text="Is Candidate Placed ?" />
+              <Controller
+                name="placed"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={placement}
+                    placeholder="-- Select --"
+                    className="w-full"
+                  />
+                )}
+              />
+              
+            </div>
+            }
+
+
+            {
+              watch("placed") &&
+              <div className="col-span-2">
+              <Label text="Placement Type " />
+              <Controller
+                name="placedType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={placementType}
+                    placeholder="-- Select --"
+                    className="w-full"
+                  />
+                )}
+              />
+              
+            </div>
+              
+
+            }
+     
+          </>
+        )}
+        
+
+        {/* 
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
         <div className="col-span-full text-gray-900 font-semibold">
           Present Address

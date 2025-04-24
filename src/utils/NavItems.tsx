@@ -3,6 +3,7 @@ import {
   // Settings2,
   Target, 
   UserPlus,
+  Landmark,
 } from "lucide-react";
 import { ElementType } from "react";
 
@@ -78,31 +79,31 @@ export const NavItems: NavItem[] = [
     //   { name: "Documents", link: "/documents" },
     // ],
   },
+  // {
+  //   name: "Training Partners",
+  //   link: "/TrainingPartner",
+  //   icon: Building2,
+  //   // subItems: [
+  //   //   { name: "Manage Users", link: "/manage-users" },
+  //   //   { name: "User Roles", link: "/user-roles" },
+  //   // ],
+  // },
+  // {
+  //   name: "Training Centeres",
+  //   link: "/TrainingCenter",
+  //   icon: Building2,
+  //   // subItems: [
+  //   //   { name: "Manage Users", link: "/manage-users" },
+  //   //   { name: "User Roles", link: "/user-roles" },
+  //   // ],
+  // },
   {
-    name: "Training Partners",
-    link: "/TrainingPartner",
-    icon: Building2,
-    // subItems: [
-    //   { name: "Manage Users", link: "/manage-users" },
-    //   { name: "User Roles", link: "/user-roles" },
-    // ],
-  },
-  {
-    name: "Training Centeres",
-    link: "/TrainingCenter",
-    icon: Building2,
-    // subItems: [
-    //   { name: "Manage Users", link: "/manage-users" },
-    //   { name: "User Roles", link: "/user-roles" },
-    // ],
-  },
-  {
-    name: "Users",
+    name: "Training Entity",
     link: "",
-    icon: Users2,
+    icon:Landmark,
     subItems: [
-      { name: "Assessors", link: "/Assessors" },
-      { name: "Trainers", link: "/Trainer" },
+      { name: "Training Partner ", link: "/TrainingPartner" },
+      { name: "Training Center", link: "/TrainingCenter" },
 
       // { name: "Others", link: "/add-building" },
     ],
@@ -130,24 +131,24 @@ export const NavItems: NavItem[] = [
     // ],
   },
  
-  {
-    name: "Assessment",
-    link: "/Assessment",
-    icon: FileSignature,
+  //{
+    // name: "Assessment",
+    // link: "/Assessment",
+    // icon: FileSignature,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
     //   { name: "User Roles", link: "/user-roles" },
     // ],
-  },
-  {
-    name: "Placement",
-    link: "/Placement",
-    icon: Spline,
+    //}
+  //{
+    // name: "Placement",
+    // link: "/Placement",
+    // icon: Spline,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
     //   { name: "User Roles", link: "/user-roles" },
     // ],
-  },
+  //},
 
   // {
   //   name: "Invoice",

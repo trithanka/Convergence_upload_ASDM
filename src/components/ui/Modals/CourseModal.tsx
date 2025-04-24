@@ -85,7 +85,9 @@ const CourseModal: React.FC = () => {
         value: sector.sectorID,
       })
     ) || [];
+ 
 
+    const selectedIdType = watch("qpnos");
  
 
   return (
@@ -94,6 +96,76 @@ const CourseModal: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
+          <div className="col-span-3">
+          <Label text="Is QPNOS Available ?" required />
+          <Controller
+            name="qpnos"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center gap-4">
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="1"
+                    checked={field.value === 1}
+                    onChange={() => field.onChange(1)}
+                  />
+                  Yes
+                </label>
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="0"
+                    checked={field.value === 0}
+                    onChange={() => field.onChange(0)}
+                  />
+                  No
+                </label>
+              </div>
+            )}
+          />
+          {/* {errors.fklIdType && (
+            <p className="text-red-500">{errors.fklIdType.message}</p>
+          )} */}
+        </div>
+
+        {selectedIdType === 1 && (
+               <div className="col-span-1 sm:col-span-1">
+               <Label text="QPNOS Code"required />
+               <Controller
+                 name="vsCourseCode"
+                 control={control}
+                 render={({ field }) => (
+                   <Dropdown
+                   
+                     {...field}
+                     options={sectorOptions}
+                     getOptionLabel={(option) => option.label}
+                     getOptionValue={(option) => option.value}
+                     onSelect={(selectedOption) => {
+                       field.onChange(selectedOption.value);
+                       setValue("fklSectorId", selectedOption.value.toString());
+                     }}
+                     className={errors.fklSectorId ? "border-red-500" : ""}
+                     placeholder="-- Select QPNOS --"
+                   />
+                 )}
+               />
+               {errors.vsCourseCode && (
+                 <p className="text-red-500">{errors.vsCourseCode.message}</p>
+               )}
+             </div>
+     
+        )}
+
+
+
+
+        
+
+
         {/* Sector Name */}
         <div className="col-span-1">
           <Label text="Sector Name" required/>
@@ -137,27 +209,10 @@ const CourseModal: React.FC = () => {
             <p className="text-red-500">{errors.vsCourseName.message}</p>
           )}
         </div>
-        {/* QPNOS Code */}
-        <div className="col-span-1 sm:col-span-1">
-          <Label text="QPNOS Code"required />
-          <Controller
-            name="vsCourseCode"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.vsCourseCode ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsCourseCode && (
-            <p className="text-red-500">{errors.vsCourseCode.message}</p>
-          )}
-        </div>
+     
 
         {/* Total Theory and Practical Hours */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
           <div>
             <Label text="Total Theory Hours" />
             <Controller
@@ -200,7 +255,7 @@ const CourseModal: React.FC = () => {
               </p>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Date Valid From and Date Valid Upto */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">

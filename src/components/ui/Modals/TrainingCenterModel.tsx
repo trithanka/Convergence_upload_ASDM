@@ -33,6 +33,38 @@ const TrainingCenterModel: React.FC = () => {
     resolver: joiResolver(trainingCenterSchema),
   });
 
+
+  const { data: ULBblockData } = useQuery({
+    queryKey: ["masterData", "districtId", districtId],
+    queryFn: () => getULBblockByDistrict(districtId, "ULBblock"),
+  });
+
+    useEffect(() => {
+      if (ULBblockData) {
+        console.log("Fetched master data:", ULBblockData);
+      }
+    }, [ULBblockData]);
+
+    const ULBblockOptions =
+    ULBblockData?.data?.result?.blocks?.map(
+      (blocks: { blockId: number; blockName: string }) => ({
+        label: blocks.blockName,
+        value: blocks.blockId,
+      })
+    ) || [];
+
+
+    const { data: constiAssemblyData } = useQuery({
+      queryKey: ["masterData", "constituency"],
+      queryFn: () =>getMasterData("constituency"),
+    });
+
+    const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
+
+    const isCityVillage = [
+      { label: "Village", value: "Village" },
+      { label: "City", value: "City" },
+    ];
  
 
   
@@ -49,6 +81,7 @@ const queryClient = useQueryClient();
       console.log("Fetched master data:", masterData);
     }
   }, [masterData]);
+
 
   const stateOptions =
   masterData?.data?.result?.states?.map(
@@ -80,37 +113,37 @@ const queryClient = useQueryClient();
 
 
 
-   const { data: ULBblockData } = useQuery({
-      queryKey: ["masterData", "districtId", districtId],
-      queryFn: () => getULBblockByDistrict(districtId, "ULBblock"),
-    });
+  //  const { data: ULBblockData } = useQuery({
+  //     queryKey: ["masterData", "districtId", districtId],
+  //     queryFn: () => getULBblockByDistrict(districtId, "ULBblock"),
+  //   });
 
-      useEffect(() => {
-        if (ULBblockData) {
-          console.log("Fetched master data:", ULBblockData);
-        }
-      }, [ULBblockData]);
+  //     useEffect(() => {
+  //       if (ULBblockData) {
+  //         console.log("Fetched master data:", ULBblockData);
+  //       }
+  //     }, [ULBblockData]);
 
-      const ULBblockOptions =
-      ULBblockData?.data?.result?.blocks?.map(
-        (blocks: { blockId: number; blockName: string }) => ({
-          label: blocks.blockName,
-          value: blocks.blockId,
-        })
-      ) || [];
+  //     const ULBblockOptions =
+  //     ULBblockData?.data?.result?.blocks?.map(
+  //       (blocks: { blockId: number; blockName: string }) => ({
+  //         label: blocks.blockName,
+  //         value: blocks.blockId,
+  //       })
+  //     ) || [];
 
 
-      const { data: constiAssemblyData } = useQuery({
-        queryKey: ["masterData", "constituency"],
-        queryFn: () =>getMasterData("constituency"),
-      });
+      // const { data: constiAssemblyData } = useQuery({
+      //   queryKey: ["masterData", "constituency"],
+      //   queryFn: () =>getMasterData("constituency"),
+      // });
 
-      const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
+      // const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
 
-      const isCityVillage = [
-        { label: "Village", value: "Village" },
-        { label: "City", value: "City" },
-      ];
+      // const isCityVillage = [
+      //   { label: "Village", value: "Village" },
+      //   { label: "City", value: "City" },
+      // ];
 
 
       const { data: tpData } = useQuery({
@@ -123,7 +156,6 @@ const queryClient = useQueryClient();
           console.log("Fetched master data:", tpData);
         }
       }, [tpData]);
-
       const tpOptions =
       tpData?.data?.result?.tp?.map(
         (tp: { pklTpId: number; vsTpName: string }) => ({
@@ -131,6 +163,15 @@ const queryClient = useQueryClient();
           value: tp.pklTpId,
         })
       ) || [];
+    
+
+      // const tpOptions =
+      // tpData?.data?.result?.tp?.map(
+      //   (tp: { pklTpId: number; vsTpName: string }) => ({
+      //     label: tp.vsTpName,
+      //     value: tp.pklTpId,
+      //   })
+      // ) || [];
 
 
       // const fetchPartnerData = useMutation({
@@ -186,8 +227,9 @@ const queryClient = useQueryClient();
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         {/* First Row */}
-        <div className="col-span-1">
-          <Label text="TP Name" required/>
+      {/* Name */}
+      <div className="col-span-1">
+          <Label text="Training Partner" required/>
           <Controller
             name="fklTpId"
             control={control}
@@ -212,11 +254,12 @@ const queryClient = useQueryClient();
           )}
         </div>
 
+
        
 
         {/* Second Row */}
-        <div>
-          <Label text="Center Name"required />
+        <div className="col-span-2">
+          <Label text="Training Center Name"required />
           <Controller
             name="vsTcName"
             control={control}
@@ -233,7 +276,7 @@ const queryClient = useQueryClient();
           )}
         </div>
 
-        <div>
+        {/* <div>
           <Label text="Center Code" required/>
           <Controller
             name="vsTcCode"
@@ -249,9 +292,9 @@ const queryClient = useQueryClient();
           {errors.vsTcCode && (
             <p className="text-red-500">{errors.vsTcCode.message}</p>
           )}
-        </div>
+        </div> */}
 
-        <div>
+        {/* <div>
           <Label text="Smart ID" />
           <Controller
             name="smartId"
@@ -260,16 +303,14 @@ const queryClient = useQueryClient();
               <Input
                 {...field}
                 type="text"
-                // className={errors.smartId ? "border-red-500" : ""}
+              
               />
             )}
           />
-          {/* {errors.smartId && (
-            <p className="text-red-500">{errors.smartId.message}</p>
-          )} */}
-        </div>
+        
+        </div> */}
 
-        <div>
+        {/* <div>
           <Label text="SPOC Name"required />
           <Controller
             name="vsSpocName"
@@ -285,7 +326,7 @@ const queryClient = useQueryClient();
           {errors.vsSpocName && (
             <p className="text-red-500">{errors.vsSpocName.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* <div>
           <Label text="Center Code" />
@@ -305,7 +346,7 @@ const queryClient = useQueryClient();
           )}
         </div> */}
 
-        <div>
+        {/* <div>
           <Label text="SPOC Email" required />
           <Controller
             name="vsSpocEmail"
@@ -321,10 +362,10 @@ const queryClient = useQueryClient();
           {errors.vsSpocEmail && (
             <p className="text-red-500">{errors.vsSpocEmail.message}</p>
           )}
-        </div>
+        </div> */}
 
       
-
+{/* 
         <div>
           <Label text="SPOC Contact"required />
           <Controller
@@ -341,10 +382,10 @@ const queryClient = useQueryClient();
           {errors.iSpocContactNum && (
             <p className="text-red-500">{errors.iSpocContactNum.message}</p>
           )}
-        </div>
+        </div> */}
 
         <div className="col-span-2">
-          <Label text="Address" required />
+          <Label text="Training Center Address" required />
           <Controller
             name="vsAddress"
             control={control}
@@ -362,7 +403,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="Longitude" required/>
+          <Label text="Center Longitude" required/>
           <Controller
             name="vsLongitude"
             control={control}
@@ -380,7 +421,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="Latitude" required/>
+          <Label text="Center Latitude" required/>
           <Controller
             name="vsLatitude"
             control={control}
@@ -398,7 +439,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="State" required/>
+          <Label text="Center State" required/>
           <Controller
             name="vsState"
             control={control}
@@ -424,7 +465,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="District" required/>
+          <Label text="Center District" required/>
           <Controller
             name="vsDistrict"
             control={control}
@@ -448,7 +489,7 @@ const queryClient = useQueryClient();
             <p className="text-red-500">{errors.vsDistrict.message}</p>
           )}
         </div>
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
   <Label text="Village/City" />
   <Controller
     name="isVillageCity"
@@ -641,7 +682,7 @@ const queryClient = useQueryClient();
       {errors.fklLoksabhaConstituencyId.message}
     </p>
   )}
-</div>
+</div> */}
 
 
 

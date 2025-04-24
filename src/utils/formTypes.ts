@@ -28,6 +28,7 @@ export interface CourseFormData {
   vsCourseName: string;
   iTheoryDurationInHours: number;
   iPracticalDurationInHours: number;
+  qpnos: number;
 }
 
 export interface TrainingPartnerFormData {
@@ -50,6 +51,9 @@ export interface TrainingPartnerFormData {
 export interface TrainingCenterFormData {
   // vsTpName: string;
   // partnerCode: string;
+  
+  vsPAN: string;
+  vsTpName: string;
   vsTcName: string;
   fklTpId: string
   vsTcCode: string;
@@ -106,6 +110,8 @@ export interface BatchFormData {
   fklTpId: number;
   fklTcId: number;
   fklTrainerId: number;
+  vsTrainerName : string;
+  vsPAN :string
 }
 
 export type AssessmentFormData = {
@@ -196,6 +202,12 @@ export interface candidateFormData {
   bBPLcardHolder: number;
   bMinority: number;
   batchId: number;
+  dtAssessmentDate: string;
+  bAssessed: string | number;
+  vsResult : string | number;
+  assesmentComplete : string | number;
+  placed : string | number ;
+  placedType : string | number;
 
   //current address
   vsRAddress: string;

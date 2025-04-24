@@ -209,7 +209,7 @@ const SchemeModalContent: React.FC = () => {
           </div>
         )}
 
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Scheme Type" required />
           <Controller
             name="schemeType"
@@ -233,7 +233,7 @@ const SchemeModalContent: React.FC = () => {
           {errors.schemeType && (
             <p className="text-red-500">{errors.schemeType.message}</p>
           )}
-        </div>
+        </div> */}
 
         <div>
           <Label text="Scheme Code" required />
@@ -248,7 +248,7 @@ const SchemeModalContent: React.FC = () => {
         </div>
 
         {/* Fund Name */}
-        <div className="col-span-full sm:col-span-2">
+        {/* <div className="col-span-full sm:col-span-2">
           <Label text="Fund Name" required />
           <Controller
             control={control}
@@ -258,10 +258,10 @@ const SchemeModalContent: React.FC = () => {
           {errors.fundName && (
             <p className="text-red-500">{errors.fundName.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Funding Type and Ratio */}
-        <div>
+        {/* <div>
           <Label text="Funding Type" required />
           <Controller
             control={control}
@@ -318,10 +318,10 @@ const SchemeModalContent: React.FC = () => {
           {errors.schemeFundingRatio && (
             <p className="text-red-500">{errors.schemeFundingRatio.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Order Number */}
-        <div className="col-span-full sm:col-span-2">
+        {/* <div className="col-span-full sm:col-span-2">
           <Label text="Scheme Sanction Order Number" required />
           <Controller
             control={control}
@@ -331,7 +331,7 @@ const SchemeModalContent: React.FC = () => {
           {errors.sanctionOrderNo && (
             <p className="text-red-500">{errors.sanctionOrderNo.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Date Of Sanction */}
         <div>

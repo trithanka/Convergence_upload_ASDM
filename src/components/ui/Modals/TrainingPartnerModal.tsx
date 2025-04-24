@@ -151,7 +151,7 @@ const TrainingPartnerModal: React.FC = () => {
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         {/* Name */}
-        <div className="col-span-1">
+        <div className="col-span-2">
           <Label text="Name" required />
           <Controller
             name="vsTpName"
@@ -170,7 +170,7 @@ const TrainingPartnerModal: React.FC = () => {
         </div>
 
         {/* Smart ID */}
-        <div className="col-span-2">
+        {/* <div className="col-span-2">
           <Label text="Smart ID (If Registered From NSDC)" />
           <Controller
             name="vsSmartId"
@@ -179,14 +179,12 @@ const TrainingPartnerModal: React.FC = () => {
               <Input
                 {...field}
                 type="text"
-              // className={errors.vsSmartId ? "border-red-500" : ""}
+              
               />
             )}
           />
-          {/* {errors.vsSmartId && (
-            <p className="text-red-500">{errors.vsSmartId.message}</p>
-          )} */}
-        </div>
+         
+        </div> */}
 
         <div className="col-span-1">
           <Label text="PAN Card" required />
@@ -207,7 +205,7 @@ const TrainingPartnerModal: React.FC = () => {
         </div>
 
         {/* SPOC Name */}
-        <div className="col-span-2">
+        {/* <div className="col-span-2">
           <Label text="SPOC Name" required />
           <Controller
             name="vsSpocName"
@@ -223,12 +221,12 @@ const TrainingPartnerModal: React.FC = () => {
           {errors.vsSpocName && (
             <p className="text-red-500">{errors.vsSpocName.message}</p>
           )}
-        </div>
+        </div> */}
 
 
 
         {/* Mobile */}
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Mobile" required />
           <Controller
             name="iSpocContactNum"
@@ -245,10 +243,10 @@ const TrainingPartnerModal: React.FC = () => {
           {errors.iSpocContactNum && (
             <p className="text-red-500">{errors.iSpocContactNum.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Email */}
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Email" required />
           <Controller
             name="vsSpocEmail"
@@ -264,7 +262,7 @@ const TrainingPartnerModal: React.FC = () => {
           {errors.vsSpocEmail && (
             <p className="text-red-500">{errors.vsSpocEmail.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Address */}
         <div className="col-span-2">
@@ -286,7 +284,7 @@ const TrainingPartnerModal: React.FC = () => {
         </div>
 
         {/* State */}
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="State" required />
           <Controller
             name="vsState"
@@ -310,10 +308,10 @@ const TrainingPartnerModal: React.FC = () => {
           {errors.vsState && (
             <p className="text-red-500">{errors.vsState.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* District */}
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="District" required />
           <Controller
             name="vsDistrict"
@@ -337,9 +335,9 @@ const TrainingPartnerModal: React.FC = () => {
           {errors.vsDistrict && (
             <p className="text-red-500">{errors.vsDistrict.message}</p>
           )}
-        </div>
+        </div> */}
 
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Village/City" />
           <Controller
             name="isVillageCity"
@@ -362,10 +360,8 @@ const TrainingPartnerModal: React.FC = () => {
               </select>
             )}
           />
-          {/* {errors.isVillageCity && (
-    <p className="text-red-500">{errors.isVillageCity.message}</p>
-  )} */}
-        </div>
+        
+        </div> */}
 
 
         {selectedVillageCity === "Village" && (
