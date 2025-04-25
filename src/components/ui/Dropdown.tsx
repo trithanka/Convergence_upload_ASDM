@@ -117,7 +117,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           className={`absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 ${
             dropdownDirection === "up" ? "bottom-full mb-1" : "top-full mt-1"
           }`}
-          style={{ maxHeight: "200px", overflowY: "auto" }} // Fixed height with scroll
+          style={{ maxHeight: "100px", overflowY: "auto" }} // Fixed height with scroll
         >
           {/* Search Input */}
           <input
@@ -131,12 +131,12 @@ const Dropdown: React.FC<DropdownProps> = ({
           />
 
           {/* Dropdown Options */}
-          <ul className="max-h-40 overflow-y-auto">
+          <ul className="max-h-90 overflow-y-auto">
   {filteredOptions.length > 0 ? (
     filteredOptions.map((option, index) => (
       <li
         key={getOptionValue(option)}
-        className={`px-4 py-2 cursor-pointer ${
+        className={`px-4 py-1 cursor-pointer ${
           index === highlightedIndex ? "bg-blue-100" : "hover:bg-gray-200"
         } ${isOptionDisabled && isOptionDisabled(option) ? "text-gray-400 cursor-not-allowed" : ""}`} // Apply disabled styles
         onClick={() => {

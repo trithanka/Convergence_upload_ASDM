@@ -110,7 +110,7 @@ const SchemeModalContent: React.FC = () => {
   // const fundingTypes = ["Type A", "Type B", "Type C"];
 
   return (
-    <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
+    <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[] max-w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
@@ -373,6 +373,10 @@ const SchemeModalContent: React.FC = () => {
         </div>
       </form>
     </div>
+    
+
+
+
   );
 };
 

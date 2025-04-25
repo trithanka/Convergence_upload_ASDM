@@ -52,8 +52,8 @@ const CandidateModal: React.FC = () => {
 
   const result = [
     { value: "", label: "-- Select Result --", disabled: true },
-    { value: "Pass", label: "Pass" },
-    { value: "Fail", label: "Fail" },
+    { value: 1, label: "Pass" },
+    { value: 0, label: "Fail" },
   ];
 
   const placement =[
@@ -67,7 +67,17 @@ const CandidateModal: React.FC = () => {
     { value: 1, label: "Wage-Employement" },
     { value:2, label: "Self-Employement" },
   ]
+
+  const assesmentType = [
+    { value: "", label: "-- Select Assesment Type --", disabled: true },
+    { value: 1, label: "Yes" },
+    { value: 0, label: "No" },
+  ];
+
+  const placementValue = watch("placed");
   const vsResultValue = watch("bAssessed");
+  const assesmentValue = watch("assesmentComplete");
+  const resultPass = watch("vsResult");
 
   const queryClient = useQueryClient()
 
@@ -887,7 +897,7 @@ const CandidateModal: React.FC = () => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={resultType}
+                    options={assesmentType}
                     placeholder="-- Select --"
                     className="w-full"
                   />
@@ -895,7 +905,7 @@ const CandidateModal: React.FC = () => {
               />
             </div>
                 {
-                  watch("assesmentComplete") && 
+                  Number(assesmentValue) === 1 && 
                   <div className="col-span-1">
                   <Label text="Is Result Declared ?" />
                   <Controller
@@ -935,7 +945,9 @@ const CandidateModal: React.FC = () => {
             )}
 
             {
-              watch("vsResult") &&
+              Number(
+                resultPass
+              ) === 1 &&
               <div className="col-span-1">
               <Label text="Is Candidate Placed ?" />
               <Controller
@@ -956,7 +968,8 @@ const CandidateModal: React.FC = () => {
 
 
             {
-              watch("placed") &&
+
+             Number(placementValue) === 1&&
               <div className="col-span-2">
               <Label text="Placement Type " />
               <Controller
