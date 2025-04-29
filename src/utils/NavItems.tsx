@@ -1,5 +1,5 @@
 import {
-  Home, Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline,
+  Home, Table2, Book, User2, Group, 
   // Settings2,
   Target, 
   UserPlus,

@@ -130,13 +130,13 @@ const BatchModel: React.FC = () => {
     }
   }, [trainerData]);
 
-  const trainerOptions =
-    trainerData?.data?.result?.trainner?.map(
-      (tp: { pklConvTrainerId: number; vsTrainerName: string }) => ({
-        label: tp.vsTrainerName,
-        value: tp.pklConvTrainerId,
-      })
-    ) || [];
+  // const trainerOptions =
+  //   trainerData?.data?.result?.trainner?.map(
+  //     (tp: { pklConvTrainerId: number; vsTrainerName: string }) => ({
+  //       label: tp.vsTrainerName,
+  //       value: tp.pklConvTrainerId,
+  //     })
+  //   ) || [];
 
 
   const { data: targetResponse } = useQuery({

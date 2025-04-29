@@ -138,7 +138,9 @@ const Dropdown: React.FC<DropdownProps> = ({
         key={getOptionValue(option)}
         className={`px-4 py-1 cursor-pointer ${
           index === highlightedIndex ? "bg-blue-100" : "hover:bg-gray-200"
-        } ${isOptionDisabled && isOptionDisabled(option) ? "text-gray-400 cursor-not-allowed" : ""}`} // Apply disabled styles
+        } ${isOptionDisabled && isOptionDisabled(option) ? "text-gray-400 cursor-not-allowed" : ""} ${
+          getOptionLabel(option) === "Add New Scheme" ? "text-white font-medium bg-blue-400" : ""
+        }`}
         onClick={() => {
           if (!isOptionDisabled || !isOptionDisabled(option)) {
             handleSelect(option);

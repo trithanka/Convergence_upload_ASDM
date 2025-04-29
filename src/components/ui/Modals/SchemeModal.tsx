@@ -31,18 +31,18 @@ const SchemeModalContent: React.FC = () => {
   // const [selectedScheme, setSelectedScheme] = useState<string>("new");
   const [isCustomDepartment, setIsCustomDepartment] = useState<boolean>(false);
 
-  const { data: schemeTypeData } = useQuery({
-    queryKey: ["masterData", "schemeType"],
-    queryFn: () => getMasterData("schemeType"),
-  });
+  // const { data: schemeTypeData } = useQuery({
+  //   queryKey: ["masterData", "schemeType"],
+  //   queryFn: () => getMasterData("schemeType"),
+  // });
 
-  const schemeTypeOptions =
-    schemeTypeData?.data?.result?.schemeType?.map(
-      (states: { pklSchemeTypeId: number; vsSchemeType: string }) => ({
-        label: states.vsSchemeType,
-        value: states.pklSchemeTypeId,
-      })
-    ) || [];
+  // const schemeTypeOptions =
+  //   schemeTypeData?.data?.result?.schemeType?.map(
+  //     (states: { pklSchemeTypeId: number; vsSchemeType: string }) => ({
+  //       label: states.vsSchemeType,
+  //       value: states.pklSchemeTypeId,
+  //     })
+  //   ) || [];
 
   const { data: schemeName } = useQuery({
     queryKey: ["masterData", "schemeName"],
@@ -57,18 +57,18 @@ const SchemeModalContent: React.FC = () => {
       })
     ) || [];
 
-  const { data: fundingType } = useQuery({
-    queryKey: ["masterData", "fundingType"],
-    queryFn: () => getMasterData("fundingType"),
-  });
+  // const { data: fundingType } = useQuery({
+  //   queryKey: ["masterData", "fundingType"],
+  //   queryFn: () => getMasterData("fundingType"),
+  // });
 
-  const fundingTypeOptions =
-    fundingType?.data?.result?.fundingType?.map(
-      (fundingType: { vsFundingType: string; pklFundingTypeId: number }) => ({
-        label: fundingType.vsFundingType,
-        value: fundingType.pklFundingTypeId,
-      })
-    ) || [];
+  // const fundingTypeOptions =
+  //   fundingType?.data?.result?.fundingType?.map(
+  //     (fundingType: { vsFundingType: string; pklFundingTypeId: number }) => ({
+  //       label: fundingType.vsFundingType,
+  //       value: fundingType.pklFundingTypeId,
+  //     })
+  //   ) || [];
 
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
@@ -164,6 +164,8 @@ const SchemeModalContent: React.FC = () => {
           </div>
         )} */}
 
+        
+
         <div className="col-span-1">
           <Label text="Scheme Name" required />
           <Controller
@@ -178,7 +180,7 @@ const SchemeModalContent: React.FC = () => {
                   getOptionLabel={(option) => option?.label}
                   getOptionValue={(option) => option?.label}
                   onSelect={(selectedOption) => {
-                    if (selectedOption.label === "other") {
+                    if (selectedOption.label === "Add New Scheme") {
                       setIsCustomDepartment(true);
                       setValue("scheme", "");
                     } else {
@@ -361,14 +363,30 @@ const SchemeModalContent: React.FC = () => {
             <p className="text-red-500">{errors.dateOfSanction.message}</p>
           )}
         </div>
+       
+
+
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-red-500 text-sm mb-2">* Required fields</p>
+            <div className="space-y-2">
+              <p className="text-sm"><span className="font-semibold">Scheme Name <span className="text-red-600" >*</span></span> Select the appropriate scheme from the dropdown. 
+                <span className="text-red-600"> * Note: If your scheme is not listed, please add the scheme first before proceeding.</span>
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
+          
           <Button
             text="Submit"
+            
             loadingText="Submitting..."
             loading={mutation.isPending}
             disabled={false}
+
           />
         </div>
       </form>

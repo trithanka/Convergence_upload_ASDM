@@ -10,6 +10,7 @@ export interface SchemeFormData {
   dateOfSanction: string;
   otherSchemeName: string;
   isSchemeFundingRatioDisabled?: boolean;
+  schemeAvailable: number;
   // selectedScheme: string
 }
 
@@ -185,6 +186,8 @@ export interface candidateFormData {
   jobRole: string;
   vsQualification: string;
   isPlaced: string;
+  vsPlacementType: string | number;
+  declared: string;
   vsDOB: string;
   iAge: string;
   vsFatherName: string;
@@ -207,7 +210,7 @@ export interface candidateFormData {
   vsResult : string | number;
   assesmentComplete : string | number;
   placed : string | number ;
-  placedType : string | number;
+  // placedType : string | number;
 
   //current address
   vsRAddress: string;

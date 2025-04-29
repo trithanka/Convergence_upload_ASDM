@@ -23,6 +23,7 @@ const TargetModal: React.FC = () => {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
     // clearErrors,
   } = useForm<targetFormData>({
     resolver: joiResolver(targetSchema),
@@ -40,6 +41,17 @@ const TargetModal: React.FC = () => {
     queryFn: () => getMasterData("targetType"),
   });
 
+
+
+ 
+  
+  const financialYears = Array.from({ length: 21 }, (_, i) => {
+    const start = 2010 + i;
+    return `${start}-${start + 1}`;
+  });
+  
+  
+
   const targetTypeOptions =
   targetType?.data?.result?.targetType?.map(
     (targetType: { vsTargetType: string; pklTargetTypeId: string }) => ({
@@ -49,6 +61,9 @@ const TargetModal: React.FC = () => {
   ) || [];
 
   // Extract dropdown options
+
+
+  const targetTypeSelected = watch("targetType");
  
   const schemeOptions =
     schemeData?.data?.result?.scheme?.map(
@@ -159,6 +174,12 @@ const TargetModal: React.FC = () => {
             </p>
           )}
         </div>
+
+
+
+
+
+
  {/* Sanction Order Number */}
  <div>
           <Label text="Target Order Number" required/>
@@ -179,8 +200,47 @@ const TargetModal: React.FC = () => {
             </p>
           )}
         </div>
-        {/* Date Of Target */}
-        <div>
+
+
+
+
+        {
+
+          
+          Number(targetTypeSelected) === 1 ?
+
+         (  <div>
+          <Label text="Financial Year" required />
+          <Controller
+            control={control}
+            name="dtTargetDate"
+            rules={{
+              validate: (value) => {
+                const selectedDate = new Date(value);
+                if (isAfter(selectedDate, new Date())) {
+                  return "Future dates are not allowed";
+                }
+                return true;
+              },
+            }}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                //@ts-ignore
+                options={financialYears.map((year) => ({ label: year, value: year }))}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("dtTargetDate", selectedOption.value.toString());
+                }}
+                className={errors.dtTargetDate ? "border-red-500" : ""}
+                placeholder="-- Select Year --"
+                />
+            )}
+          />
+         
+        </div> ) :  <div>
           <Label text="Date Of Target" required />
           <Controller
             control={control}
@@ -207,6 +267,8 @@ const TargetModal: React.FC = () => {
             <p className="text-red-500">{errors.dtTargetDate.message}</p>
           )}
         </div>
+        }
+     
 
         {/* Total Target */}
         <div>
@@ -227,6 +289,27 @@ const TargetModal: React.FC = () => {
               {errors.iTotalTarget.message}
             </p>
           )}
+        </div>
+       
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-red-500 text-sm mb-2">* Required fields</p>
+            <div className="space-y-2">
+              <p className="text-sm"><span className="font-semibold">Scheme Code <span className="text-red-600">*</span></span> - Select the appropriate scheme from the dropdown. 
+                <span className="text-red-600"><span className="font-semibold text-red-700">*</span>Note: If your scheme is not listed, please add the scheme first before proceeding.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold">Target Type <span className="text-red-600">*</span></span> - Choose the type of target:
+                <br />Annual – Target set for an entire financial year (e.g., 2024–2025)
+                <br />Batch-based – Target assigned for a specific training batch with a fixed date.
+              </p>
+              <p className="text-sm"><span className="font-semibold">Target Order Number <span className="text-red-600">*</span></span> - Enter the official order/reference number associated with this target.</p>
+              <p className="text-sm"><span className="font-semibold">Date of Target   <span className="text-red-600">*</span> </span> 
+                <br /> If Annual, enter the financial year (e.g., 2024-2025)
+                <br /> If Batch, enter the specific date in dd-mm-yyyy format.
+              </p>
+              <p className="text-sm"><span className="font-semibold">Total Target <span><span className="text-red-600">*</span></span></span> - Enter the total number assigned as the target. Must be a whole number greater than 0.</p>
+            </div>
+          </div>
         </div>
 
         {/* Submit Button */}

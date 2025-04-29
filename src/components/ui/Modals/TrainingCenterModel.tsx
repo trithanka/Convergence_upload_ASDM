@@ -27,7 +27,7 @@ const TrainingCenterModel: React.FC = () => {
     handleSubmit,
     control,
     setValue,
-    watch,
+  
     formState: { errors },
   } = useForm<TrainingCenterFormData>({
     resolver: joiResolver(trainingCenterSchema),
@@ -45,26 +45,26 @@ const TrainingCenterModel: React.FC = () => {
       }
     }, [ULBblockData]);
 
-    const ULBblockOptions =
-    ULBblockData?.data?.result?.blocks?.map(
-      (blocks: { blockId: number; blockName: string }) => ({
-        label: blocks.blockName,
-        value: blocks.blockId,
-      })
-    ) || [];
+    // const ULBblockOptions =
+    // ULBblockData?.data?.result?.blocks?.map(
+    //   (blocks: { blockId: number; blockName: string }) => ({
+    //     label: blocks.blockName,
+    //     value: blocks.blockId,
+    //   })
+    // ) || [];
 
 
-    const { data: constiAssemblyData } = useQuery({
-      queryKey: ["masterData", "constituency"],
-      queryFn: () =>getMasterData("constituency"),
-    });
+    // const { data: constiAssemblyData } = useQuery({
+    //   queryKey: ["masterData", "constituency"],
+    //   queryFn: () =>getMasterData("constituency"),
+    // });
 
-    const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
+    // const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
 
-    const isCityVillage = [
-      { label: "Village", value: "Village" },
-      { label: "City", value: "City" },
-    ];
+    // const isCityVillage = [
+    //   { label: "Village", value: "Village" },
+    //   { label: "City", value: "City" },
+    // ];
  
 
   

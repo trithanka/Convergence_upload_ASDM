@@ -29,8 +29,8 @@ const TrainingPartnerModal: React.FC = () => {
     resolver: joiResolver(trainingPartnerSchema),
   });
   const queryClient = useQueryClient();
-  const [stateId, setStateId] = useState<number | null>(null);
-  const [districtId, setDistrictId] = useState<number | null>(null);
+  const [stateId, ] = useState<number | null>(null);
+  const [districtId, ] = useState<number | null>(null);
 
 
 
@@ -69,31 +69,31 @@ const TrainingPartnerModal: React.FC = () => {
     }
   }, [ULBblockData]);
 
-  const stateOptions =
-    masterData?.data?.result?.states?.map(
-      (states: { stateID: number; stateName: string }) => ({
-        label: states.stateName,
-        value: states.stateID,
-      })
-    ) || [];
+  // const stateOptions =
+  //   masterData?.data?.result?.states?.map(
+  //     (states: { stateID: number; stateName: string }) => ({
+  //       label: states.stateName,
+  //       value: states.stateID,
+  //     })
+  //   ) || [];
 
-  const districtOptions =
-    districtData?.data?.result?.districts?.map(
-      (districts: { districtID: number; districtName: string }) => ({
-        label: districts.districtName,
-        value: districts.districtID,
-      })
-    ) || [];
+  // const districtOptions =
+  //   districtData?.data?.result?.districts?.map(
+  //     (districts: { districtID: number; districtName: string }) => ({
+  //       label: districts.districtName,
+  //       value: districts.districtID,
+  //     })
+  //   ) || [];
 
 
 
 
   const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
 
-  const isCityVillage = [
-    { label: "Village", value: "Village" },
-    { label: "City", value: "City" },
-  ];
+  // const isCityVillage = [
+  //   { label: "Village", value: "Village" },
+  //   { label: "City", value: "City" },
+  // ];
 
   const ULBblockOptions = selectedVillageCity === "Village"
     ? ULBblockData?.data?.result?.blocks?.map(

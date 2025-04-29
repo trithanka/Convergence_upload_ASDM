@@ -6,6 +6,7 @@ interface ButtonProps {
   variant?: "default" | "outline" | "danger";
   children: React.ReactNode;
   className?: string;
+  instructions?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -14,6 +15,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = "default",
   children,
   className = "",
+  
 }) => {
   const baseStyles =
     "px-4 py-2 rounded-md font-medium transition duration-200 ease-in-out";

@@ -19,7 +19,7 @@ import {
 import Dropdown from "../Dropdown";
 import { submitCandidateForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
-import { format, isAfter, differenceInYears } from "date-fns";
+import { format, isAfter} from "date-fns";
 // import { Autocomplete, TextField } from "@mui/material";
 
 const CandidateModal: React.FC = () => {
@@ -43,6 +43,7 @@ const CandidateModal: React.FC = () => {
   } = useForm<candidateFormData>({
     resolver: joiResolver(candidateSchema),
   });
+  console.log("errors", errors);
 
   const resultType = [
     { value: "", label: "-- Select Result Type --", disabled: true },
@@ -52,8 +53,8 @@ const CandidateModal: React.FC = () => {
 
   const result = [
     { value: "", label: "-- Select Result --", disabled: true },
-    { value: 1, label: "Pass" },
-    { value: 0, label: "Fail" },
+    { value: "Pass", label: "Pass" },
+    { value: "Fail", label: "Fail" },
   ];
 
   const placement =[
@@ -64,8 +65,8 @@ const CandidateModal: React.FC = () => {
 
   const placementType = [
     { value: "", label: "-- Select Placement Type --", disabled: true },
-    { value: 1, label: "Wage-Employement" },
-    { value:2, label: "Self-Employement" },
+    { value: "Wage-Employement", label: "Wage-Employement" },
+    { value:"Self-Employement", label: "Self-Employement" },
   ]
 
   const assesmentType = [
@@ -75,21 +76,20 @@ const CandidateModal: React.FC = () => {
   ];
 
   const placementValue = watch("placed");
-  const vsResultValue = watch("bAssessed");
-  const assesmentValue = watch("assesmentComplete");
-  const resultPass = watch("vsResult");
-
+  const vsResultValue = watch("vsResult");
+  const bAssessedValue = watch("bAssessed");
+  const resultDeclare = watch("declared");
   const queryClient = useQueryClient()
 
-  const dob = watch("vsDOB");
+  // const dob = watch("vsDOB");
 
-  useEffect(() => {
-    if (dob) {
-      const birthDate = new Date(dob);
-      const age = differenceInYears(new Date(), birthDate);
-      setValue("iAge", age.toString(), { shouldValidate: true });
-    }
-  }, [dob, setValue]);
+  // useEffect(() => {
+  //   if (dob) {
+  //     const birthDate = new Date(dob);
+  //     const age = differenceInYears(new Date(), birthDate);
+  //     setValue("iAge", age.toString(), { shouldValidate: true });
+  //   }
+  // }, [dob, setValue]);
 
 
   const { data: qualificationData } = useQuery({
@@ -387,24 +387,73 @@ const CandidateModal: React.FC = () => {
         </div>
 
 
-
-        <div className="col-span-1">
-          <Label text="Candidate ID" required />
+        <div className="col-span-2">
+          <Label text="Aadhar?" required />
           <Controller
-            name="candidateId"
+            name="fklIdType"
             control={control}
             render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.candidateId ? "border-red-500" : ""}
-              />
+              <div className="flex items-center gap-4">
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="1"
+                    checked={field.value === 1}
+                    onChange={() => field.onChange(1)}
+                  />
+                  Yes
+                </label>
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="0"
+                    checked={field.value === 0}
+                    onChange={() => field.onChange(0)}
+                  />
+                  No
+                </label>
+              </div>
             )}
           />
-          {errors.candidateId && (
-            <p className="text-red-500">{errors.candidateId.message}</p>
+          {errors.fklIdType && (
+            <p className="text-red-500">{errors.fklIdType.message}</p>
           )}
         </div>
+
+        {selectedIdType === 1 && (
+          <div className="col-span-2">
+            <Label text="Aadhar Number (Insert last 4 digits of Aadhar)" required />
+            <Controller
+              name="vsUUID"
+              control={control}
+              rules={{
+                required: "Aadhar Number is required.",
+                pattern: {
+                  value: /^\d{4}$/,
+                  message: "Aadhar Number must be exactly 4 digits.",
+                },
+              }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="text"
+                  className={`border ${errors.vsUUID ? "border-red-500" : ""}`}
+                  maxLength={4}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    if (value.length <= 4) field.onChange(value);
+                  }}
+                />
+              )}
+            />
+            {errors.vsUUID && <p className="text-red-500">{errors.vsUUID.message}</p>}
+          </div>
+        )}
+
+
+       
 
         <div>
           <Label text="Date Of Birth" required />
@@ -542,71 +591,7 @@ const CandidateModal: React.FC = () => {
 
 
 
-        <div className="col-span-2">
-          <Label text="Aadhar?" required />
-          <Controller
-            name="fklIdType"
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-center gap-4">
-                <label>
-                  <input
-                    {...field}
-                    type="radio"
-                    value="1"
-                    checked={field.value === 1}
-                    onChange={() => field.onChange(1)}
-                  />
-                  Yes
-                </label>
-                <label>
-                  <input
-                    {...field}
-                    type="radio"
-                    value="0"
-                    checked={field.value === 0}
-                    onChange={() => field.onChange(0)}
-                  />
-                  No
-                </label>
-              </div>
-            )}
-          />
-          {errors.fklIdType && (
-            <p className="text-red-500">{errors.fklIdType.message}</p>
-          )}
-        </div>
-
-        {selectedIdType === 1 && (
-          <div className="col-span-2">
-            <Label text="Aadhar Number (Insert last 4 digits of Aadhar)" required />
-            <Controller
-              name="vsUUID"
-              control={control}
-              rules={{
-                required: "Aadhar Number is required.",
-                pattern: {
-                  value: /^\d{4}$/,
-                  message: "Aadhar Number must be exactly 4 digits.",
-                },
-              }}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="text"
-                  className={`border ${errors.vsUUID ? "border-red-500" : ""}`}
-                  maxLength={4}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    if (value.length <= 4) field.onChange(value);
-                  }}
-                />
-              )}
-            />
-            {errors.vsUUID && <p className="text-red-500">{errors.vsUUID.message}</p>}
-          </div>
-        )}
-
+      
 
 
         
@@ -892,7 +877,7 @@ const CandidateModal: React.FC = () => {
             <div className="col-span-1">
               <Label text="Is Assesment Complete ?" />
               <Controller
-                name="assesmentComplete"
+                name="bAssessed"
                 control={control}
                 render={({ field }) => (
                   <Select
@@ -905,11 +890,11 @@ const CandidateModal: React.FC = () => {
               />
             </div>
                 {
-                  Number(assesmentValue) === 1 && 
+                  Number(bAssessedValue) === 1 && 
                   <div className="col-span-1">
                   <Label text="Is Result Declared ?" />
                   <Controller
-                    name="bAssessed"
+                    name="declared"
                     control={control}
                     render={({ field }) => (
                       <Select
@@ -925,7 +910,7 @@ const CandidateModal: React.FC = () => {
                 }
           
 
-            {Number(vsResultValue) === 1 && (
+            {Number(resultDeclare) === 1 && (
               <div className="col-span-1">
                 <Label text="Result" />
                 <Controller
@@ -945,9 +930,7 @@ const CandidateModal: React.FC = () => {
             )}
 
             {
-              Number(
-                resultPass
-              ) === 1 &&
+             vsResultValue === "Pass" &&
               <div className="col-span-1">
               <Label text="Is Candidate Placed ?" />
               <Controller
@@ -973,7 +956,7 @@ const CandidateModal: React.FC = () => {
               <div className="col-span-2">
               <Label text="Placement Type " />
               <Controller
-                name="placedType"
+                name="vsPlacementType"
                 control={control}
                 render={({ field }) => (
                   <Select
@@ -984,6 +967,7 @@ const CandidateModal: React.FC = () => {
                   />
                 )}
               />
+              
               
             </div>
               
