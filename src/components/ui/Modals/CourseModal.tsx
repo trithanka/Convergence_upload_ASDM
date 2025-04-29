@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { courseSchema } from "../../../utils/validation";
@@ -31,6 +31,8 @@ const CourseModal: React.FC = () => {
    const dtFromDate = watch("dtFromDate"); // Watching changes of dtStartDate
   
     const [minEndDate, setMinEndDate] = useState(""); // State to store min date for dtEndDate
+
+    const [courseCode , setCourseCode] = useState<string>("");
   
     // Watch for changes in dtStartDate and dynamically set the min date for dtEndDate
     useEffect(() => {
@@ -45,11 +47,28 @@ const CourseModal: React.FC = () => {
     queryFn: () => getMasterData("sector"),
   });
 
-  useEffect(() => {
-    if (masterData) {
-      console.log("Fetched master data:", masterData);
-    }
-  }, [masterData]);
+  const {
+    data 
+  } = useQuery({
+    queryKey: ["qpnos", ""],
+    queryFn: () => getMasterData("course"),
+  });
+
+   const { data: qpnosData } = useQuery({
+    queryKey: ["qpnosData", "qpnos"],
+    queryFn: () => getMasterData("qpnosAll"),
+  });
+  // useEffect(() => {
+  //   if (qpnosData) {
+  //     console.log("Fetched course data:", qpnosData);
+  //   }
+  // }, [qpnosData]);
+
+  // useEffect(() => {
+  //   if (masterData) {
+  //     console.log("Fetched master data:", masterData);
+  //   }
+  // }, [masterData]);
 
   useEffect(() => {
     const selectedDate = watch("dtFromDate");
@@ -85,10 +104,48 @@ const CourseModal: React.FC = () => {
         value: sector.sectorID,
       })
     ) || [];
- 
 
-    const selectedIdType = watch("qpnos");
- 
+
+  interface QPNOSData {
+    vsCourseCode: string;
+  }
+
+  useEffect(() => {
+    if (qpnosData) {
+      console.log("Raw QPNOS data:", qpnosData?.data?.result);
+    }
+  }, [qpnosData]);
+
+  const qpnosOptions = useMemo(() => {
+    const data = qpnosData?.data?.result?.qpnosAll || [];
+    return data.map((qpnos: QPNOSData) => ({
+  
+      label: qpnos.vsCourseCode,
+      value: qpnos.vsCourseCode
+    }))
+  }, [qpnosData]);
+
+  useEffect(() => {
+    if (qpnosData) {
+      console.log("QPNOS Options:", qpnosOptions);
+    }
+  }, [qpnosData]);
+
+  const selectedIdType = watch("qpnos");
+
+  const {
+    data: qpnosDetails
+  } = useQuery({
+    queryKey: ["qpnos", "qpnos", courseCode],
+    queryFn: () => getMasterData("getByQpnos", courseCode),
+    enabled: !!courseCode,
+  });
+
+  useEffect(()=>{
+    if (qpnosDetails) {
+      console.log("Fetched course data:", qpnosDetails);
+    }
+  },[courseCode])
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -96,7 +153,7 @@ const CourseModal: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-          <div className="col-span-3">
+        <div className="col-span-3">
           <Label text="Is QPNOS Available ?" required />
           <Controller
             name="qpnos"
@@ -132,38 +189,38 @@ const CourseModal: React.FC = () => {
         </div>
 
         {selectedIdType === 1 && (
-               <div className="col-span-1 sm:col-span-1">
-               <Label text="QPNOS Code"required />
-               <Controller
-                 name="vsCourseCode"
-                 control={control}
-                 render={({ field }) => (
-                   <Dropdown
-                   
-                     {...field}
-                     options={sectorOptions}
-                     getOptionLabel={(option) => option.label}
-                     getOptionValue={(option) => option.value}
-                     onSelect={(selectedOption) => {
-                       field.onChange(selectedOption.value);
-                       setValue("fklSectorId", selectedOption.value.toString());
-                     }}
-                     className={errors.fklSectorId ? "border-red-500" : ""}
-                     placeholder="-- Select QPNOS --"
-                   />
-                 )}
-               />
-               {errors.vsCourseCode && (
-                 <p className="text-red-500">{errors.vsCourseCode.message}</p>
-               )}
-             </div>
-     
+          <div className="col-span-1 sm:col-span-1">
+            <Label text="QPNOS Code" required />
+            <Controller
+              name="vsCourseCode"
+              control={control}
+              render={({ field }) => (
+                <Dropdown
+                  {...field}
+                  options={qpnosOptions}
+                  
+                  getOptionLabel={(option) => option?.label || ''}
+                  getOptionValue={(option) => option?.value || ''}
+                  onSelect={(selectedOption) => {
+                    console.log("Selected option:", selectedOption);
+                    const newValue = selectedOption.value.toString();
+                    field.onChange(newValue);
+                    setValue("vsCourseCode", newValue);
+                    setCourseCode(newValue);
+                    // Add this console log to verify the immediate update
+                    console.log("Updated courseCode to:", newValue);
+                  }}
+                  className={errors.vsCourseCode ? "border-red-500" : ""}
+                  placeholder="-- Select QPNOS --"
+                />
+              )}
+            />
+            {errors.vsCourseCode && (
+              <p className="text-red-500">{errors.vsCourseCode.message}</p>
+            )}
+          </div>
         )}
 
-
-
-
-        
 
 
         {/* Sector Name */}
@@ -201,7 +258,8 @@ const CourseModal: React.FC = () => {
               <Input
                 {...field}
                 type="text"
-                className={errors.vsCourseName ? "border-red-500" : ""}
+                disabled={selectedIdType === 1}
+                className={`${errors.vsCourseName ? "border-red-500" : ""} ${selectedIdType === 1 ? "bg-gray-100" : ""}`}
               />
             )}
           />

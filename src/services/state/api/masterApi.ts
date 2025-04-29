@@ -5,21 +5,20 @@ import axiosInstance from '../api-setup/axiosInstance';
 
 
 
-export const getMasterData = async (queryType: string) => {
+export const getMasterData = async (queryType: string, qpnos?: string) => {
   const { userDetails } = useAuthStore.getState();
 
   if (!userDetails) {
     throw new Error("User details are not available in the store.");
   }
-  const response = await axiosInstance.post(
-    "/master/get",
-    {
-      fklDepartmentId: userDetails.departmentId,
-      queryType, 
-    },
-   
-  );
 
+  const requestBody = {
+    fklDepartmentId: userDetails.departmentId,
+    queryType,
+    ...(qpnos && { qpnos }) // Only add qpnos to body if it exists
+  };
+
+  const response = await axiosInstance.post("/master/get", requestBody);
   return response.data;
 };
 
