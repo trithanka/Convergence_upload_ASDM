@@ -7,10 +7,10 @@ import Course from "../pages/Course";
 import TrainingPartner from "../pages/TrainingPartner";
 import Batch from "../pages/Batch";
 import Candidate from "../pages/Candidate";
-import Trainer from "../pages/Trainer";
+// import Trainer from "../pages/Trainer";
 import Assessors from "../pages/Assessors";
-import Assessment from "../pages/Assessment";
-import Placement from "../pages/Placement";
+// import Assessment from "../pages/Assessment";
+// import Placement from "../pages/Placement";
 import Invoice from "../pages/Invoice";
 import TrainingCenter from "../pages/TrainingCenter";
 import Login from "../../src/components/auth/Login";
@@ -48,10 +48,10 @@ const Index = () => {
         <Route path="Batch" element={<Batch />} />
         <Route path="Candidate" element={<Candidate />} />
         <Route path="Summary Report" element={<Candidates />} />
-        <Route path="Trainer" element={<Trainer />} />
+        {/* <Route path="Trainer" element={<Trainer />} /> */}
         <Route path="Assessors" element={<Assessors />} />
-        <Route path="Assessment" element={<Assessment />} />
-        <Route path="Placement" element={<Placement />} />
+        <Route path="Assessment" element={<Candidate />} />
+        <Route path="Placement" element={<Candidate />} />
         <Route path="Invoice" element={<Invoice />} />
         <Route path="States" element={<States />} />
         <Route path="Sectors" element={<Sectors />} />

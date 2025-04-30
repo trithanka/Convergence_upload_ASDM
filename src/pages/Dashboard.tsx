@@ -98,12 +98,12 @@ const Dashboard: React.FC = () => {
       count: convergenceCounts.trainerCount?.[0]?.count || 0,
       icon: Spline,
     },
-    {
-      label: "Assessors",
-      href: "/Assessors",
-      count: convergenceCounts.assessorCount?.[0]?.count || 0,
-      icon: Settings2,
-    },
+    // {
+    //   label: "Assessors",
+    //   href: "/Assessors",
+    //   count: convergenceCounts.assessorCount?.[0]?.count || 0,
+    //   icon: Settings2,
+    // },
     {
       label: "Targets",
       href: "/Target",

@@ -50,14 +50,14 @@ export const courseSchema = Joi.object({
   fklSectorId: Joi.number().required().label("Sector Name").messages({
     "string.empty": "Sector Name is required.",
   }),
-  vsCourseCode: Joi.string().required().label("QPNOS Code").messages({
+  qpnos: Joi.number().optional() ,
+  vsCourseCode: Joi.string().optional().label("QPNOS Code").messages({
     "string.empty": "QPNOS Code is required.",
   }),
-  vsCourseName: Joi.string().required().label("Job Role Name").messages({
+  vsCourseName: Joi.string().optional().label("Job Role Name").messages({
     "string.empty": "Job Role Name is required.",
   }),
-  iTheoryDurationInHours: Joi.number().optional(),
-  iPracticalDurationInHours: Joi.number().optional(),
+
   dtFromDate: Joi.optional(),
   dtToDate: Joi.optional(),
 });
