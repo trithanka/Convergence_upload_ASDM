@@ -146,31 +146,28 @@ const CourseModal: React.FC = () => {
   });
 
   useEffect(() => {
-    if (selectedIdType === 1 && qpnosDetails?.data?.result?.getByQpnos[0]?.pklSectorId) {
-      setValue("fklSectorId", qpnosDetails.data.result.getByQpnos[0].pklSectorId );
+    if (selectedIdType !== 1 || !qpnosDetails?.data?.result?.getByQpnos?.[0]) return;
+  
+    const fetched = qpnosDetails.data.result.getByQpnos[0];
+  
+    if (fetched.pklSectorId) {
+      setValue("fklSectorId", fetched.pklSectorId);
     }
-  }, [selectedIdType, qpnosDetails, setValue]);
-
-
-  useEffect(() => { 
-    if (selectedIdType === 1 && qpnosDetails?.data?.result?.getByQpnos[0]?.vsCourseName) {
-      setValue("vsCourseCode",qpnosDetails.data.result.getByQpnos[0].vsCourseName);
+  
+    if (fetched.vsCourseName) {
+      setValue("vsCourseName", fetched.vsCourseName);
     }
+  
+    if (fetched.dtFromDate) {
+      setValue("dtFromDate", formatDateForInput(fetched.dtFromDate));
+    }
+  
+    if (fetched.dtToDate) {
+      setValue("dtToDate", formatDateForInput(fetched.dtToDate));
+    }
+  
   }, [selectedIdType, qpnosDetails, setValue]);
-
-    useEffect(() => {
-      if (selectedIdType === 1 && qpnosDetails?.data?.result?.getByQpnos[0]?.dtFromDate) {
-        setValue("dtFromDate",formatDateForInput(qpnosDetails.data.result.getByQpnos[0].dtFromDate));
-      }
-    }, [selectedIdType, qpnosDetails, setValue]);
-
-    useEffect(() => {
-      if (selectedIdType === 1 && qpnosDetails?.data?.result?.getByQpnos[0]?.dtToDate) {
-        setValue("dtToDate",formatDateForInput(qpnosDetails.data.result.getByQpnos[0].dtToDate));
-      }
-    }, [selectedIdType, qpnosDetails, setValue]);
- 
-
+  
    
   const formatDateForInput = (dateStr: string | null | undefined) => {
     if (!dateStr) return '';
@@ -251,7 +248,6 @@ const CourseModal: React.FC = () => {
                 <Dropdown
                   {...field}
                   options={qpnosOptions}
-                  
                   getOptionLabel={(option) => option?.label || ''}
                   getOptionValue={(option) => option?.value || ''}
                   onSelect={(selectedOption) => {
@@ -309,7 +305,7 @@ const CourseModal: React.FC = () => {
                 onSelect={(selectedOption) => {
                   
                   field.onChange(selectedOption.value);
-                  setValue("fklSectorId", selectedOption.value.toString());
+                  setValue("fklSectorId", selectedOption.value.toString() );
                 }}
                 className={errors.fklSectorId ? "border-red-500" : ""}
                 placeholder="-- Select Sector --"
@@ -464,8 +460,8 @@ const CourseModal: React.FC = () => {
               {...field}
               type="date"
               className={errors.dtFromDate ? "border-red-500" : ""} 
-              //@ts-ignore
-              value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtFromDate)} 
+           
+              value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtFromDate)|| field.value } 
              
               disabled={selectedIdType === 1}
               onChange={(e) => {
@@ -498,7 +494,7 @@ const CourseModal: React.FC = () => {
               {...field}
               type="date"
               //@ts-ignore
-              value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtToDate)}
+              value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtToDate) || field.value}
               min={minEndDate || ""} // Set min to Batch Start Date
               disabled={!dtFromDate || selectedIdType === 1 } // Disable Batch End Date if no Batch Start Date is selected
               className={errors.dtFromDate ? "border-red-500" : ""}

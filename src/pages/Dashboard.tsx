@@ -14,7 +14,7 @@ import {
   FileSignature,
   Spline,
 
-  Settings2,
+
   Target,
 } from "lucide-react";
 import { Link } from "react-router-dom";
