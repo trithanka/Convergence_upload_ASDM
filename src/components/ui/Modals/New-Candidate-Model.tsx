@@ -85,12 +85,12 @@ const NewCandidateModal: React.FC = () => {
                 <Dropdown
                   {...field}
                   options={[
-                    { label: "2020-2021", value: 2021 },
-                    { label: "2021-2022", value: 2022 },
-                    { label: "2022-2023", value: 2023 },
-                    {label :"2023-2024",value:2024},
-                    { label: "2024-2025", value: 2025 },
-                    { label: "2023-2024", value: 2024 }
+                    { label: "2020-2021", value: "2020-2021 "},
+                    { label: "2021-2022", value: "2021-2022 "},
+                    { label: "2022-2023", value: "2022-2023" },
+                    {label :"2023-2024",  value: "2023-2024" },
+                    { label: "2024-2025", value: "2024-2025" },
+               
 
                   ]}
                   getOptionLabel={(option) => option.label}
@@ -177,18 +177,18 @@ const NewCandidateModal: React.FC = () => {
         </div>
         <div className="grid grid-cols-4 gap-4 pb-6">
           {[
-            { name: "iMaleCount", label: "Male Candidate" },
-            { name: "iFemaleCount", label: "Female Candidate" },
-            { name: "iOtherCount", label: "Other Candidate" },
+            { name: "iMaleCount", label: "Male Candidate Count" },
+            { name: "iFemaleCount", label: "Female Candidate Count" },
+            { name: "iOtherCount", label: "Other Candidate Count" },
             { name: "totalCount", label: "Total Candidate Count", disabled: true },
-            { name: "iScCount", label: "SC Candidate" },
-            { name: "iStHCount", label: "ST Candidate" },
+            { name: "iScCount", label: "SC Candidate Count" },
+            { name: "iStHCount", label: "ST Candidate Count" },
             // { name: "iStPCount", label: "ST(P) Candidate" },
-            { name: "iObcCount", label: "OBC Candidate" },
-            { name: "iGeneralCount", label: "General Candidate" },
-            { name: "iMinorityCount", label: "Minority Candidate" },
-            { name: "iTeaTribeCount", label: "Tea Tribe Candidate" },
-            { name: "iPwdCount", label: "PwD Candidate" },
+            { name: "iObcCount", label: "OBC Candidate Count" },
+            { name: "iGeneralCount", label: "General Candidate Count" },
+            { name: "iMinorityCount", label: "Minority Candidate Count" },
+            { name: "iTeaTribeCount", label: "Tea Tribe Candidate Count" },
+            { name: "iPwdCount", label: "PwD Candidate Count" },
 
           ].map((field) => (
             <div className="" key={field.name}>
@@ -235,7 +235,6 @@ const NewCandidateModal: React.FC = () => {
           <div className="">
             <Label text="Total Placed Candidate" />
             <Controller
-
               name="itotalPlacedCandidate"
               control={control}
               render={({ field }) => (

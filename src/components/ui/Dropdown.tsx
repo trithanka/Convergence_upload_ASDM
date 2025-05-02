@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 type DropdownOption = {
   label: string;
-  value: number;
+  value: number | string;
   disabled?: boolean;
 };
 
