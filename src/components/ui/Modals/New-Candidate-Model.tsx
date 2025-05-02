@@ -85,10 +85,15 @@ const NewCandidateModal: React.FC = () => {
                 <Dropdown
                   {...field}
                   options={[
+                    //@ts-ignore
                     { label: "2020-2021", value: "2020-2021 "},
+                      //@ts-ignore
                     { label: "2021-2022", value: "2021-2022 "},
+                      //@ts-ignore
                     { label: "2022-2023", value: "2022-2023" },
+                      //@ts-ignore
                     {label :"2023-2024",  value: "2023-2024" },
+                      //@ts-ignore
                     { label: "2024-2025", value: "2024-2025" },
                
 
