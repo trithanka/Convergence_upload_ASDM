@@ -1274,7 +1274,7 @@ export const summaryColumns = (
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   // { Header: "Trainer ID", accessor: "trainerId" },
   { Header: "Scheme Name", accessor: "vsSchemeName" },
-  { Header: "Total Training Candidate", accessor: "itotalTrainingCandidate" },
+  // { Header: "Total Training Candidate", accessor: "itotalTrainingCandidate" },
   { Header: "Total Certified Candidate", accessor: "itotalCertifiedCandidate" },
   { Header: "Total Placed Candidate", accessor: "itotalPlacedCandidate" },
   { Header: "Total Target", accessor: "itotalTarget" },
@@ -1282,15 +1282,15 @@ export const summaryColumns = (
   { Header: "Male Count", accessor: "iMaleCount" },
   { Header: "Female Count", accessor: "iFemaleCount" },
   { Header: "SC Count", accessor: "iScCount" },
-  { Header: "ST H Count", accessor: "iStHCount" },
-  { Header: "ST P Count", accessor: "iStPCount" },
+  { Header: "ST Count", accessor: "iStHCount" },
+ 
   { Header: "OBC Count", accessor: "iObcCount" },
   { Header: "General Count", accessor: "iGeneralCount" },
   { Header: "Minority Count", accessor: "iMinorityCount" },
   { Header: "Tea Tribe Count", accessor: "iTeaTribeCount" },
   { Header: "PwD Count", accessor: "iPwdCount" },
   { Header: "Total Job Role Count", accessor: "iTotalJobRoleCount" },
-  { Header: "Department", accessor: "department_names" },
+
   // {
   //   Header: "Action",
   //   accessor: "Action",
