@@ -74,8 +74,8 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
                             value: row[column.accessor as string],
                             row, // ✅ Pass the full row object
                           })
-                        : row[column.accessor as string] || "N/A")
-                    : "N/A"}
+                        : row[column.accessor as string] || " ")
+                    : " "}
                 </td>
                 
                   ))}

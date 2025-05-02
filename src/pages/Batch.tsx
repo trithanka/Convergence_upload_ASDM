@@ -13,6 +13,7 @@ import Loader from "../components/ui/Loader";
 import useDebounce from "../services/state/useDebounce";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import * as XLSX from "xlsx";
 import { Column } from "react-table";
 import { useErrorStore } from "../services/useErrorStore";
 
@@ -49,6 +50,59 @@ const Batch: React.FC = () => {
       setFilteredData(fetchedData.data.data);
     }
   }, [fetchedData, isSuccess]);
+
+
+    const exportToExcel = () => {
+      if (!filteredData || filteredData.length === 0) {
+        alert("No data available to export");
+        return;
+      }
+  
+      const headersMap = {
+        iBatchNumber: "Batch ID",
+        iBatchTarget : "Batch Target",
+        dtStartDate : "Start Date",
+        dtEndDate : "End Date",
+        tcName : "Training Center Name",
+        tcAddress : "Training Center Address",
+        vsCourseName : "Course Name",
+        vsTargetNo : "Target No",
+        // vsSchemeType: "Scheme Type",
+      
+        // vsFundName: "Fund Name",
+        // vsSchemeFundingType: "Funding Type",
+        // vsSchemeFUndingRatio: "Funding Ratio",
+        // sanctionOrderNo: "Sanction Order No",
+        // dtSanctionDate: "Sanction Date",
+        // vsDepartmentName: "Department Name",
+      };
+  
+      const formattedData = filteredData.map((item) => {
+        return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+          let value: any = item[key];
+  
+  
+          if (key === "dtStartDate" || key === "dtEndDate" && value) {
+            const date = new Date(value);
+            value = isNaN(date.getTime())
+              ? value
+              : date.toLocaleDateString("en-GB");
+          }
+  
+          acc[headersMap[key as keyof typeof headersMap]] = value;
+          return acc;
+        }, {});
+      });
+  
+      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+  
+      XLSX.writeFile(workbook, "batchdata.xlsx");
+    };
+  
+
+
 
 
   const handleSearch = (value: string) => {
@@ -198,7 +252,17 @@ const Batch: React.FC = () => {
             />
           </div>
         </div>
-      </div>
+      </div> 
+       <div className="flex justify-between items-center mb-4">
+                <p className="text-2xl font-bold">Batch Entries </p>
+                <button
+                  className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+                  onClick={ () => exportToExcel()}
+                >
+                  <DownloadCloud size={18} />
+                  Download Report
+                </button>
+              </div>
 
       <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
     </>

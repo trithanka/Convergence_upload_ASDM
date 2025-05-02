@@ -133,12 +133,12 @@ const Scheme: React.FC = () => {
 
     const headersMap = {
       vsSchemeName: "Scheme Name",
-      vsSchemeType: "Scheme Type",
+      // vsSchemeType: "Scheme Type",
       vsSchemeCode: "Scheme Code",
-      vsFundName: "Fund Name",
-      vsSchemeFundingType: "Funding Type",
-      vsSchemeFUndingRatio: "Funding Ratio",
-      sanctionOrderNo: "Sanction Order No",
+      // vsFundName: "Fund Name",
+      // vsSchemeFundingType: "Funding Type",
+      // vsSchemeFUndingRatio: "Funding Ratio",
+      // sanctionOrderNo: "Sanction Order No",
       dtSanctionDate: "Sanction Date",
       vsDepartmentName: "Department Name",
     };

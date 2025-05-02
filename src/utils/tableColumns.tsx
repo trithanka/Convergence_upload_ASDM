@@ -207,8 +207,8 @@ export const courseColumns = (
     Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
 
-  { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
-  { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
+  // { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
+  // { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
 
   // {
   //   Header: "Action",
@@ -517,13 +517,13 @@ export const batchColumns = (
   { Header: "Batch ID", accessor: "iBatchNumber" },
   { Header: " Batch Start Date", accessor: "dtStartDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
   { Header: "Batch End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
-  { Header: "Batch Size", accessor: "iBatchSize" },
+  // { Header: "Batch Size", accessor: "iBatchSize" },
   { Header: "Training Center", accessor: "tcName" },
-  {Header :"Course " , accessor:"courseName"},
-  {
-    Header: "Trainer",
-    accessor: "vsTrainerName",
-  }
+  {Header :"Course " , accessor:"vsCourseName"},
+  // {
+  //   Header: "Trainer",
+  //   accessor: "vsTrainerName",
+  // }
 
   // { Header: "SDMS  ID", accessor: "SDMSid" },
 
@@ -745,7 +745,7 @@ export const assessmentColumns = (
   {
     Header: "Assessment Date",
     accessor: "dtAssessmentDate",
-    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? " ",
   },
   // { Header: "Agency", accessor: "vsAgency" },
 
@@ -754,7 +754,7 @@ export const assessmentColumns = (
     Header: "Result Date",
     accessor: "dtResultDate",
     Cell: ({ value }) =>
-      value ? moment(value).format("YYYY-MM-DD") : "N/A", // Check if value exists before formatting
+      value ? moment(value).format("YYYY-MM-DD") : " ", // Check if value exists before formatting
   },
   // {
   //   Header: "Marksheet",
@@ -912,22 +912,22 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
   {
     Header: "Department Name",
     accessor: "departmentName",
-    Cell: ({ value }) => <span className="capitalize">{value ?? "N/A"}</span>,
+    Cell: ({ value }) => <span className="capitalize">{value ?? " "}</span>,
   },
   {
     Header: "User Name",
     accessor: "userName",
-    Cell: ({ value }) => value ?? "N/A",
+    Cell: ({ value }) => value ?? " ",
   },
   {
     Header: "Created By",
     accessor: "createdBY",
-    Cell: ({ value }) => value ?? "N/A",
+    Cell: ({ value }) => value ?? " ",
   },
   {
     Header: "Created At",
     accessor: "createdDate",
-    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? " ",
   },
   // {
   //   Header: "Created By",
@@ -1033,14 +1033,14 @@ export const candidateColumns = (
     Header: "Candidate Name",
     accessor: "vsCandidateName",
     Cell: ({ value }: CellProps<CandidateData, string | undefined>) => (
-      <span className="capitalize">{value || "N/A"}</span>
+      <span className="capitalize">{value || " "}</span>
     ),
   },
   {
     Header: "Date Of Birth",
     accessor: "vsDOB",
     Cell: ({ value }: { value: string | undefined }) =>
-      value ? moment.utc(value).format("DD-MM-YYYY") : "N/A",
+      value ? moment.utc(value).format("DD-MM-YYYY") : " ",
   },
   
   
@@ -1049,12 +1049,12 @@ export const candidateColumns = (
   {
     Header: "Caste",
     accessor: "caste",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
   },
   {
     Header: "Gender",
     accessor: "vsGenderName",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
   },
   // {
   //   Header: "Mobile",
@@ -1064,12 +1064,12 @@ export const candidateColumns = (
   {
     Header: "Qualification",
     accessor: "vsQualification",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
   },
   {
     Header: "Aadhar (Last 4 Digit)",
     accessor: "UUID",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
   },
   // {
   //   Header: "Action",

@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
+import * as XLSX from "xlsx";
 import Loader from "../components/ui/Loader";
 import { courseDuplicateColumns } from "../utils/tableColumns";
 import { Column } from "react-table";
@@ -65,7 +66,58 @@ const Course: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
-  console.log("duplicate data courses are", duplicateData)
+  console.log("duplicate data courses are", duplicateData) 
+  
+
+
+
+  const exportToExcel = () => {
+      if (!filteredData || filteredData.length === 0) {
+        alert("No data available to export");
+        return;
+      }
+  
+      const headersMap = {
+        vsCourseName: "Course Name",
+        // vsSpocEmail: "SPOC Email",
+        // iSpocContactNum: "SPOC Contact No",
+      
+        // vsBlock: "Block",
+       
+        // vsSpocName: "SPOC Name",
+        // vsTcCode: "Center Code",
+        vsCourseCode: "Course Code",
+        dtFromDate: "Course Start Date",
+        dtToDate: "Course End Date",
+        vsSectorName : "Sector Name ",
+        vsTcName: "Tc Name ",
+    
+      };
+  
+      const formattedData = filteredData.map((item) => {
+        return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+          let value: any = item[key];
+          if ((key === "dtFromDate" || key === "dtToDate") && value) {
+            const date = new Date(value);
+            if (!isNaN(date.getTime())) {
+              const day = String(date.getDate()).padStart(2, '0');
+              const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
+              const year = date.getFullYear();
+              value = `${day}-${month}-${year}`;
+            }
+          }
+          acc[headersMap[key as keyof typeof headersMap]] = value;
+          return acc;
+        }, {});
+      });
+  
+      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+  
+      XLSX.writeFile(workbook, "CourseData.xlsx");
+    };
+  
 
   // Handle search logic
   const handleSearch = (value: string) => {
@@ -216,8 +268,27 @@ const Course: React.FC = () => {
             />
           </div>
         </div>
-        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div> 
+
       </div>
+      <div>
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-2xl font-bold">Department Entries</p>
+                <button
+                  className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+                  onClick={() =>  exportToExcel()}
+                >
+                  <DownloadCloud size={18} />
+                  Download Report
+                </button>
+              </div>
+              <CentralizedTable columns={columns} data={filteredData} pageSize={pageSize}
+                currentPage={currentPage}
+                totalCount={totalCount}
+      
+                onPageChange={setCurrentPage}
+                onPageSizeChange={setPageSize} />
+            </div>
 
       <CentralizedTable 
       columns={columns} 

@@ -114,11 +114,11 @@ const TrainingPartner: React.FC = () => {
 
     const headersMap = {
       vsTpName: "Candidate Name",
-      vsSpocName: "SPOC Name",
-      vsSpocEmail: "SPOC Email",
-      iSpocContactNum: "SPOC Contact",
+      // vsSpocName: "SPOC Name",
+      // vsSpocEmail: "SPOC Email",
+      // iSpocContactNum: "SPOC Contact",
       vsAddress: "Address",
-      vsSmartId: "Smart ID",
+      // vsSmartId: "Smart ID",
       vsPan: "PAN",
       vsDepartmentName : "Department Name"
     };
@@ -127,7 +127,7 @@ const TrainingPartner: React.FC = () => {
       return Object.keys(headersMap).reduce((acc, key) => {
         const headerKey = key as keyof typeof headersMap;
         const itemKey = key as keyof typeof item;
-        acc[headersMap[headerKey]] = item[itemKey] ?? "N/A"; // If value is missing, replace it with "N/A"
+        acc[headersMap[headerKey]] = item[itemKey] ?? " "; // If value is missing, replace it with "N/A"
         return acc;
       }, {} as Record<string, unknown>);
     });

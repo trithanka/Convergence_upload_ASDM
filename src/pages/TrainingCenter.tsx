@@ -73,16 +73,20 @@ const TrainingCenter: React.FC = () => {
 
     const headersMap = {
       vsTcName: "Training Center Name",
-      vsSpocEmail: "SPOC Email",
-      iSpocContactNum: "SPOC Contact No",
-      vsState: "State",
-      vsDistrict: "District",
-      vsBlock: "Block",
-      vsAddress: "Address",
-      vsSpocName: "SPOC Name",
-      vsTcCode: "Center Code",
+      // vsSpocEmail: "SPOC Email",
+      // iSpocContactNum: "SPOC Contact No",
+    
+      // vsBlock: "Block",
+     
+      // vsSpocName: "SPOC Name",
+      // vsTcCode: "Center Code",
       vsLongitude: "Longitude",
       vsLatitude: "Latitude",
+      vsTpName : "Training Partner Name",
+      vsTpAddress : "Training Partner Address",
+      vsAddress: "Address",
+      vsState: "State",
+      vsDistrict: "District",
       vsDepartmentName: "Department Name"
     };
 
