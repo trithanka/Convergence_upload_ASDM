@@ -131,7 +131,7 @@ const Candidates: React.FC = () => {
       fklDepartmentId: 0,
       dtFinancialYear: "Financial Year",
       take: pageSize,
-      skip: (currentPage - 1) * pageSize, // Calculate the correct skip value
+      skip: (currentPage - 1),
       search: searchValue
     }),
   });
