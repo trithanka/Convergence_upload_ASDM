@@ -138,9 +138,11 @@ const Candidates: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      if (summaryData && summaryData) {
-        setFilteredData(summaryData as any);
-        setTotalCount(summaryData.length || 0);
+      if (summaryData) {
+        //@ts-ignore
+        setFilteredData(summaryData.data as any);
+        //@ts-ignore
+        setTotalCount(summaryData.total || 0);
       } else if (Array.isArray(summaryData)) {
         setFilteredData(summaryData as any); 
       } else {
@@ -156,6 +158,7 @@ const Candidates: React.FC = () => {
       alert("No data available to export");
       return;
     }
+    console.log(summaryData);
 
     const headersMap = {
       vsSchemeName: "Scheme Name",

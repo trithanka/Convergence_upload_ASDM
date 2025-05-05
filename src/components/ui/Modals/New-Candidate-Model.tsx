@@ -38,13 +38,13 @@ const NewCandidateModal: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitSForm,
     onSuccess: (data) => {
-      if (data?.success) {
+      if (data.data?.success) {
         closeModal();
-        toast.success(data.message || "Candidate submitted successfully!");
+        toast.success(data.data.message || "Candidate submitted successfully!");
         queryClient.invalidateQueries({ queryKey: ["candidateData"] });
       } else {
         toast.error(
-          data.message || "An error occurred while submitting the Trainer."
+          data.data.message || "An error occurred while submitting the Trainer."
         );
       }
     },

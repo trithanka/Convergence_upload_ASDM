@@ -24,7 +24,7 @@ export const submitSForm = async (data: SummaryReportData) => {
      
     };
     const response = await axiosInstance.post("/convergence/candidateForm", requestData);
-    return response.data;
+    return response;
    
 
   };
@@ -46,7 +46,7 @@ export const submitSForm = async (data: SummaryReportData) => {
       requestData  
       
     );
-    return response.data.data;
+    return response.data;
   };
 
 
