@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import{ getSummaryReport }from "../services/state/api/summaryReportCreationApi";
+import { getSummaryReport } from "../services/state/api/summaryReportCreationApi";
 
 import * as XLSX from "xlsx";
 import {
   AlertCircle,
   CheckCircle,
   DownloadCloud,
+  UploadCloud,
   // DownloadCloud,
   // UploadCloud,
   X,
@@ -34,6 +35,7 @@ import { summaryColumns } from "../utils/tableColumns";
 import { Column } from "react-table"; // Ensure this matches the library you're using
 import { useNavigate } from "react-router-dom";
 import SearchInputBox from "../components/ui/SearchInputBox";
+import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 
 
 const Candidates: React.FC = () => {
@@ -46,15 +48,12 @@ const Candidates: React.FC = () => {
   const { bulkName } = useErrorStore();
 
 
-  
-
-
   const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
   const clearSuccessMessage = useErrorStore(
     (state) => state.clearSuccessMessage
   );
 
-  const { statusColor } = useErrorStore(); 
+  const { statusColor } = useErrorStore();
   // const { data : summaryData ,isLoading : isLoadingSummary ,error: errorSummary } =  useQuery({
   //   queryKey: ["summaryData"],
   //   queryFn: () => getSummaryReport({
@@ -81,7 +80,7 @@ const Candidates: React.FC = () => {
 
   // console.log(summaryData);
 
- 
+
   const [searchValue, setSearchValue] = useState<string>("");
 
   const [filteredData, setFilteredData] = useState([]);
@@ -96,9 +95,8 @@ const Candidates: React.FC = () => {
 
 
 
-  
 
- 
+
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
 
@@ -109,59 +107,48 @@ const Candidates: React.FC = () => {
   } = useQuery({
     queryKey: [
       "summaryData",
-       
       debouncedSearchValue,
       currentPage,
       pageSize,
-     
     ],
     queryFn: () => getSummaryReport({
-          vsSchemeName: "Scheme Name",
-          itotalTrainingCandidate: 0,
-          itotalCertifiedCandidate: 0,
-          itotalPlacedCandidate: 0,
-          itotalTarget: 0,
-          iMaleCount: 0,
-          iFemaleCount: 0,
-          iScCount: 0,
-          iStHCount: 0,
-          iStPCount: 0,
-          iObcCount: 0,
-          iGeneralCount: 0,
-          iMinorityCount: 0,
-          iTeaTribeCount: 0,
-          iPwdCount: 0,
-          iTotalJobRoleCount: 0,
-          fklDepartmentId: 0,
-          dtFinancialYear: "Financial Year",
-          take : pageSize,
-          skip : 0 ,
-          search : searchValue
-          
-        }),
+      vsSchemeName: "Scheme Name",
+      itotalTrainingCandidate: 0,
+      itotalCertifiedCandidate: 0,
+      itotalPlacedCandidate: 0,
+      itotalTarget: 0,
+      iMaleCount: 0,
+      iFemaleCount: 0,
+      iScCount: 0,
+      iStHCount: 0,
+      iStPCount: 0,
+      iObcCount: 0,
+      iGeneralCount: 0,
+      iMinorityCount: 0,
+      iTeaTribeCount: 0,
+      iPwdCount: 0,
+      iTotalJobRoleCount: 0,
+      fklDepartmentId: 0,
+      dtFinancialYear: "Financial Year",
+      take: pageSize,
+      skip: (currentPage - 1) * pageSize, // Calculate the correct skip value
+      search: searchValue
+    }),
   });
 
   useEffect(() => {
     if (isSuccess) {
-      if (summaryData && summaryData.length > 0) {
+      if (summaryData && summaryData) {
         setFilteredData(summaryData as any);
-        setTotalCount(summaryData.length);
-      
+        setTotalCount(summaryData.length || 0);
+      } else if (Array.isArray(summaryData)) {
+        setFilteredData(summaryData as any); 
       } else {
         setFilteredData([]);
+        setTotalCount(0);
       }
-
-      // if (
-      //   fetchedData?.data?.duplicate_candidate &&
-      //   fetchedData.data.duplicate_candidate.length > 0
-      // ) {
-      //   setDuplicateData(fetchedData.data.duplicate_candidate);
-      //   setSuplicateTotalCount(fetchedData.data.duplicate_total_count);
-      // } else {
-      //   setDuplicateData([]);
-      // }
-    } 
-  }, [summaryData, isSuccess ,searchValue]);
+    }
+  }, [summaryData, isSuccess, searchValue]);
 
 
   const exportToExcel = () => {
@@ -175,7 +162,7 @@ const Candidates: React.FC = () => {
       itotalTrainingCandidate: "Total Training Candidate",
       itotalCertifiedCandidate: "Total Certified Candidate",
       itotalPlacedCandidate: "Total Placed Candidate",
-      itotalTarget: "Total Target", 
+      itotalTarget: "Total Target",
       iMaleCount: "Male Count",
       iFemaleCount: "Female Count",
       iScCount: "SC Count",
@@ -189,7 +176,7 @@ const Candidates: React.FC = () => {
       iTotalJobRoleCount: "Total Job Role Count",
       department_names: "Department",
       dtFinancialYear: "Financial Year",
-      
+
     };
 
     const formattedData = filteredData.map((item) => {
@@ -208,7 +195,7 @@ const Candidates: React.FC = () => {
     XLSX.writeFile(workbook, "SummaryReportData.xlsx");
   };
 
- 
+
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -217,12 +204,13 @@ const Candidates: React.FC = () => {
   if (isLoading) {
     return <Loader />;
   }
+  console.log(summaryData); 
 
   return (
     <>
       <div className="">
         <p className="text-2xl font-bold mb-4">Summary Report </p>
-        {bulkName === "candidate" && (
+        {bulkName === "report" && (
           <>
             {successMessage && (
               <div
@@ -339,18 +327,18 @@ const Candidates: React.FC = () => {
           </div>
 
           <div className="flex gap-1">
-            {/* <TemplateDownloadButton
-              templateType={8}
-              templateTitle="Candidate Template"
+            <TemplateDownloadButton
+              templateType={12}
+              templateTitle="Summary Template"
               Icon={DownloadCloud}
             />
 
             <ModalOpenButton
               modalType={11}
               modalTitle="Bulk Upload"
-              bulkName="candidate"
+              bulkName="report"
               Icon={UploadCloud}
-            /> */}
+            />
             <ModalOpenButton
               modalType={15}
               modalTitle="Add Report"
@@ -378,7 +366,7 @@ const Candidates: React.FC = () => {
         <p className="text-2xl font-bold"></p>
         <button
           className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-        onClick={exportToExcel}
+          onClick={exportToExcel}
         >
           <DownloadCloud size={18} />
           Download Report

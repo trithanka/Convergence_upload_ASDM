@@ -12,6 +12,8 @@ import courseTemplate from "../../assets/Course_Template-Instruction.xlsx?url";
 import assessorTemplate from "../../assets/Assessor_Template-Instruction.xlsx?url";
 import trainerTemplate from "../../assets/Trainer_Template_Instruction.xlsx?url";
 import invoiceTemplate from "../../assets/Invoice_Template_Instruction.xlsx?url";
+import summaryTemplate from "../../assets/Summary_Report-Instruction.xlsx?url";
+
 
 type TemplateDownloadButtonProps = {
   templateType: number;
@@ -29,6 +31,7 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({
     0: schemeTemplate,
     1: targetTemplate,
     2: courseTemplate, //error
+
     3: tpTemplate,
     4: tcTemplate,
     5: assessorTemplate, //error
@@ -38,6 +41,8 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({
     9: assessmentTemplate,
     10: placementTemplate,
     11: invoiceTemplate,
+    12: summaryTemplate,
+    
   };
 
   const downloadTemplate = () => {

@@ -289,15 +289,6 @@ const Course: React.FC = () => {
                 onPageChange={setCurrentPage}
                 onPageSizeChange={setPageSize} />
             </div>
-
-      <CentralizedTable 
-      columns={columns} 
-      data={filteredData}
-      pageSize={pageSize}
-        currentPage={currentPage}
-        totalCount={totalCount}
-         onPageChange={setCurrentPage}
-        onPageSizeChange={setPageSize} />
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
         Duplicate records are checked using 'Course Name' and 'Course Code' across multiple logins. These fields are the minimum required to identify duplicates.

@@ -60,6 +60,7 @@ const NewCandidateModal: React.FC = () => {
     mutation.mutate(data);
   };
   return (<>
+  <div className="max-h-[80vh] overflow-y-auto">
     <div className="grid space-y-6 divide-y divide-gray-300">
       <div className="p-4">
         <div className="grid grid-cols-6 gap-4 pb-6">
@@ -267,6 +268,7 @@ const NewCandidateModal: React.FC = () => {
           Submit
         </button>
       </div>
+    </div>
     </div>
 
 

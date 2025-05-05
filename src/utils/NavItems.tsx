@@ -37,7 +37,7 @@ export const NavItems: NavItem[] = [
   },
   {
     name: "Summary Report",
-    link: "/Summary Report",
+    link: "/SummaryReport",
     icon: UserPlus,
    
   },

@@ -82,7 +82,6 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
 
             if (resData.success) {
               handleClearFile();
-
               queryClient.invalidateQueries({ queryKey: ["candidateData"] });
               queryClient.invalidateQueries({ queryKey: ["schemeData"] });
               queryClient.invalidateQueries({ queryKey: ["assessmentData"] });
@@ -96,6 +95,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
               queryClient.invalidateQueries({ queryKey: ["trainerData"] });
               queryClient.invalidateQueries({ queryKey: ["tcData"] });
               queryClient.invalidateQueries({ queryKey: ["tpData"] });
+              queryClient.invalidateQueries({ queryKey: ["summaryData"] });
             }
 
             useErrorStore.getState().setBulkName(bulkName);

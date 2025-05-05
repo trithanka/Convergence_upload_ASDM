@@ -24,4 +24,6 @@ export interface SummaryReportData {
     skip?: number;
     search?: string;
     totalCount ?: number;
+  
+    
   }

@@ -47,7 +47,7 @@ const Index = () => {
         />
         <Route path="Batch" element={<Batch />} />
         <Route path="Candidate" element={<Candidate />} />
-        <Route path="Summary Report" element={<Candidates />} />
+        <Route path="SummaryReport" element={<Candidates />} />
         {/* <Route path="Trainer" element={<Trainer />} /> */}
         <Route path="Assessors" element={<Assessors />} />
         <Route path="Assessment" element={<Candidate />} />
