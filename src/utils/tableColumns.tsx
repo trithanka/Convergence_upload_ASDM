@@ -1275,21 +1275,24 @@ export const summaryColumns = (
   // { Header: "Trainer ID", accessor: "trainerId" },
   { Header: "Scheme Name", accessor: "vsSchemeName" },
   // { Header: "Total Training Candidate", accessor: "itotalTrainingCandidate" },
-  { Header: "Total Certified Candidate", accessor: "itotalCertifiedCandidate" },
-  { Header: "Total Placed Candidate", accessor: "itotalPlacedCandidate" },
-  { Header: "Total Target", accessor: "itotalTarget" },
   { Header: "Financial Year", accessor: "dtFinancialYear" },
+  { Header: "Total Target", accessor: "itotalTarget" },
+  { Header: "Total Job Role Count", accessor: "iTotalJobRoleCount" },
   { Header: "Male Count", accessor: "iMaleCount" },
   { Header: "Female Count", accessor: "iFemaleCount" },
+  { Header: "General Count", accessor: "iGeneralCount" },
   { Header: "SC Count", accessor: "iScCount" },
   { Header: "ST Count", accessor: "iStHCount" },
  
   { Header: "OBC Count", accessor: "iObcCount" },
-  { Header: "General Count", accessor: "iGeneralCount" },
+
   { Header: "Minority Count", accessor: "iMinorityCount" },
   { Header: "Tea Tribe Count", accessor: "iTeaTribeCount" },
   { Header: "PwD Count", accessor: "iPwdCount" },
-  { Header: "Total Job Role Count", accessor: "iTotalJobRoleCount" },
+  { Header: "Total Certified Candidate", accessor: "itotalCertifiedCandidate" },
+  { Header: "Total Placed Candidate", accessor: "itotalPlacedCandidate" },
+
+
 
   // {
   //   Header: "Action",

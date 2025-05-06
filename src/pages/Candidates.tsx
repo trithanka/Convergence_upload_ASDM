@@ -152,6 +152,8 @@ const Candidates: React.FC = () => {
     }
   }, [summaryData, isSuccess, searchValue]);
 
+  // console.log(summaryData)
+
 
   const exportToExcel = () => {
     if (!summaryData || summaryData.length === 0) {
@@ -162,23 +164,23 @@ const Candidates: React.FC = () => {
 
     const headersMap = {
       vsSchemeName: "Scheme Name",
-      itotalTrainingCandidate: "Total Training Candidate",
-      itotalCertifiedCandidate: "Total Certified Candidate",
-      itotalPlacedCandidate: "Total Placed Candidate",
+      dtFinancialYear: "Financial Year",
+      iTotalJobRoleCount: "Total Job Role Count",
       itotalTarget: "Total Target",
       iMaleCount: "Male Count",
       iFemaleCount: "Female Count",
-      iScCount: "SC Count",
-      iStHCount: "ST H Count",
-      iStPCount: "ST P Count",
-      iObcCount: "OBC Count",
       iGeneralCount: "General Count",
+      iScCount: "SC Count",
+      iStHCount :"ST H Count",
+      iStPCount:"ST P Count",
+      iObcCount: "OBC Count",
       iMinorityCount: "Minority Count",
       iTeaTribeCount: "Tea Tribe Count",
       iPwdCount: "PwD Count",
-      iTotalJobRoleCount: "Total Job Role Count",
-      department_names: "Department",
-      dtFinancialYear: "Financial Year",
+      fklDepartmentId : "Department ID",
+      itotalTrainingCandidate: "Total Training Candidate",
+      itotalCertifiedCandidate: "Total Certified Candidate",
+      itotalPlacedCandidate: "Total Placed Candidate",
 
     };
 

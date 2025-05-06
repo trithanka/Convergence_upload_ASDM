@@ -373,6 +373,12 @@ const SchemeModalContent: React.FC = () => {
               <p className="text-sm"><span className="font-semibold">Scheme Name <span className="text-red-600" >*</span></span> Select the appropriate scheme from the dropdown. 
                 <span className="text-red-600"> * Note: If your scheme is not listed, please add the scheme first before proceeding.</span>
               </p>
+              <p className="text-sm"><span className="font-semibold">Scheme Code  <span className="text-red-600" >*</span></span> Enter the unique code assigned to the scheme. This code should follow your department's standard format.
+              </p>
+              <p className="text-sm"><span className="font-semibold">Date of Sanction <span className="text-red-600" >*</span></span> Enter the date when the scheme was officially sanctioned/approved.🗓️ Use the mm-dd-yyyy format (e.g., 04-21-2025). 
+               
+              </p>
+
             </div>
           </div>
         </div>
