@@ -187,7 +187,7 @@ const TrainingPartnerModal: React.FC = () => {
         </div> */}
 
         <div className="col-span-1">
-          <Label text="PAN Card" required />
+          <Label text="Training Partner PAN Card" required />
           <Controller
             name="vsPAN"
             control={control}
@@ -266,7 +266,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* Address */}
         <div className="col-span-2">
-          <Label text="Address" required />
+          <Label text="Training PartnerAddress" required />
           <Controller
             name="vsAddress"
             control={control}
