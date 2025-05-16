@@ -145,7 +145,7 @@ const Course: React.FC = () => {
     <>
 
       <div className="">
-        <p className="text-2xl font-bold mb-4">List Of Course</p>
+        <p className="text-2xl font-bold mb-4">List Of Job Roles</p>
         {bulkName === "course" && (
           <>
             {successMessage && (
@@ -261,7 +261,7 @@ const Course: React.FC = () => {
             />
             <ModalOpenButton
               modalType={2}
-              modalTitle="Add Course"
+              modalTitle="Add Job Role"
               bulkName="course"
               Icon={Add}
 
@@ -294,7 +294,7 @@ const Course: React.FC = () => {
         Duplicate records are checked using 'Course Name' and 'Course Code' across multiple logins. These fields are the minimum required to identify duplicates.
       </div>
       <div className="pt-10">
-        <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Courses</p>
+        <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Job Roles</p>
         <CentralizedTable columns={duplicateColumns} data={duplicateData} pageSize={5} />
       </div>
     </>

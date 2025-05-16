@@ -18,16 +18,16 @@ import useModalStore from "../../../services/state/useModelStore";
 
 
 const TrainingCenterModel: React.FC = () => {
-  const {closeModal} = useModalStore()
- const [stateId, setStateId] = useState<number | null>(null);
+  const { closeModal } = useModalStore()
+  const [stateId, setStateId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
- 
+
 
   const {
     handleSubmit,
     control,
     setValue,
-  
+
     formState: { errors },
   } = useForm<TrainingCenterFormData>({
     resolver: joiResolver(trainingCenterSchema),
@@ -39,41 +39,41 @@ const TrainingCenterModel: React.FC = () => {
     queryFn: () => getULBblockByDistrict(districtId, "ULBblock"),
   });
 
-    useEffect(() => {
-      if (ULBblockData) {
-        console.log("Fetched master data:", ULBblockData);
-      }
-    }, [ULBblockData]);
+  useEffect(() => {
+    if (ULBblockData) {
+      console.log("Fetched master data:", ULBblockData);
+    }
+  }, [ULBblockData]);
 
-    // const ULBblockOptions =
-    // ULBblockData?.data?.result?.blocks?.map(
-    //   (blocks: { blockId: number; blockName: string }) => ({
-    //     label: blocks.blockName,
-    //     value: blocks.blockId,
-    //   })
-    // ) || [];
+  // const ULBblockOptions =
+  // ULBblockData?.data?.result?.blocks?.map(
+  //   (blocks: { blockId: number; blockName: string }) => ({
+  //     label: blocks.blockName,
+  //     value: blocks.blockId,
+  //   })
+  // ) || [];
 
 
-    // const { data: constiAssemblyData } = useQuery({
-    //   queryKey: ["masterData", "constituency"],
-    //   queryFn: () =>getMasterData("constituency"),
-    // });
+  // const { data: constiAssemblyData } = useQuery({
+  //   queryKey: ["masterData", "constituency"],
+  //   queryFn: () =>getMasterData("constituency"),
+  // });
 
-    // const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
+  // const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
 
-    // const isCityVillage = [
-    //   { label: "Village", value: "Village" },
-    //   { label: "City", value: "City" },
-    // ];
- 
+  // const isCityVillage = [
+  //   { label: "Village", value: "Village" },
+  //   { label: "City", value: "City" },
+  // ];
 
-  
-const queryClient = useQueryClient();
+
+
+  const queryClient = useQueryClient();
 
 
   const { data: masterData } = useQuery({
     queryKey: ["masterData", "state"],
-    queryFn: () =>getMasterData("state"),
+    queryFn: () => getMasterData("state"),
   });
 
   useEffect(() => {
@@ -84,18 +84,18 @@ const queryClient = useQueryClient();
 
 
   const stateOptions =
-  masterData?.data?.result?.states?.map(
-    (states: { stateID: number; stateName: string }) => ({
-      label: states.stateName,
-      value: states.stateID,
-    })
-  ) || [];
+    masterData?.data?.result?.states?.map(
+      (states: { stateID: number; stateName: string }) => ({
+        label: states.stateName,
+        value: states.stateID,
+      })
+    ) || [];
 
 
-   const { data: districtData } = useQuery({
-      queryKey: ["masterData", "district", stateId],
-      queryFn: () => getDistrictByState(stateId, "district"),
-    });
+  const { data: districtData } = useQuery({
+    queryKey: ["masterData", "district", stateId],
+    queryFn: () => getDistrictByState(stateId, "district"),
+  });
 
   useEffect(() => {
     if (districtData) {
@@ -104,12 +104,12 @@ const queryClient = useQueryClient();
   }, [districtData]);
 
   const districtOptions =
-  districtData?.data?.result?.districts?.map(
-    (districts: { districtID: number; districtName: string }) => ({
-      label: districts.districtName,
-      value: districts.districtID,
-    })
-  ) || [];
+    districtData?.data?.result?.districts?.map(
+      (districts: { districtID: number; districtName: string }) => ({
+        label: districts.districtName,
+        value: districts.districtID,
+      })
+    ) || [];
 
 
 
@@ -133,90 +133,90 @@ const queryClient = useQueryClient();
   //     ) || [];
 
 
-      // const { data: constiAssemblyData } = useQuery({
-      //   queryKey: ["masterData", "constituency"],
-      //   queryFn: () =>getMasterData("constituency"),
-      // });
+  // const { data: constiAssemblyData } = useQuery({
+  //   queryKey: ["masterData", "constituency"],
+  //   queryFn: () =>getMasterData("constituency"),
+  // });
 
-      // const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
+  // const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
 
-      // const isCityVillage = [
-      //   { label: "Village", value: "Village" },
-      //   { label: "City", value: "City" },
-      // ];
-
-
-      const { data: tpData } = useQuery({
-        queryKey: ["masterData", "tp"],
-        queryFn: () =>getMasterData("tp"),
-      });
-    
-      useEffect(() => {
-        if (tpData) {
-          console.log("Fetched master data:", tpData);
-        }
-      }, [tpData]);
-      const tpOptions =
-      tpData?.data?.result?.tp?.map(
-        (tp: { pklTpId: number; vsTpName: string }) => ({
-          label: tp.vsTpName,
-          value: tp.pklTpId,
-        })
-      ) || [];
-    
-
-      // const tpOptions =
-      // tpData?.data?.result?.tp?.map(
-      //   (tp: { pklTpId: number; vsTpName: string }) => ({
-      //     label: tp.vsTpName,
-      //     value: tp.pklTpId,
-      //   })
-      // ) || [];
+  // const isCityVillage = [
+  //   { label: "Village", value: "Village" },
+  //   { label: "City", value: "City" },
+  // ];
 
 
-      // const fetchPartnerData = useMutation({
-      //   mutationFn: (id: string) => getPartnerById(id),
-      //   onSuccess: (response) => {
-      //     const data = response?.data?.[0];
-      //     if (data && data.vsTpName) {
-      //       setValue("vsTpName", data.vsTpName); // Set only the vsTpName field
-      //     }
-      //   },
-      //   onError: (error) => {
-      //     console.error("Error fetching partner data:", error);
-      //   },
-      // });
-      
-  
+  const { data: tpData } = useQuery({
+    queryKey: ["masterData", "tp"],
+    queryFn: () => getMasterData("tp"),
+  });
 
- 
+  useEffect(() => {
+    if (tpData) {
+      console.log("Fetched master data:", tpData);
+    }
+  }, [tpData]);
+  const tpOptions =
+    tpData?.data?.result?.tp?.map(
+      (tp: { pklTpId: number; vsTpName: string }) => ({
+        label: tp.vsTpName,
+        value: tp.pklTpId,
+      })
+    ) || [];
 
- const submitMutation = useMutation({
-    mutationFn: (data: TrainingCenterFormData) => submitTraningCenterForm({ ...data }), 
+
+  // const tpOptions =
+  // tpData?.data?.result?.tp?.map(
+  //   (tp: { pklTpId: number; vsTpName: string }) => ({
+  //     label: tp.vsTpName,
+  //     value: tp.pklTpId,
+  //   })
+  // ) || [];
+
+
+  // const fetchPartnerData = useMutation({
+  //   mutationFn: (id: string) => getPartnerById(id),
+  //   onSuccess: (response) => {
+  //     const data = response?.data?.[0];
+  //     if (data && data.vsTpName) {
+  //       setValue("vsTpName", data.vsTpName); // Set only the vsTpName field
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.error("Error fetching partner data:", error);
+  //   },
+  // });
+
+
+
+
+
+  const submitMutation = useMutation({
+    mutationFn: (data: TrainingCenterFormData) => submitTraningCenterForm({ ...data }),
     onSuccess: (data) => {
-         if (data?.success) {
-           closeModal();
-           toast.success(data.message || "Training Center submitted successfully!");
-           queryClient.invalidateQueries({ queryKey: ["tcData"] });
-         } else {
-           toast.error(
-             data.message || "An error occurred while submitting the Training Center."
-           );
-         }
-       },
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-       onError: (error: any) => {
-         const errorMessage =
-           error?.response?.data?.message || "An unknown error occurred.";
-         toast.error(errorMessage);
-       },
-     });
-  
-  
-  
-  const onSubmit: SubmitHandler<TrainingCenterFormData> = (data:TrainingCenterFormData) => {
-     submitMutation.mutate(data);
-   };
+      if (data?.success) {
+        closeModal();
+        toast.success(data.message || "Training Center submitted successfully!");
+        queryClient.invalidateQueries({ queryKey: ["tcData"] });
+      } else {
+        toast.error(
+          data.message || "An error occurred while submitting the Training Center."
+        );
+      }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
+      toast.error(errorMessage);
+    },
+  });
+
+
+
+  const onSubmit: SubmitHandler<TrainingCenterFormData> = (data: TrainingCenterFormData) => {
+    submitMutation.mutate(data);
+  };
 
 
 
@@ -227,22 +227,22 @@ const queryClient = useQueryClient();
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         {/* First Row */}
-      {/* Name */}
-      <div className="col-span-1">
-          <Label text="Training Partner" required/>
+        {/* Name */}
+        <div className="col-span-1">
+          <Label text="Training Partner" required />
           <Controller
             name="fklTpId"
             control={control}
             render={({ field }) => (
               <Dropdown
                 {...field}
-                options={tpOptions} 
+                options={tpOptions}
                 getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value} 
+                getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value); 
-                 
-                  setValue("fklTpId", selectedOption.value.toString()); 
+                  field.onChange(selectedOption.value);
+
+                  setValue("fklTpId", selectedOption.value.toString());
                 }}
                 className={errors.fklTpId ? "border-red-500" : ""}
                 placeholder="-- TP Name --"
@@ -255,11 +255,11 @@ const queryClient = useQueryClient();
         </div>
 
 
-       
+
 
         {/* Second Row */}
         <div className="col-span-2">
-          <Label text="Training Center Name"required />
+          <Label text="Training Center Name" required />
           <Controller
             name="vsTcName"
             control={control}
@@ -364,8 +364,8 @@ const queryClient = useQueryClient();
           )}
         </div> */}
 
-      
-{/* 
+
+        {/* 
         <div>
           <Label text="SPOC Contact"required />
           <Controller
@@ -403,7 +403,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="Center Longitude" required/>
+          <Label text="Center Longitude" required />
           <Controller
             name="vsLongitude"
             control={control}
@@ -421,7 +421,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="Center Latitude" required/>
+          <Label text="Center Latitude" required />
           <Controller
             name="vsLatitude"
             control={control}
@@ -439,20 +439,20 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="Center State" required/>
+          <Label text="Center State" required />
           <Controller
             name="vsState"
             control={control}
             render={({ field }) => (
               <Dropdown
                 {...field}
-                options={stateOptions} 
+                options={stateOptions}
                 getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value} 
+                getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value); 
-                  setStateId(selectedOption.value); 
-                  setValue("vsState", selectedOption.value); 
+                  field.onChange(selectedOption.value);
+                  setStateId(selectedOption.value);
+                  setValue("vsState", selectedOption.value);
                 }}
                 className={errors.vsState ? "border-red-500" : ""}
                 placeholder="-- Select State --"
@@ -465,7 +465,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="col-span-1">
-          <Label text="Center District" required/>
+          <Label text="Center District" required />
           <Controller
             name="vsDistrict"
             control={control}
@@ -685,19 +685,48 @@ const queryClient = useQueryClient();
 </div> */}
 
 
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-red-500 text-sm mb-2">* Required fields</p>
+            <div className="space-y-2">
+              <p className="text-sm"><span className="font-semibold">Training Partner<span className="text-red-600" >*</span></span>  Choose an existing Training Partner (TP) from the drop-down list.
+                <span className="text-red-600"> *Note: Make sure to enter TP details before entering Training Center (TC) information.</span>
+              
+              </p>
+              <p className="text-sm"><span className="font-semibold">Training Center Name: <span className="text-red-600" >*</span></span> Enter a valid Training Center (TC) Name associated with the selected TP.
+                <span className="text-red-600"> *Note: Make sure to add TC details before selecting.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold">Training Center Address: <span className="text-red-600" >*</span></span> Provide the complete TC Address.
+                <span className="text-red-600"> *Note: Make sure to add course details beforehand.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold">Center Longitude / Center Latitude:<span className="text-red-600" >*</span></span>  Enter valid Longitude and Latitude coordinates for the TC (e.g., 26.114989499524036, 91.71892438694623)
 
-      
-        
+                <span className="text-red-600"> *Note: The system uses Longitude and Latitude to check for duplicate TCs.</span>
+
+              </p>
+              <p className="text-sm"><span className="font-semibold"> Center State / Center District: <span className="text-red-600" >*</span></span>   Select a valid State and District from the drop-down list.
+
+              </p>
+             
+            </div>
+          </div>
+        </div>
+
+
+
+
+
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button
             text="Submit"
             loadingText="Submitting..."
             loading={submitMutation.isPending}
-          
+
             disabled={false}
           />
         </div>
       </form>
+      
     </div>
   );
 };

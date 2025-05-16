@@ -71,7 +71,7 @@ export const NavItems: NavItem[] = [
   //  ],
   },
   {
-    name: "Courses",
+    name: "Job Role",
     link: "/Course",
     icon: Book,
     // subItems: [

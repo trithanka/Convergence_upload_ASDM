@@ -15,12 +15,12 @@ import useModalStore from "../../../services/state/useModelStore";
 // import { isBefore, parseISO } from "date-fns";
 const CourseModal: React.FC = () => {
 
-  const {closeModal} = useModalStore()
+  const { closeModal } = useModalStore()
   const {
     handleSubmit,
     control,
     watch,
-  
+
     formState: { errors },
     setValue,
   } = useForm<CourseFormData>({
@@ -31,19 +31,19 @@ const CourseModal: React.FC = () => {
 
   const queryClient = useQueryClient();
 
-   const dtFromDate = watch("dtFromDate"); // Watching changes of dtStartDate
-  
-    const [minEndDate, setMinEndDate] = useState(""); // State to store min date for dtEndDate
+  const dtFromDate = watch("dtFromDate"); // Watching changes of dtStartDate
 
-    const [courseCode , setCourseCode] = useState<string>("");
-  
-    // Watch for changes in dtStartDate and dynamically set the min date for dtEndDate
-    useEffect(() => {
-      if (dtFromDate) {
-        setMinEndDate(dtFromDate); // Update the min date for Batch End Date based on Batch Start Date
-      }
-    }, [dtFromDate]);
-  
+  const [minEndDate, setMinEndDate] = useState(""); // State to store min date for dtEndDate
+
+  const [courseCode, setCourseCode] = useState<string>("");
+
+  // Watch for changes in dtStartDate and dynamically set the min date for dtEndDate
+  useEffect(() => {
+    if (dtFromDate) {
+      setMinEndDate(dtFromDate); // Update the min date for Batch End Date based on Batch Start Date
+    }
+  }, [dtFromDate]);
+
 
   const { data: masterData } = useQuery({
     queryKey: ["masterData", "sector"],
@@ -57,7 +57,7 @@ const CourseModal: React.FC = () => {
   //   queryFn: () => getMasterData("course"),
   // });
 
-   const { data: qpnosData } = useQuery({
+  const { data: qpnosData } = useQuery({
     queryKey: ["qpnosData", "qpnos"],
     queryFn: () => getMasterData("qpnosAll"),
   });
@@ -79,14 +79,14 @@ const CourseModal: React.FC = () => {
       const today = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
       setValue("dtFromDate", today);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch("dtFromDate"), setValue]);
 
   const mutation = useMutation({
     mutationFn: submitCourseForm,
     onSuccess: (data) => {
       closeModal();
-      toast.success("Course submitted successfully!");
+      toast.success("Job Role submitted successfully!");
       console.log("Course submitted successfully", data);
       queryClient.invalidateQueries({ queryKey: ["courseData"] });
     },
@@ -98,7 +98,7 @@ const CourseModal: React.FC = () => {
 
   const onSubmit: SubmitHandler<CourseFormData> = (data: CourseFormData) => {
     mutation.mutate(data);
-    
+
   };
 
   const sectorOptions =
@@ -147,47 +147,47 @@ const CourseModal: React.FC = () => {
 
   useEffect(() => {
     if (selectedIdType !== 1 || !qpnosDetails?.data?.result?.getByQpnos?.[0]) return;
-  
+
     const fetched = qpnosDetails.data.result.getByQpnos[0];
-  
+
     if (fetched.pklSectorId) {
       setValue("fklSectorId", fetched.pklSectorId);
     }
-  
+
     if (fetched.vsCourseName) {
       setValue("vsCourseName", fetched.vsCourseName);
     }
-  
+
     if (fetched.dtFromDate) {
       setValue("dtFromDate", formatDateForInput(fetched.dtFromDate));
     }
-  
+
     if (fetched.dtToDate) {
       setValue("dtToDate", formatDateForInput(fetched.dtToDate));
     }
-  
+
   }, [selectedIdType, qpnosDetails, setValue]);
-  
-   
+
+
   const formatDateForInput = (dateStr: string | null | undefined) => {
     if (!dateStr) return '';
-    
+
     try {
       // Handle YY-MM-DD format
       const [year, month, day] = dateStr.split('-');
-      
+
       // Convert 2-digit year to 4-digit year
       const fullYear = parseInt(year) < 50 ? `20${year}` : `19${year}`;
-      
+
       // Create the YYYY-MM-DD format
       const formattedDate = `${fullYear}-${month}-${day}`;
-      
+
       // Validate the date
       const date = new Date(formattedDate);
       if (isNaN(date.getTime())) {
         return '';
       }
-      
+
       return formattedDate;
     } catch (error) {
       console.error('Date parsing error:', error);
@@ -256,7 +256,7 @@ const CourseModal: React.FC = () => {
                     field.onChange(newValue);
                     setValue("vsCourseCode", newValue);
                     setCourseCode(newValue);
-                   
+
                     console.log("Updated courseCode to:", newValue);
                   }}
                   className={errors.vsCourseCode ? "border-red-500" : ""}
@@ -274,7 +274,7 @@ const CourseModal: React.FC = () => {
         {
           selectedIdType === 1 ? (
             <div className="col-span-1 sm:col-span-1">
-              <Label text = "Sector Name" required />
+              <Label text="Sector Name" required />
               <Controller
                 name="fklSectorId"
                 control={control}
@@ -289,37 +289,37 @@ const CourseModal: React.FC = () => {
                 )}
               />
             </div>
-          ) :  <div className="col-span-1">
-          <Label text="Sector Name" required/>
-          <Controller
-            name="fklSectorId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={sectorOptions}
-                
-                
-                getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value}
-                onSelect={(selectedOption) => {
-                  
-                  field.onChange(selectedOption.value);
-                  setValue("fklSectorId", selectedOption.value.toString() );
-                }}
-                className={errors.fklSectorId ? "border-red-500" : ""}
-                placeholder="-- Select Sector --"
-              />
+          ) : <div className="col-span-1">
+            <Label text="Sector Name" required />
+            <Controller
+              name="fklSectorId"
+              control={control}
+              render={({ field }) => (
+                <Dropdown
+                  {...field}
+                  options={sectorOptions}
+
+
+                  getOptionLabel={(option) => option.label}
+                  getOptionValue={(option) => option.value}
+                  onSelect={(selectedOption) => {
+
+                    field.onChange(selectedOption.value);
+                    setValue("fklSectorId", selectedOption.value.toString());
+                  }}
+                  className={errors.fklSectorId ? "border-red-500" : ""}
+                  placeholder="-- Select Sector --"
+                />
+              )}
+            />
+            {errors.fklSectorId && (
+              <p className="text-red-500">{errors.fklSectorId.message}</p>
             )}
-          />
-          {errors.fklSectorId && (
-            <p className="text-red-500">{errors.fklSectorId.message}</p>
-          )}
-        </div>
+          </div>
 
         }
 
- {/* <div className="col-span-1">
+        {/* <div className="col-span-1">
         <Label text="Sector Name" required/>
         <Controller
           name="fklSectorId"
@@ -348,12 +348,12 @@ const CourseModal: React.FC = () => {
           <p className="text-red-500">{errors.fklSectorId.message}</p>
         )}
       </div> */}
-          
+
 
 
 
         {/* Sector Name */}
-       {/* {<div className="col-span-1">
+        {/* {<div className="col-span-1">
           <Label text="Sector Name" required/>
           <Controller
             name="fklSectorId"
@@ -381,25 +381,25 @@ const CourseModal: React.FC = () => {
         </div>} */}
 
         <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-          <Label text="Job Role Name" required/>
+          <Label text="Job Role Name" required />
           <Controller
-                name="vsCourseName"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="text"
-                    disabled = {selectedIdType === 1}
-                    value={qpnosDetails?.data?.result?.getByQpnos[0]?.vsCourseName}
-                    className={errors.vsCourseName ? "border-red-500" : ""}
-                  />
-                )}
+            name="vsCourseName"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                disabled={selectedIdType === 1}
+                value={qpnosDetails?.data?.result?.getByQpnos[0]?.vsCourseName}
+                className={errors.vsCourseName ? "border-red-500" : ""}
               />
+            )}
+          />
           {errors.vsCourseName && (
             <p className="text-red-500">{errors.vsCourseName.message}</p>
           )}
         </div>
-     
+
 
         {/* Total Theory and Practical Hours */}
         {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
@@ -449,63 +449,87 @@ const CourseModal: React.FC = () => {
 
         {/* Date Valid From and Date Valid Upto */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
-        <div>
-        <Label text="Course start date" required
-         />
-        <Controller
-          name="dtFromDate"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="date"
-              className={errors.dtFromDate ? "border-red-500" : ""} 
-           
-              value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtFromDate)|| field.value } 
-             
-              disabled={selectedIdType === 1}
-              onChange={(e) => {
-                field.onChange(e);
-              
-              }}
+          <div>
+            <Label text=" start date" required
             />
-          )}
-        />
-        {errors.dtFromDate && (
-          <p className="text-red-500">{errors.dtFromDate.message}</p>
-        )}
-      </div>
+            <Controller
+              name="dtFromDate"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="date"
+                  className={errors.dtFromDate ? "border-red-500" : ""}
+
+                  value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtFromDate) || field.value}
+
+                  disabled={selectedIdType === 1}
+                  onChange={(e) => {
+                    field.onChange(e);
+
+                  }}
+                />
+              )}
+            />
+            {errors.dtFromDate && (
+              <p className="text-red-500">{errors.dtFromDate.message}</p>
+            )}
+          </div>
           <div className="col-span-1">
-        <Label text="Course End Date" required />
-        <Controller
-          name="dtToDate"
-          control={control}
-          // rules={{
-          //   validate: (value) => {
-          //     if (!dtFromDate) return "Select 'Batch Start Date' first";
-          //     if (isBefore(parseISO(value), parseISO(dtFromDate))) {
-          //       return "Batch End Date must be after Batch Start Date";
-          //     }
-          //     return true;
-          //   },
-          // }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="date"
-              //@ts-ignore
-              value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtToDate) || field.value}
-              min={minEndDate || ""} // Set min to Batch Start Date
-              disabled={!dtFromDate || selectedIdType === 1 } // Disable Batch End Date if no Batch Start Date is selected
-              className={errors.dtFromDate ? "border-red-500" : ""}
+            <Label text=" End Date" required />
+            <Controller
+              name="dtToDate"
+              control={control}
+              // rules={{
+              //   validate: (value) => {
+              //     if (!dtFromDate) return "Select 'Batch Start Date' first";
+              //     if (isBefore(parseISO(value), parseISO(dtFromDate))) {
+              //       return "Batch End Date must be after Batch Start Date";
+              //     }
+              //     return true;
+              //   },
+              // }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="date"
+                  //@ts-ignore
+                  value={selectedIdType === 1 && formatDateForInput(qpnosDetails?.data?.result?.getByQpnos[0]?.dtToDate) || field.value}
+                  min={minEndDate || ""} // Set min to Batch Start Date
+                  disabled={!dtFromDate || selectedIdType === 1} // Disable Batch End Date if no Batch Start Date is selected
+                  className={errors.dtFromDate ? "border-red-500" : ""}
+                />
+              )}
             />
-          )}
-        />
-        {errors.dtToDate && (
-          <p className="text-red-500">{errors.dtToDate.message}</p>
-        )}
-      </div>
+            {errors.dtToDate && (
+              <p className="text-red-500">{errors.dtToDate.message}</p>
+            )}
+          </div>
         </div>
+
+
+           <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-red-500 text-sm mb-2">* Required fields</p>
+            <div className="space-y-2">
+              <p className="text-sm"><span className="font-semibold">QPNOS Availability:
+ <span className="text-red-600" >*</span></span>   If QPNOS is available, select "Yes" and enter the NSDC-approved QPNOS.  <br/>
+ If QPNOS is not available, select "No" and provide the Job Role Details.
+
+              </p>
+              <p className="text-sm"><span className="font-semibold">Sector Name: <span className="text-red-600" >*</span></span> 
+    Select a valid Sector Name from the drop-down list.
+              
+              </p>
+              <p className="text-sm"><span className="font-semibold">Job Role Details:  <span className="text-red-600" >*</span></span>      Enter the valid Job Role Name, Start Date, and End Date as approved by NSDC.
+                
+              </p>
+              
+                 
+            </div>
+          </div>
+        </div>
+
 
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
@@ -517,6 +541,7 @@ const CourseModal: React.FC = () => {
           />
         </div>
       </form>
+     
     </div>
   );
 };

@@ -534,6 +534,43 @@ const BatchModel: React.FC = () => {
           {errors.QPNOS && <p className="text-red-500">{errors.QPNOS.message}</p>}
         </div> */}
 
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-red-500 text-sm mb-2">* Required fields</p>
+            <div className="space-y-2">
+              <p className="text-sm"><span className="font-semibold">Batch Id <span className="text-red-600" >*</span></span>   Enter the valid system-generated Batch ID.
+              </p>
+              <p className="text-sm"><span className="font-semibold">Training Center <span className="text-red-600" >*</span></span> Select an existing Training Center (TC) from the drop-down list.
+                <span className="text-red-600"> *Note: Make sure to add TC details before selecting.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold">Courses  <span className="text-red-600" >*</span></span>  Choose a valid Job Role Name from the existing list.
+                <span className="text-red-600"> *Note: Make sure to add course details beforehand.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold"> Trainer Name <span className="text-red-600" >*</span></span>  Enter the valid registered Trainer Name associated with the selected course.
+ 
+               
+              </p>
+              <p className="text-sm"><span className="font-semibold"> Trainer PAN <span className="text-red-600" >*</span></span>  Provide a valid PAN for the trainer.
+ 
+               <span className="text-red-600"> *Note:The system uses PAN to check for duplicate trainers.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold">Target Order Number: <span className="text-red-600" >*</span></span>    Select the Target Order Number from the existing list.
+                 <span className="text-red-600">Note* : Ensure that Target details are added first</span>
+                 
+                  </p>
+                  <p className="text-sm"><span className="font-semibold">Batch Size Enrolled: <span className="text-red-600" >*</span></span>   Enter the valid total size of the batch.
+.
+                
+
+                  </p>
+                  <p className="text-sm"><span className="font-semibold">Batch Start Date / Batch End Date: <span className="text-red-600" >*</span></span>  Enter the valid start date of the batch.
+                  </p>
+                 
+            </div>
+          </div>
+        </div>
+
+
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button
             text="Submit"
@@ -544,6 +581,7 @@ const BatchModel: React.FC = () => {
           />
         </div>
       </form>
+    
     </div>
 
   );

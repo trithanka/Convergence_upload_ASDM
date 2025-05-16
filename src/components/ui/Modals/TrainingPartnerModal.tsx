@@ -29,8 +29,8 @@ const TrainingPartnerModal: React.FC = () => {
     resolver: joiResolver(trainingPartnerSchema),
   });
   const queryClient = useQueryClient();
-  const [stateId, ] = useState<number | null>(null);
-  const [districtId, ] = useState<number | null>(null);
+  const [stateId,] = useState<number | null>(null);
+  const [districtId,] = useState<number | null>(null);
 
 
 
@@ -392,7 +392,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="Village"  />
+              <Label text="Village" />
               <Controller
                 name="vsVillage"
                 control={control}
@@ -414,7 +414,7 @@ const TrainingPartnerModal: React.FC = () => {
         {selectedVillageCity === "City" && (
           <>
             <div className="col-span-1">
-              <Label text="ULB"  />
+              <Label text="ULB" />
               <Controller
                 name="vsULB"
                 control={control}
@@ -439,7 +439,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="City"  />
+              <Label text="City" />
               <Controller
                 name="vsCity"
                 control={control}
@@ -458,6 +458,22 @@ const TrainingPartnerModal: React.FC = () => {
           </>
         )}
 
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-red-500 text-sm mb-2">* Required fields</p>
+            <div className="space-y-2">
+              <p className="text-sm"><span className="font-semibold">Training Partner Name <span className="text-red-600" >*</span></span>   Enter a valid Training Partner Name.
+              </p>
+              <p className="text-sm"><span className="font-semibold">PAN Card <span className="text-red-600" >*</span></span>   Enter a valid PAN Card number for the Training Partner. 
+                
+                <span className="text-red-600">Note: The system uses PAN to check for duplicate Training Partners.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold">Address <span className="text-red-600" >*</span></span>   Enter a valid Training Partner Address.
+              </p>
+            </div>
+            </div>
+          </div>
+
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button
@@ -468,6 +484,7 @@ const TrainingPartnerModal: React.FC = () => {
           />
         </div>
       </form>
+     
     </div>
   );
 };

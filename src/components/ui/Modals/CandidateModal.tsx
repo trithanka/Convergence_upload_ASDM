@@ -369,7 +369,7 @@ const CandidateModal: React.FC = () => {
         {/* Basic Details */}
 
         <div className="col-span-1">
-          <Label text="Name" required />
+          <Label text="Candidate Name" required />
           <Controller
             name="vsCandidateName"
             control={control}
@@ -708,7 +708,7 @@ const CandidateModal: React.FC = () => {
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
       
         <div className="col-span-2">
-          <Label text=" Does He/She Personally Disabled ?" />
+          <Label text=" Is  Personally Disabled ?" />
           <Controller
             name="bDisability"
             control={control}
@@ -741,7 +741,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-2">
-          <Label text="Does He/She belong to Tea Tribe minority ?" />
+          <Label text="Is  Tea Tribe minority ?" />
           <Controller
             name="bTeaTribe"
             control={control}
@@ -775,7 +775,7 @@ const CandidateModal: React.FC = () => {
 
       
         <div className="col-span-2">
-          <Label text="Does He/She hold BPL Card Holder ?" />
+          <Label text="Is BPL Card Holder ?" />
           <Controller
             name="bBPLcardHolder"
             control={control}
@@ -809,7 +809,7 @@ const CandidateModal: React.FC = () => {
 
     
         <div className="col-span-2">
-          <Label text="Does He/She belong to Minority Community ?" />
+          <Label text="Is belong to Minority Community ?" />
           <Controller
             name="bMinority"
             control={control}
@@ -844,7 +844,7 @@ const CandidateModal: React.FC = () => {
 
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
 
-        <div className="col-span-2">
+        <div className="col-span-3">
           <Label text="Batch ID"  />
           <Controller
             name="batchId"
@@ -1808,6 +1808,42 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsBankIFSC.message}</p>
           )}
         </div> */}
+
+        
+        <div className="col-span-1 md:col-span-2 lg:col-span-5 mb-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-red-500 text-sm mb-2">* Required fields</p>
+            <div className="space-y-2">
+              <p className="text-sm"><span className="font-semibold">Candidate Name: <span className="text-red-600" >*</span></span> Enter the valid registered Candidate Name.
+              </p>
+              <p className="text-sm"><span className="font-semibold">Aadhar: <span className="text-red-600" >*</span></span> Select "Yes" or "No".
+
+                
+                <span className="text-red-600">Note:  If the candidate's Aadhar exists, select "Yes" and enter the last 4 digits of the Aadhar number.
+                If the candidate's Aadhar does not exist, select "No" and enter the candidate's mobile number.</span>
+              </p>
+              <p className="text-sm"><span className="font-semibold">Date of Birth:
+ <span className="text-red-600" >*</span></span>  Select a valid Date of Birth from the calendar.
+
+              </p>
+              <p className="text-sm"><span className="font-semibold">Gender / Religion / Category / Education Attained:
+ <span className="text-red-600" >*</span></span>   Choose a valid option from the dropdown list.
+
+
+              </p>
+              <p className="text-sm"><span className="font-semibold">Batch ID: <span className="text-red-600" >*</span></span>  Select an existing Batch ID from the drop-down list.
+                <span className="text-red-600">Note: Make sure to add Batch Details beforehand</span>
+
+              </p>
+              <p className="text-sm"><span className="font-semibold">Additional Information (if enrolled in a batch):
+: <span className="text-red-600" >*</span></span> Provide the following details if the candidate is enrolled in a batch:
+                <span className="text-red-600">    Assessment Completion Status: Indicate whether the assessment is completed.</span>
+                <span className="text-red-600">    Result Declaration: Indicate whether the result is declared.</span>
+                <span className="text-red-600">        Placement Details: If the candidate has passed the assessment, enter the placement details..</span>
+              </p>
+            </div>
+            </div>
+          </div>
 
 
 
