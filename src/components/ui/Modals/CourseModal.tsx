@@ -450,7 +450,7 @@ const CourseModal: React.FC = () => {
         {/* Date Valid From and Date Valid Upto */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
         <div>
-        <Label text="Batch Start Date" required
+        <Label text="Course start date" required
          />
         <Controller
           name="dtFromDate"
@@ -476,7 +476,7 @@ const CourseModal: React.FC = () => {
         )}
       </div>
           <div className="col-span-1">
-        <Label text="Batch End Date" required />
+        <Label text="Course End Date" required />
         <Controller
           name="dtToDate"
           control={control}

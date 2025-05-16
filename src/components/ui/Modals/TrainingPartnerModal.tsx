@@ -152,7 +152,7 @@ const TrainingPartnerModal: React.FC = () => {
       >
         {/* Name */}
         <div className="col-span-2">
-          <Label text="Name" required />
+          <Label text="Training Partner Name" required />
           <Controller
             name="vsTpName"
             control={control}
