@@ -13,13 +13,13 @@ import {
   UploadCloud,
   X,
 } from "lucide-react";
-import { Add } from "@mui/icons-material";
+import { Add, ViewSidebar } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../services/state/useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { getTableData } from "../services/state/api/tableDataApi";
-import SearchDropdown from "../components/ui/SearchDropdown";
+
 import Loader from "../components/ui/Loader";
 import { Column } from "react-table";
 import * as XLSX from "xlsx";
@@ -33,9 +33,9 @@ const TrainingPartner: React.FC = () => {
   );
 
   const [filteredData, setFilteredData] = useState([]);
-  const [searchKey, setSearchKey] = useState<string>("");
+  const [searchKey, setSearchKey] = useState<string>("vsTpName");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const [, setSearchKeyLabel] = useState<string>("");
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const errorMessage = useErrorStore((state) => state.errorMessage);
@@ -171,14 +171,9 @@ const TrainingPartner: React.FC = () => {
     XLSX.writeFile(workbook, "TrainingPartnerDuplicateData.xlsx");
   };
 
-  const handleDropdownSelect = (option: { label: string; value: string }) => {
-    setSearchKey(option.value);
-    setSearchKeyLabel(option.label);
-    setSearchValue("");
-  };
 
   const handleSearch = (value: string) => {
-    setSearchValue(value);
+    setSearchValue(value );
   };
 
   if (isLoading) {
@@ -255,27 +250,13 @@ const TrainingPartner: React.FC = () => {
         )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-            <SearchDropdown
-              options={[
-                { label: "All", value: "" },
-                { label: "TP name", value: "vsTpName" },
-                { label: "Mobile", value: "iSpocContactNum" },
-                { label: "SPOC Name", value: "vsSpocName" },
-                { label: "Smart ID", value: "vsSmartId" },
-                { label: "District", value: "vsDistrict" },
-                { label: "State", value: "vsState" },
-                { label: "Block", value: "vsBlock" },
-                { label: "ULB", value: "vsULB" },
-              ]}
-              onSelect={handleDropdownSelect}
-              selected={searchKey}
-            />
-            {searchKey && (
+          
               <>
                 <SearchInputBox
-                  value={searchValue}
+                  value = {searchValue}
+                  
                   onChange={(e) => handleSearch(e.target.value)}
-                  placeholder={`Enter ${searchKeyLabel}`}
+                  placeholder={`Enter Training Partner Name`  }
                 />
                 <button
                   className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
@@ -289,7 +270,7 @@ const TrainingPartner: React.FC = () => {
                   Clear
                 </button>
               </>
-            )}
+            
           </div>
           <div className="flex gap-1">
             <TemplateDownloadButton

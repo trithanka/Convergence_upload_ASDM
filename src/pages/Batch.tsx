@@ -199,11 +199,10 @@ const Batch: React.FC = () => {
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
-                { label: "Scheme Name", value: "vsSchemeName" },
-                { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Scheme Type", value: "vsSchemeType" },
-                { label: "Fund Name", value: "vsFundName" },
-                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" }
+                { label: "Batch Number", value: "iBatchNumber" },
+                { label: "TC Id", value: "fklTcId" },
+                { label: "Job Role Id ", value: "fklCourseId" },
+            
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}

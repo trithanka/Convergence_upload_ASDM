@@ -215,11 +215,9 @@ const Course: React.FC = () => {
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
-                { label: "Scheme Name", value: "vsSchemeName" },
-                { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Scheme Type", value: "vsSchemeType" },
-                { label: "Fund Name", value: "vsFundName" },
-                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" }
+                { label: "Job Role Name", value: "vsCourseName" },
+                { label: "Job Role Code", value: "vsCourseCode" },
+                { label: "Sector Id", value: "fklSectorId" },
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}

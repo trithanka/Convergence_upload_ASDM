@@ -382,10 +382,7 @@ const Candidate: React.FC = () => {
                 { label: "Batch ID", value: "batchId" },
                 { label: "Candidate ID", value: "candidateId" },
                 { label: "Gender", value: "gender" },
-                {
-                  label: "Mobile Number",
-                  value: "mobile",
-                },
+             
                 {
                   label: "Qualification",
                   value: "qualification",

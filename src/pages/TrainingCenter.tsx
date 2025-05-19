@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getTableData } from "../services/state/api/tableDataApi";
 import useDebounce from "../services/state/useDebounce";
-import SearchDropdown from "../components/ui/SearchDropdown";
+
 import Loader from "../components/ui/Loader";
 import { centerDuplicateColumns } from "../utils/tableColumns";
 import { Column } from "react-table";
@@ -24,8 +24,8 @@ const TrainingCenter: React.FC = () => {
 
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [searchKey, setSearchKey] = useState<string>("");
-  const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const [searchKey, setSearchKey] = useState<string>("vsTcName");
+  const [, setSearchKeyLabel] = useState<string>("");
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,11 +114,7 @@ const TrainingCenter: React.FC = () => {
     XLSX.writeFile(workbook, "TrainingCenterData.xlsx");
   };
 
-  const handleDropdownSelect = (option: { label: string; value: string }) => {
-    setSearchKey(option.value);
-    setSearchKeyLabel(option.label);
-    setSearchValue("");
-  };
+
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -197,11 +193,11 @@ const TrainingCenter: React.FC = () => {
         )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-            <SearchDropdown
+            {/* <SearchDropdown
               options={[
                 { label: "All", value: "" },
                 { label: "TC Name", value: "vsTcName" },
-                { label: "Center Code", value: "vsTcCode" },
+           
 
                 // { label: "TP ID", value: "fklTpId" },
                 // { label: "District", value: "vsDistrict" },
@@ -211,13 +207,13 @@ const TrainingCenter: React.FC = () => {
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
-            />
-            {searchKey && (
+            /> */}
+            {(
               <>
                 <SearchInputBox
                   value={searchValue}
                   onChange={(e) => handleSearch(e.target.value)}
-                  placeholder={`Enter ${searchKeyLabel}`}
+                  placeholder={`Enter Training Center Name`}
                 />
                 <button
                   className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
