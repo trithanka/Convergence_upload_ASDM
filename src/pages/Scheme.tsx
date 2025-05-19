@@ -284,7 +284,7 @@ const Scheme: React.FC = () => {
                 { label: "All", value: "" },
                 { label: "Scheme Name", value: "vsSchemeName" },
                 { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Fund Name", value: "vsFundName" },
+                // { label: "Fund Name", value: "vsFundName" },
                 { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" },
               ]}
               onSelect={handleDropdownSelect}
@@ -382,7 +382,7 @@ const Scheme: React.FC = () => {
       </div>
 
       <div className="pt-10">
-        <p className="text-2xl font-bold mb-4">Duplicate Check By </p>
+        <p className="text-2xl font-bold mb-4"> Existing Scheme In Cross Department </p>
         <div className="mb-4 flex justify-between">
           <div>
             <label className="mr-6">
@@ -399,35 +399,16 @@ const Scheme: React.FC = () => {
             <label className="mr-6 ">
               <input
                 type="checkbox"
-                name="vsFundName"
-                checked={selectedDuplicates.vsFundName}
+                name="vsSchemeCode"
+                //@ts-ignore
+                checked={selectedDuplicates.vsSchemeCode}
                 onChange={handleCheckboxChange}
                 className="transform scale-150 mr-2"
                 disabled
               />
-              Fund Name
+              Scheme Code 
             </label>
-            <label className="mr-6">
-              <input
-                type="checkbox"
-                name="vsSchemeType"
-                checked={selectedDuplicates.vsSchemeType}
-                onChange={handleCheckboxChange}
-                className="transform scale-150 mr-2"
-              />
-              Scheme Type
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                name="vsSchemeFundingType"
-                checked={selectedDuplicates.vsSchemeFundingType}
-                onChange={handleCheckboxChange}
-                className="transform scale-150 mr-2"
-              />
-              Funding Type
-            </label>
+           
           </div>
           <div>
             <button
@@ -445,7 +426,6 @@ const Scheme: React.FC = () => {
           pageSize={duplicatePageSize}
           currentPage={duplicateCurrentPage}
           totalCount={totalDuplicateCount}
-
           onPageChange={setDuplicateCurrentPage}
           onPageSizeChange={setDuplicatePageSize}
         />

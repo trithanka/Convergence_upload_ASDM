@@ -73,7 +73,19 @@ export const schemeDuplicateColumns: (
       >
         {value}
       </span>
+
     ),
+  },
+  {
+      Header: "Scheme Code",
+      accessor: "vsSchemeCode",
+      Cell: ({ value }) => (
+        <span
+          className={duplicateQuery.includes("vsSchemeCode") ? "bg-yellow-200" : ""}
+        >
+          {value}
+        </span>
+      )
   },
  
   // {
@@ -109,7 +121,7 @@ export const schemeDuplicateColumns: (
   //     </span>
   //   ),
   // },
-  {
+  { 
     Header: "Department Name",
     accessor: "vsDepartmentName",
     Cell: ({ value }) => (
