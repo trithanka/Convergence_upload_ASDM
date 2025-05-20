@@ -433,11 +433,12 @@ export const centerColumns = (
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Training Partner", accessor: "vsTpName" },
   { Header: "Training Center ", accessor: "vsTcName" },
-  { Header: "Center Address", accessor: "vsTcAddress" },
-  { Header: "Center State", accessor: "vsState" },
+  { Header: "Center Address", accessor: "vsAddress" },
+
  
  
   { Header: "Center District", accessor: "vsDistrict" },
+  { Header: "Center State", accessor: "vsState" },
   // {
   //   Header: "Action",
   //   accessor: "Action",
@@ -1078,11 +1079,11 @@ export const candidateColumns = (
     accessor: "vsQualification",
     Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
   },
-  {
-    Header: "Aadhar (Last 4 Digit)",
-    accessor: "UUID",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
-  },
+  // {
+  //   Header: "Aadhar (Last 4 Digit)",
+  //   accessor: "UUID",
+  //   Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
+  // },
   // {
   //   Header: "Action",
   //   accessor: "Action",

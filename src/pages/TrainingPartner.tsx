@@ -13,7 +13,7 @@ import {
   UploadCloud,
   X,
 } from "lucide-react";
-import { Add, ViewSidebar } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../services/state/useDebounce";
