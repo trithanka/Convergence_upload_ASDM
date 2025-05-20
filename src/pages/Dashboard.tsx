@@ -94,7 +94,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: "Trainers",
-      href: "/Trainer",
+      href: "/Batch",
       count: convergenceCounts.trainerCount?.[0]?.count || 0,
       icon: Spline,
     },

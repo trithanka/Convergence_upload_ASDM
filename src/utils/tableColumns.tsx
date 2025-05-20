@@ -532,7 +532,10 @@ export const batchColumns = (
   { Header: "Batch End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
   // { Header: "Batch Size", accessor: "iBatchSize" },
   { Header: "Training Center", accessor: "tcName" },
-  {Header :"Course " , accessor:"vsCourseName"},
+  {Header :"Job Role " , accessor:"vsCourseName"},
+
+  {Header :"Trainer Name " , accessor:"trainerName"},
+  {Header :"Trainer PAN " , accessor:"trainerPAN"},
   // {
   //   Header: "Trainer",
   //   accessor: "vsTrainerName",
