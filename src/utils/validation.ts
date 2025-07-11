@@ -281,7 +281,7 @@ export const trainerSchema = Joi.object({
 });
 
 export const batchSchema = Joi.object({
-  iBatchNumber: Joi.number().required().label("Batch ID").messages({
+  iBatchNumber: Joi.string().required().label("Batch ID").messages({
     "string.empty": "Batch ID is required.",
   }),
   SDMSid: Joi.optional(),

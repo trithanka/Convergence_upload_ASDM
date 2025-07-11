@@ -15,7 +15,7 @@ interface CentralizedTableProps {
 const CentralizedTable: React.FC<CentralizedTableProps> = ({
   columns = [],
   data = [],
-  pageSize = 25,
+  pageSize = 20,
   currentPage = 1,
   totalCount = 0,
   onPageChange,
@@ -101,7 +101,7 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
               onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
               className="block w-20 px-2 py-1 text-xs border rounded bg-white focus:ring focus:ring-blue-200 focus:outline-none"
             >
-              {[5, 10, 15, 20, 25, 30].map((size) => (
+              {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((size) => (
                 <option key={size} value={size}>
                   {size}
                 </option>
