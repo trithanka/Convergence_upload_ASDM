@@ -285,7 +285,7 @@ const Scheme: React.FC = () => {
                 { label: "Scheme Name", value: "vsSchemeName" },
                 { label: "Scheme Code", value: "vsSchemeCode" },
                 // { label: "Fund Name", value: "vsFundName" },
-                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" },
+                // { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" },
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}

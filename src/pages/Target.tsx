@@ -183,7 +183,7 @@ const Target: React.FC = () => {
                 { label: "All", value: "" },
                 { label: "Scheme Code", value: "vsSchemeCode" },
                 { label: "Target Order No", value: "vsTargetNo" },
-                { label: "Target Date (yyyy/mm/dd)", value: "dtTargetDate" },
+              
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}

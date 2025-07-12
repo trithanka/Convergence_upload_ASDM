@@ -8,15 +8,16 @@ export const getTableData = async (
   queryType: string,
   searchKey?: string,
   searchValue?: string,
-  
+
 
   currentPage: number = 1,
   pageSize: number = 25,
   duplicateQuery?: string[],
   duplicateCurrentPage : number = 1,
   duplicatePageSize: number = 25,
-  duplicateType: string = "ownDept" 
- 
+  duplicateType: string = "ownDept",
+  batchId?: string // Add batchId parameter
+
 ) => {
   // Properly get state here
   const { userDetails } = useAuthStore.getState();
@@ -44,6 +45,13 @@ export const getTableData = async (
   if (searchKey && searchValue) {
     requestData[searchKey] = searchValue;
   }
+
+  // Add batchId to request if provided
+  if (batchId) {
+    requestData.batchId = batchId;
+  }
+
+  console.log("Final API Request Data:", requestData);
 
   const response = await axiosInstance.post("/get-department/", requestData);
   return response.data;

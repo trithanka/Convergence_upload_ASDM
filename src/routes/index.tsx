@@ -22,6 +22,7 @@ import States from "../pages/masters/States";
 import Sectors from "../pages/masters/Sectors";
 import Departments from "../pages/masters/Departments";
 import  Candidates  from "../pages/Candidates";
+import DisplayCountCandidate from "../pages/DisplayCountCandidate";
 
 const Index = () => {
   return (
@@ -55,7 +56,8 @@ const Index = () => {
         <Route path="Invoice" element={<Invoice />} />
         <Route path="States" element={<States />} />
         <Route path="Sectors" element={<Sectors />} />
-        <Route path="Departments" element={<Departments />} />
+        <Route path="Departments" element={<Departments />} />\
+        <Route path="displayCountCandidate" element={< DisplayCountCandidate />} />
       </Route>
 
       <Route

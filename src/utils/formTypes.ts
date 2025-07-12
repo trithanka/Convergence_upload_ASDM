@@ -204,6 +204,7 @@ export interface candidateFormData {
   bTeaTribe: number;
   bBPLcardHolder: number;
   bMinority: number;
+  bDropout: number;
   batchId: number;
   dtAssessmentDate: string;
   bAssessed: string | number;

@@ -520,6 +520,9 @@ interface BatchData {
   dtStartDate: string;
   dtEndDate: string;
   tcName: string;
+  vsCourseName: string;
+  iBatchTarget: number;
+  totalCandidate?: number; // Optional field for candidate count
   Action: unknown;
 }
 
@@ -543,18 +546,42 @@ export const batchColumns = (
 
   // { Header: "SDMS  ID", accessor: "SDMSid" },
 
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/batch/${row.original.pklBatchId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
+{
+  Header: "Candidate Count",
+  accessor: "totalCandidate", // Use simple string accessor
+  Cell: ({ row, value }: { row: any; value: any }) => {
+    // The CentralizedTable passes row directly (not row.original)
+    // So row is the actual data object
+    const rowData = row || {};
+
+    // Try to get candidate count from different possible fields
+    const count = value ||
+                  rowData.totalCandidate ||
+                  rowData.iBatchTarget ||
+                  rowData.candidateCount ||
+                  rowData.totalCandidates ||
+                  rowData.count ||
+                  "0";
+
+    const batchId = rowData.iBatchNumber;
+    console.log("Batch ID:", batchId);
+
+    return (
+     <button
+  onClick={() => {
+    // Save batchId and count to localStorage
+    localStorage.setItem("selectedBatchId", batchId);
+    navigate(`/displayCountCandidate`);
+  }}
+  className="text-blue-500 hover:underline"
+>
+  {count}
+</button>
+    );
+  },
+}
+
+
 ];
 
 interface AssessorsData {

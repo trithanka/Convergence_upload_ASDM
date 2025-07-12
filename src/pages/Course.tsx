@@ -217,7 +217,7 @@ const Course: React.FC = () => {
                 { label: "All", value: "" },
                 { label: "Job Role Name", value: "vsCourseName" },
                 { label: "Job Role Code", value: "vsCourseCode" },
-                { label: "Sector Id", value: "fklSectorId" },
+               
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}

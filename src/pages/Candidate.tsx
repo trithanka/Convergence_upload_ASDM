@@ -25,6 +25,7 @@ import CentralizedTable from "../components/CentralizedTable";
 import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
 import { format } from "date-fns";
+import { getMasterData } from "../services/state/api/masterApi";
 
 const Candidate: React.FC = () => {
   const navigate = useNavigate();
@@ -44,6 +45,8 @@ const Candidate: React.FC = () => {
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const [selectedBatchId, setSelectedBatchId] = useState<string>("");
+  const [selectedGender, setSelectedGender] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [totalDupCount, setTotalDupCount] = useState<number>(0);
@@ -91,6 +94,43 @@ const Candidate: React.FC = () => {
     () => CrossCandidateColumns(navigate, duplicateQuery),
     [navigate, duplicateQuery]
   );
+
+  // Fetch batch data for dropdown
+  const { data: batchData } = useQuery({
+    queryKey: ["masterData", "batchCandidate"],
+    queryFn: () => getMasterData("batchCandidate"),
+  });
+
+  // Fetch gender data for dropdown
+  const { data: genderData } = useQuery({
+    queryKey: ["masterData", "gender"],
+    queryFn: () => getMasterData("gender"),
+  });
+
+  // Create batch options from fetched data
+  const batchOptions = useMemo(() => {
+    if (!batchData?.data?.result?.batchCandidate) return [];
+    return batchData.data.result.batchCandidate.map(
+      (batch: { id: number; iBatchNumber: number }) => ({
+        label: `Batch ${batch.iBatchNumber}`,
+        value: String(batch.iBatchNumber),
+      })
+    );
+  }, [batchData]);
+
+  // Create gender options from fetched data
+  const genderOptions = useMemo(() => {
+    if (!genderData?.data?.result?.gender) return [];
+    return genderData.data.result.gender.map(
+      (gender: { pklGenderId: number; vsGenderName: string }) => ({
+        label: gender.vsGenderName,
+        value: String(gender.pklGenderId),
+      })
+    );
+  }, [genderData]);
+
+  // Use the search key and debounced search value directly
+  // The search value will be set appropriately by the handlers
 
   const {
     data: fetchedData,
@@ -286,10 +326,39 @@ const Candidate: React.FC = () => {
     setSearchKey(option.value);
     setSearchKeyLabel(option.label);
     setSearchValue("");
+    // Clear other selections when switching search types
+    setSelectedBatchId("");
+    setSelectedGender("");
   };
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
+  };
+
+  const handleBatchSelect = (option: { label: string; value: string }) => {
+    setSelectedBatchId(option.value);
+    setSearchValue(option.value); // Set this as the search value
+
+    // Send payload with selected batch ID
+    console.log("Selected Batch ID payload:", {
+      batchId: option.value,
+      batchLabel: option.label,
+      timestamp: new Date().toISOString(),
+      action: "batch_filter_selected"
+    });
+  };
+
+  const handleGenderSelect = (option: { label: string; value: string }) => {
+    setSelectedGender(option.value);
+    setSearchValue(option.value); // Set this as the search value
+
+    // Send payload with selected gender
+    console.log("Selected Gender payload:", {
+      genderId: option.value,
+      genderLabel: option.label,
+      timestamp: new Date().toISOString(),
+      action: "gender_filter_selected"
+    });
   };
 
   if (isLoading) {
@@ -375,41 +444,67 @@ const Candidate: React.FC = () => {
 
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
+            {/* Main search type dropdown */}
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
                 { label: "Candidate Name", value: "vsCandidateName" },
                 { label: "Batch ID", value: "batchId" },
-                { label: "Candidate ID", value: "candidateId" },
                 { label: "Gender", value: "gender" },
-             
-                {
-                  label: "Qualification",
-                  value: "qualification",
-                },
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
+              placeholder="Search by field"
             />
-            {searchKey && (
+
+            {/* Conditional rendering based on search type */}
+            {searchKey === "vsCandidateName" && (
               <>
                 <SearchInputBox
                   value={searchValue}
                   onChange={(e) => handleSearch(e.target.value)}
                   placeholder={`Enter ${searchKeyLabel}`}
                 />
-                <button
-                  className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
-                  onClick={() => {
-                    setSearchValue("");
-                    setSearchKey("");
-                    setSearchKeyLabel("");
-                    setFilteredData(fetchedData?.data?.data || []);
-                  }}
-                >
-                  Clear
-                </button>
               </>
+            )}
+
+            {searchKey === "batchId" && (
+              <>
+                <SearchDropdown
+                  options={batchOptions}
+                  onSelect={handleBatchSelect}
+                  selected={selectedBatchId}
+                  placeholder="Select Batch ID"
+                />
+              </>
+            )}
+
+            {searchKey === "gender" && (
+              <>
+                <SearchDropdown
+                  options={genderOptions}
+                  onSelect={handleGenderSelect}
+                  selected={selectedGender}
+                  placeholder="Select Gender"
+                />
+              </>
+            )}
+
+            {/* Clear button - show when any search is active */}
+            {searchKey && (
+              <button
+                className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
+                onClick={() => {
+                  setSearchValue("");
+                  setSearchKey("");
+                  setSearchKeyLabel("");
+                  setSelectedBatchId("");
+                  setSelectedGender("");
+                  setFilteredData(fetchedData?.data?.data || []);
+                }}
+              >
+                Clear
+              </button>
             )}
           </div>
 

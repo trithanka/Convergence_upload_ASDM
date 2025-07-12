@@ -74,10 +74,16 @@ const CandidateModal: React.FC = () => {
     { value: 1, label: "Yes" },
     { value: 0, label: "No" },
   ];
+  const dropoutType = [
+    { value: "", label: "-- Select Dropout Type --", disabled: true },
+    { value: 1, label: "Yes" },
+    { value: 0, label: "No" },
+  ];
 
   const placementValue = watch("placed");
   const vsResultValue = watch("vsResult");
   const bAssessedValue = watch("bAssessed");
+  const bDropoutValue = watch("bDropout");
   const resultDeclare = watch("declared");
   const queryClient = useQueryClient()
 
@@ -874,6 +880,22 @@ const CandidateModal: React.FC = () => {
 
         {watch("batchId") && (
           <>
+          <div className="col-span-1">
+              <Label text="Is Dropout ?" />
+              <Controller
+                name="bDropout"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={dropoutType}
+                    placeholder="-- Select --"
+                    className="w-full"
+                  />
+                )}
+              />
+            </div>
+            { Number(bDropoutValue) === 0 &&
             <div className="col-span-1">
               <Label text="Is Assesment Complete ?" />
               <Controller
@@ -889,6 +911,7 @@ const CandidateModal: React.FC = () => {
                 )}
               />
             </div>
+}
                 {
                   Number(bAssessedValue) === 1 && 
                   <div className="col-span-1">

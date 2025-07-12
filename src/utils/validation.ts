@@ -550,6 +550,7 @@ export const candidateSchema = Joi.object({
   bTeaTribe: Joi.optional(),
   bBPLcardHolder: Joi.optional(),
   bMinority: Joi.optional(),
+  bDropout: Joi.optional(),
   placed: Joi.optional(),
   declared: Joi.optional(),
 

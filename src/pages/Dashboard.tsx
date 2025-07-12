@@ -4,14 +4,14 @@ import { useEffect } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useState } from "react";
 import {
-  Home,
+ 
   Table2,
   Book,
   Building2,
   User2,
   Users2,
   Group,
-  FileSignature,
+  
   Spline,
 
 
@@ -110,24 +110,24 @@ const Dashboard: React.FC = () => {
       count: convergenceCounts.targetCount?.[0]?.count || 0,
       icon: Target,
     },
-    {
-      label: "Assessments",
-      href: "/Assessment",
-      count: convergenceCounts.assessmentCount?.[0]?.count || 0,
-      icon: FileSignature,
-    },
+    // {
+    //   label: "Assessments",
+    //   href: "/Assessment",
+    //   count: convergenceCounts.assessmentCount?.[0]?.count || 0,
+    //   icon: FileSignature,
+    // },
     // {
     //   label: "Invoices",
     //   href: "/Invoice",
     //   count: convergenceCounts.invoiceCount?.[0]?.count || 0,
     //   icon: Receipt,
     // },
-    {
-      label: "Placements",
-      href: "/Placement",
-      count: convergenceCounts.placementCount?.[0]?.count || 0,
-      icon: Home,
-    },
+    // {
+    //   label: "Placements",
+    //   href: "/Placement",
+    //   count: convergenceCounts.placementCount?.[0]?.count || 0,
+    //   icon: Home,
+    // },
   ];
 
   // Animation duration

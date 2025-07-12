@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import SearchInputBox from "../components/ui/SearchInputBox";
+
 import { AlertCircle, CheckCircle, DownloadCloud, UploadCloud, X } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
@@ -16,16 +16,19 @@ import { useQuery } from "@tanstack/react-query";
 import * as XLSX from "xlsx";
 import { Column } from "react-table";
 import { useErrorStore } from "../services/useErrorStore";
+import axiosInstance from "../services/state/api-setup/axiosInstance";
+import useAuthStore from "../utils/cookies";
 
 
 
 const Batch: React.FC = () => {
 
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchValue, ] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
   const navigate = useNavigate();
-  const [searchKey, setSearchKey] = useState<string>("");
-  const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const [searchKey, ] = useState<string>("");
+
+  const [selectedBatchId, setSelectedBatchId] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 1000);
     const errorMessage = useErrorStore((state) => state.errorMessage);
     const successMessage = useErrorStore((state) => state.successMessage);
@@ -50,6 +53,18 @@ const Batch: React.FC = () => {
       setFilteredData(fetchedData.data.data);
     }
   }, [fetchedData, isSuccess]);
+
+  // Create batch ID options from fetched data
+  const batchIdOptions = useMemo(() => {
+    if (!fetchedData?.data?.data) return [];
+
+    // Get unique batch IDs and create options
+    const uniqueBatchIds = [...new Set(fetchedData.data.data.map((item: any) => item.iBatchNumber))];
+    return uniqueBatchIds.map((batchId: unknown) => ({
+      label: `Batch ${batchId}`,
+      value: String(batchId)
+    }));
+  }, [fetchedData]);
 
 
     const exportToExcel = () => {
@@ -105,19 +120,60 @@ const Batch: React.FC = () => {
 
 
 
-  const handleSearch = (value: string) => {
-    setSearchValue(value);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filtered = fetchedData.data.filter((item: any) =>
-      item.vsSchemeName.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredData(filtered);
+
+  // Function to send batch selection payload to API
+  const sendBatchSelectionPayload = async (payload: any) => {
+    try {
+      const { userDetails } = useAuthStore.getState();
+
+      if (!userDetails) {
+        throw new Error("User details are not available.");
+      }
+
+      const requestData = {
+        ...payload,
+        fklDepartmentId: userDetails.departmentId,
+        queryType: "batch_selection"
+      };
+
+      const response = await axiosInstance.post("/batch-selection/", requestData);
+      console.log("Batch selection payload sent successfully:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error sending batch selection payload:", error);
+      throw error;
+    }
   };
 
-  const handleDropdownSelect = (option: { label: string; value: string }) => {
-    setSearchKey(option.value);
-    setSearchKeyLabel(option.label);
-    setSearchValue("");
+
+
+  const handleBatchIdSelect = async (option: { label: string; value: string }) => {
+    setSelectedBatchId(option.value);
+
+    // Filter data based on selected batch ID
+    if (fetchedData?.data?.data) {
+      const filtered = fetchedData.data.data.filter((item: any) =>
+        item.iBatchNumber === option.value
+      );
+      setFilteredData(filtered);
+    }
+
+    // Create and send the payload
+    const payload = {
+      batchId: option.value,
+      batchLabel: option.label,
+      timestamp: new Date().toISOString(),
+      action: "batch_selected"
+    };
+
+    console.log("Selected Batch ID payload:", payload);
+
+    // Send payload to API
+    try {
+      await sendBatchSelectionPayload(payload);
+    } catch (error) {
+      console.error("Failed to send batch selection payload:", error);
+    }
   };
 
   if (isLoading) {
@@ -196,37 +252,42 @@ const Batch: React.FC = () => {
         )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-            <SearchDropdown
+            {/* Search by field dropdown */}
+            {/* <SearchDropdown
               options={[
-                { label: "All", value: "" },
                 { label: "Batch Number", value: "iBatchNumber" },
-                { label: "TC Id", value: "fklTcId" },
-                { label: "Job Role Id ", value: "fklCourseId" },
-            
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
+              placeholder="Search by field"
+            /> */}
+
+            {/* Batch ID selection dropdown */}
+            <SearchDropdown
+              options={batchIdOptions}
+              onSelect={handleBatchIdSelect}
+              selected={selectedBatchId}
+              placeholder="Select Batch ID"
             />
-            {searchKey && (
-              <>
-                <SearchInputBox
-                  value={searchValue}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  placeholder={`Enter ${searchKeyLabel}`}
-                />
+
+              {
+                selectedBatchId && (
                 <button
                   className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
                   onClick={() => {
-                    setSearchValue("");
-                    setSearchKey("");
-                    setSearchKeyLabel("");
+                    setSelectedBatchId("");
                     setFilteredData(fetchedData?.data?.data || []);
                   }}
                 >
                   Clear
                 </button>
-              </>
-            )}
+              )
+              }
+
+
+           
+
+          
           </div>
           <div className="flex gap-1">
             <TemplateDownloadButton
