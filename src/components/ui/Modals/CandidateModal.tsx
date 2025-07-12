@@ -851,7 +851,7 @@ const CandidateModal: React.FC = () => {
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
 
         <div className="col-span-3">
-          <Label text="Batch ID"  />
+          <Label text="Enroll in Batch "  />
           <Controller
             name="batchId"
             control={control}
@@ -864,9 +864,9 @@ const CandidateModal: React.FC = () => {
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
 
-                  setValue("fklCategoryId", selectedOption.value);
+                  setValue("batchId", selectedOption.value);
                 }}
-                className={errors.fklCategoryId ? "border-red-500" : ""}
+                className={errors.batchId ? "border-red-500" : ""}
                 placeholder="-- Select Batch--"
               />
             
