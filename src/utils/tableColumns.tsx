@@ -534,8 +534,8 @@ export const batchColumns = (
   { Header: "Training Center", accessor: "tcName" },
   {Header :"Job Role " , accessor:"vsCourseName"},
 
-  {Header :"Trainer Name " , accessor:"trainerName"},
-  {Header :"Trainer PAN " , accessor:"trainerPAN"},
+  // {Header :"Trainer Name " , accessor:"trainerName"},
+  // {Header :"Trainer PAN " , accessor:"trainerPAN"},
   // {
   //   Header: "Trainer",
   //   accessor: "vsTrainerName",
@@ -1082,6 +1082,14 @@ export const candidateColumns = (
     accessor: "vsQualification",
     Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
   },
+
+    {
+    Header: "Batch No",
+    accessor: "batchNo",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
+  },
+
+
   // {
   //   Header: "Aadhar (Last 4 Digit)",
   //   accessor: "UUID",
