@@ -217,6 +217,7 @@ const Candidate: React.FC = () => {
       BPLcardHolder: "BPL Card Holder",
       Minority: "Minority",
       batchNo: "Batch No",
+      dropout: "Batch Dropout",
       // SDMSBatchId: "SDMS Batch ID",
       startDate: "Batch Start Date",
       endDate: "Batch End Date",

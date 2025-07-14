@@ -11,11 +11,8 @@ import {
   User2,
   Users2,
   Group,
-  
-  Spline,
-
-
   Target,
+  FileText,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -57,6 +54,12 @@ const Dashboard: React.FC = () => {
 
   const countItems = [
     {
+      label: "Summary Report",
+      href: "/SummaryReport",
+      count: convergenceCounts.summaryReportCount?.[0]?.count || 0,
+      icon: FileText,
+    },
+    {
       label: "Schemes",
       href: "/Scheme",
       count: convergenceCounts.schemesCount?.[0]?.count || 0,
@@ -92,12 +95,12 @@ const Dashboard: React.FC = () => {
       count: convergenceCounts.candidateCount?.[0]?.count || 0,
       icon: User2,
     },
-    {
-      label: "Trainers",
-      href: "/Batch",
-      count: convergenceCounts.trainerCount?.[0]?.count || 0,
-      icon: Spline,
-    },
+    // {
+    //   label: "Trainers",
+    //   href: "/Batch",
+    //   count: convergenceCounts.trainerCount?.[0]?.count || 0,
+    //   icon: Spline,
+    // },
     // {
     //   label: "Assessors",
     //   href: "/Assessors",
