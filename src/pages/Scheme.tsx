@@ -22,6 +22,7 @@ import { schemeDuplicateColumns } from "../utils/tableColumns";
 import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
 import { Column } from "react-table";
+import DownloadDropdownButton from "../components/downloadDown";
 
 const Scheme: React.FC = () => {
   const navigate = useNavigate();
@@ -102,6 +103,12 @@ const Scheme: React.FC = () => {
     ],
     queryFn: () =>
       getTableData("scheme", searchKey, debouncedSearchValue, currentPage, pageSize, duplicateQuery, duplicateCurrentPage, duplicatePageSize),
+  });
+
+  const { data: DownloadData } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("scheme", "","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
   });
 
   useEffect(() => {
@@ -205,6 +212,54 @@ const Scheme: React.FC = () => {
     setSearchValue(value);
   };
 
+  const handleDownload = (value:number) => {
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+  }
+  const exportToExcel2 = () => {
+    console.log("DownloadData",DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+    const headersMap = {
+      vsSchemeName: "Scheme Name",
+      // vsSchemeType: "Scheme Type",
+      vsSchemeCode: "Scheme Code",
+      // vsFundName: "Fund Name",
+      // vsSchemeFundingType: "Funding Type",
+      // vsSchemeFUndingRatio: "Funding Ratio",
+      // sanctionOrderNo: "Sanction Order No",
+      dtSanctionDate: "Sanction Date",
+      vsDepartmentName: "Department Name",
+    };
+
+    const formattedData = DownloadData.data.data.map((item:any) => {
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key];
+
+
+        if (key === "dtSanctionDate" && value) {
+          const date = new Date(value);
+          value = isNaN(date.getTime())
+            ? value
+            : date.toLocaleDateString("en-GB");
+        }
+
+        acc[headersMap[key as keyof typeof headersMap]] = value;
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "SchemesData.xlsx");
+  }
   if (isLoading) {
     return <Loader />;
   }
@@ -353,13 +408,16 @@ const Scheme: React.FC = () => {
       <div className="pt-10">
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
-          <button
-            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-            onClick={exportToExcel}
-          >
-            <DownloadCloud size={18} />
-            Download Report
-          </button>
+
+
+          
+            <DownloadDropdownButton
+              options={[
+                { label: "All Value", value: 1 },
+                { label: "Display Value", value: 2},
+              ]}
+              onDownload={handleDownload}
+            />
         </div>
 
         {/* Table Component */}

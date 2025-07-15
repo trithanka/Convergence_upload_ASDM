@@ -18,12 +18,15 @@ import { Column } from "react-table";
 import { useErrorStore } from "../services/useErrorStore";
 import axiosInstance from "../services/state/api-setup/axiosInstance";
 import useAuthStore from "../utils/cookies";
+import Dropdown from "../components/ui/Dropdown";
+import DownloadDropdownButton from "../components/downloadDown";
 
 
 
 const Batch: React.FC = () => {
 
   const [searchValue, ] = useState<string>("");
+  const [totalCount, setTotalCount] = useState<number>(0);
   const [filteredData, setFilteredData] = useState([]);
   const navigate = useNavigate();
   const [searchKey, ] = useState<string>("");
@@ -33,7 +36,8 @@ const Batch: React.FC = () => {
     const errorMessage = useErrorStore((state) => state.errorMessage);
     const successMessage = useErrorStore((state) => state.successMessage);
     const { bulkName } = useErrorStore();
-  
+
+
     const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
     const clearSuccessMessage = useErrorStore(
       (state) => state.clearSuccessMessage
@@ -51,8 +55,11 @@ const Batch: React.FC = () => {
   useEffect(() => {
     if (isSuccess && fetchedData?.data?.data) {
       setFilteredData(fetchedData.data.data);
+      setTotalCount(fetchedData.data.total_count);
     }
   }, [fetchedData, isSuccess]);
+
+  console.log("totalCount",totalCount);
 
   // Create batch ID options from fetched data
   const batchIdOptions = useMemo(() => {
@@ -65,6 +72,76 @@ const Batch: React.FC = () => {
       value: String(batchId)
     }));
   }, [fetchedData]);
+
+
+  const { data: DownloadData, isLoading: DownloadLoading, isSuccess: DownloadSuccess } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("batch" ,"","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
+  });
+  console.log("DownloadData",DownloadData);
+
+
+  const handleDownload = (value:number) => {
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+  }
+
+  const exportToExcel2 = () => {
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+    const headersMap = {
+      iBatchNumber: "Batch ID",
+      iBatchTarget : "Batch Target",
+      dtStartDate : "Start Date",
+      dtEndDate : "End Date",
+      tcName : "Training Center Name",
+      tcAddress : "Training Center Address",
+      vsCourseName : "Course Name",
+      vsTargetNo : "Target No",
+      // vsSchemeType: "Scheme Type",
+    
+      // vsFundName: "Fund Name",
+      // vsSchemeFundingType: "Funding Type",
+      // vsSchemeFUndingRatio: "Funding Ratio",
+      // sanctionOrderNo: "Sanction Order No",
+      // dtSanctionDate: "Sanction Date",
+      // vsDepartmentName: "Department Name",
+    };
+
+    const formattedData = DownloadData.data.data.map((item:any) => {
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key];
+
+
+        if (key === "dtStartDate" || key === "dtEndDate" && value) {
+          const date = new Date(value);
+          value = isNaN(date.getTime())
+            ? value
+            : date.toLocaleDateString("en-GB");
+        }
+
+        acc[headersMap[key as keyof typeof headersMap]] = value;
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "batchdata.xlsx");
+    
+  }
+
+
+
 
 
     const exportToExcel = () => {
@@ -315,13 +392,18 @@ const Batch: React.FC = () => {
       </div> 
        <div className="flex justify-between items-center mb-4">
                 <p className="text-2xl font-bold">Batch Entries </p>
-                <button
-                  className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-                  onClick={ () => exportToExcel()}
-                >
-                  <DownloadCloud size={18} />
-                  Download Report
-                </button>
+
+
+                  <DownloadDropdownButton
+                    options={[
+                      { label: "All Value", value: 1 },
+                      { label: "Display Value", value: 2},
+                    ]}
+                    onDownload={handleDownload}
+                  />
+
+
+              
               </div>
 
       <CentralizedTable columns={columns} data={filteredData} pageSize={5} />

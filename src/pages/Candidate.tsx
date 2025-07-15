@@ -26,7 +26,8 @@ import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
 import { format } from "date-fns";
 import { getMasterData } from "../services/state/api/masterApi";
-
+import Dropdown from "../components/ui/Dropdown";
+import { exportToExcel } from "../utils/exportToexcel";
 const Candidate: React.FC = () => {
   const navigate = useNavigate();
 
@@ -82,6 +83,8 @@ const Candidate: React.FC = () => {
       [name]: checked,
     }));
   };
+
+  const [selectedDownloadValue, setSelectedDownloadValue] = useState<number>(1);
 
   console.log(handleCheckboxChange);
 
@@ -193,6 +196,123 @@ const Candidate: React.FC = () => {
     }
   };
 
+
+  const handleDownload= (value:number)=>{
+    console.log("Selected Download Value",value);
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+
+    console.log(value);
+  }
+
+  const { data: DownloadData } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("candidate" ,"","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
+  });
+
+
+  console.log("DownloadData",DownloadData);
+  
+  const exportToExcel2 = () => {
+    console.log(DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsCandidateName: "Candidate Name",
+      vsDOB: "Date Of Birth",
+      UUID: "UUID(Aadhar last 4 DIGIT)",
+      // vsMobile: "Mobile",
+      vsDepartmentName: "Department Name",
+      // vsFatherName: "FATHER 2",
+      vsGenderName: "Gender",
+      // vsQualificaion: "Education attained",
+      // UUID: "UUID",
+      religion: "Religion",
+      caste: "Caste",
+      vsQualification: "Qualification",
+      disability: "Disability",
+      teaTribe: "Tea Tribe",
+      BPLcardHolder: "BPL Card Holder",
+      Minority: "Minority",
+      batchNo: "Batch No",
+      dropout: "Batch Dropout",
+      // SDMSBatchId: "SDMS Batch ID",
+      startDate: "Batch Start Date",
+      endDate: "Batch End Date",
+      courseName: "Course Name",
+      // courseCode: "Course Code",
+      TC: "TC Name ",
+      // tcPartnerCode: "TP Code",
+      // tcSpocName: "TC SPOC Name",
+      // tcSpocContactNo: "TC SPOC Contact No",
+      tcAddress: "TC Address",
+      // tcSpocEmail: "SPOC Email",
+      // tcVillage: "TC Village",
+      // tcCity: "TC City",
+      // tcState: "TC State",
+      // tcDistrict: "TC District",
+      // tcBlock: "TC Block",
+      // tcUlb: "TC ULB",
+      // smartId: "Smart ID",
+      // tcLongitude: "TC Longitude",
+      // tcLatitude: "TC Latitude",
+      // tcAssembly: "TC Asembly",
+      // tcLoksabha: "TC Loksabha",
+      TP:"TP Name",
+      // tpCode: "TP Code",
+      // tpSpocName: "TP SPOC Name",
+      // tpSpocContactNo: "TP SPOC Contact No",
+      // tpSpocEmail: "TP SPOC Email",
+      // state: "State",
+      // district: "Dsitrict",
+      tpAddress:"TP Address",
+      // tpVillage: "TP VIllage",
+      // tpCity: "TP CIty",
+      // tpBlock: "TP BLock",
+      // tpULB: "TP ULB",
+      // tpSmartId: "TP Smart ID",
+      sector: "Sector",
+      vsResult : "Result",
+      candidatePlaced: "Candidate PLaced",
+      // employeerName: "Employee Name",
+      // EmployeerContactNumber: "Employer Contact Number",
+      placementType: "Placement Type",
+      // placementState: "Placement State",
+      // placementDistrict: "Placement District",
+    };
+
+    const formattedData = DownloadData.data.data.map((item :any) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item ;
+        let value = item[itemKey] ?? " ";
+        
+        // Format dates
+        if (["vsDOB", "startDate", "endDate"].includes(key)) {
+          acc[headersMap[headerKey]] = formatDate(value as string);
+          return acc;
+        }
+        
+        acc[headersMap[headerKey]] = value;
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "CandidateData.xlsx");
+  }; 
+
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
       alert("No data available to export");
@@ -285,7 +405,7 @@ const Candidate: React.FC = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
 
     XLSX.writeFile(workbook, "CandidateData.xlsx");
-  };
+  }; 
 
   const exportToExcelDuplicate = () => {
     if (
@@ -531,17 +651,38 @@ const Candidate: React.FC = () => {
           </div>
         </div>
       </div>
+
+
+
       <div className="pt-10">
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
+          <div className="flex gap-4">
+          <div className="flex items-center space-x-4">
+            <Dropdown 
+            options={[
+              { label: "All Value", value: 1 },
+              { label: "Display Value", value: 2},
+            ]}
+            onSelect={(option) => {
+              setSelectedDownloadValue(option.value);
+              console.log("Selected Download Value",option.value);
+            }}
+            placeholder="Select Download Value"
+            />
+          </div>
+
+
           <button
             className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-            onClick={exportToExcel}
-          >
+            onClick={()=>handleDownload(selectedDownloadValue)}
+          > 
             <DownloadCloud size={18} />
             Download Report
           </button>
         </div>
+</div>
+
         <div className="py-2 text-lg text-green-600">
           Total Department Entries: {totalCount}
         </div>
@@ -646,6 +787,7 @@ const Candidate: React.FC = () => {
             </button>
           </div>
         </div>
+   
         <CentralizedTable
           columns={duplicateTablecolumns}
           data={duplicateData}

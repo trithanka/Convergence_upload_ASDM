@@ -29,7 +29,7 @@ export const NavItems: NavItem[] = [
   },
   {
     name :"Convergence Dashboard",
-    link: import.meta.env.VITE_REDIRECT_URL,
+    link: "https://convergence_v1.skillmissionassam.org/",
     target: "_blank",
     rel:"noopener noreferrer",
     icon: Home,

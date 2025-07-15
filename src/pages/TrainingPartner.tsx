@@ -24,6 +24,7 @@ import Loader from "../components/ui/Loader";
 import { Column } from "react-table";
 import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
+import Dropdown from "../components/ui/Dropdown";
 
 const TrainingPartner: React.FC = () => {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const TrainingPartner: React.FC = () => {
   const { bulkName } = useErrorStore();
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(25);
+    const [selectedDownloadValue, setSelectedDownloadValue] = useState<number>(1);
   const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
   const clearSuccessMessage = useErrorStore(
     (state) => state.clearSuccessMessage
@@ -84,6 +86,15 @@ const TrainingPartner: React.FC = () => {
       getTableData("TP", searchKey, debouncedSearchValue, currentPage, pageSize, duplicateQuery),
   });
 
+
+  const { data: DownloadData} = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("TP", "","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
+  });
+
+
+
   useEffect(() => {
     if (isSuccess) {
       if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
@@ -105,6 +116,50 @@ const TrainingPartner: React.FC = () => {
   }, [fetchedData, isSuccess]);
 
   console.log("duplicate data are", duplicateData);
+
+
+  const exportToExcel2 = () => {
+    console.log("DownloadData",DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    } const headersMap = {
+      vsTpName: "Candidate Name",
+      // vsSpocName: "SPOC Name",
+      // vsSpocEmail: "SPOC Email",
+      // iSpocContactNum: "SPOC Contact",
+      vsAddress: "Address",
+      // vsSmartId: "Smart ID",
+      vsPan: "PAN",
+      vsDepartmentName : "Department Name"
+    };
+
+    const formattedData = DownloadData.data.data.map((item:any) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item;
+        acc[headersMap[headerKey]] = item[itemKey] ?? " "; // If value is missing, replace it with "N/A"
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "TP");
+
+    XLSX.writeFile(workbook, "TPData.xlsx");
+  }
+
+
+
+
+  const handleDownload = (value:number) => {
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+  }
 
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
@@ -300,13 +355,30 @@ const TrainingPartner: React.FC = () => {
       <div className="pt-5">
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Training Partner Entries</p>
-          <button
-            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-            onClick={exportToExcel}
-          >
-            <DownloadCloud size={18} />
-            Download Report
-          </button>
+
+         
+          
+          <div className="flex gap-4">
+        <div className="">
+          <Dropdown
+            options={[
+              { label: "All Value", value: 1 },
+              { label: "Display Value", value: 2},
+            ]}
+            onSelect={(option) => {
+              setSelectedDownloadValue(option.value);
+            }}
+            placeholder="Select Download Value"
+          />
+        </div>
+        <button 
+          className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+          onClick={()=>handleDownload(selectedDownloadValue)}
+        >
+          <DownloadCloud size={18} />
+          Download Report
+        </button>
+        </div>
         </div>
 
         <CentralizedTable columns={columns} data={filteredData}  pageSize={pageSize}

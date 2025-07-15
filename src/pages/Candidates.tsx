@@ -36,6 +36,8 @@ import { Column } from "react-table"; // Ensure this matches the library you're 
 import { useNavigate } from "react-router-dom";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import Dropdown from "../components/ui/Dropdown";
+import { getTableData } from "../services/state/api/tableDataApi";
 
 
 const Candidates: React.FC = () => {
@@ -89,7 +91,7 @@ const Candidates: React.FC = () => {
   const [currentPage, setCurrentPage,] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
-
+  const [selectedDownloadValue, setSelectedDownloadValue] = useState<number>(1);
 
 
 
@@ -136,6 +138,12 @@ const Candidates: React.FC = () => {
     }),
   });
 
+  const { data: DownloadData, isLoading: DownloadLoading, isSuccess: DownloadSuccess } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("summaryReport" ,"","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
+  });
+
   useEffect(() => {
     if (isSuccess) {
       if (summaryData) {
@@ -153,6 +161,54 @@ const Candidates: React.FC = () => {
   }, [summaryData, isSuccess, searchValue]);
 
   // console.log(summaryData)
+
+
+
+  const exportToExcel2 = () => {
+    console.log("DownloadData",DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+    const headersMap = {
+      vsSchemeName: "Scheme Name",
+      dtFinancialYear: "Financial Year",
+      iTotalJobRoleCount: "Total Job Role Count",
+      itotalTarget: "Total Target",
+      iMaleCount: "Male Count",
+      iFemaleCount: "Female Count",
+      iGeneralCount: "General Count",
+      iScCount: "SC Count",
+      iStHCount :"ST H Count",
+      iStPCount:"ST P Count",
+      iObcCount: "OBC Count",
+      iMinorityCount: "Minority Count",
+      iTeaTribeCount: "Tea Tribe Count",
+      iPwdCount: "PwD Count",
+      fklDepartmentId : "Department ID",
+      itotalTrainingCandidate: "Total Training Candidate",
+      itotalCertifiedCandidate: "Total Certified Candidate",
+      itotalPlacedCandidate: "Total Placed Candidate",
+
+
+    };
+
+    const formattedData = DownloadData.data.data.map((item:any) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item;
+        let value = item[itemKey] ?? "";
+        acc[headersMap[headerKey]] = value;
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "SummaryReport");
+    XLSX.writeFile(workbook, "SummaryReportData.xlsx");
+  }
 
 
   const exportToExcel = () => {
@@ -200,7 +256,13 @@ const Candidates: React.FC = () => {
     XLSX.writeFile(workbook, "SummaryReportData.xlsx");
   };
 
-
+  const handleDownload = (value:number) => {
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+  }
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -369,14 +431,30 @@ const Candidates: React.FC = () => {
         </div> */}
       <div className="flex justify-between items-center mb-4">
         <p className="text-2xl font-bold"></p>
-        <button
+
+
+        <div className="flex gap-4">
+        <div className="">
+          <Dropdown
+            options={[
+              { label: "All Value", value: 1 },
+              { label: "Display Value", value: 2},
+            ]}
+            onSelect={(option) => {
+              setSelectedDownloadValue(option.value);
+            }}
+            placeholder="Select Download Value"
+          />
+        </div>
+        <button 
           className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-          onClick={exportToExcel}
+          onClick={()=>handleDownload(selectedDownloadValue)}
         >
           <DownloadCloud size={18} />
           Download Report
         </button>
-      </div>
+        </div>
+        </div>
       {/* Table Component */}
       <SearchInputBox
         value={searchValue}

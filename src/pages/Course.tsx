@@ -17,6 +17,7 @@ import Loader from "../components/ui/Loader";
 import { courseDuplicateColumns } from "../utils/tableColumns";
 import { Column } from "react-table";
 import { useErrorStore } from "../services/useErrorStore";
+import DownloadDropdownButton from "../components/downloadDown";
 const Course: React.FC = () => {
 
 
@@ -44,9 +45,15 @@ const Course: React.FC = () => {
    const columns = useMemo<Column<any>[]>(() => courseColumns(navigate) as Column<any>[], [navigate]);
     const duplicateColumns = useMemo<Column<any>[]>(() => courseDuplicateColumns(navigate) as Column<any>[], [navigate]);
 
-  const { data: fetchedData, isSuccess, isLoading } = useQuery({
-    queryKey: ["courseData", "course", searchKey, debouncedSearchValue ,currentPage, pageSize,],
-    queryFn: () => getTableData("course", searchKey, debouncedSearchValue,currentPage, pageSize,),
+    const { data: fetchedData, isSuccess, isLoading } = useQuery({
+      queryKey: ["courseData", "course", searchKey, debouncedSearchValue ,currentPage, pageSize,],
+      queryFn: () => getTableData("course", searchKey, debouncedSearchValue,currentPage, pageSize,),
+    });
+
+  const { data: DownloadData } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("course", "","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
   });
 
   useEffect(() => {
@@ -90,7 +97,7 @@ const Course: React.FC = () => {
         dtFromDate: "Course Start Date",
         dtToDate: "Course End Date",
         vsSectorName : "Sector Name ",
-        vsTcName: "Tc Name ",
+       
     
       };
   
@@ -117,7 +124,35 @@ const Course: React.FC = () => {
   
       XLSX.writeFile(workbook, "CourseData.xlsx");
     };
-  
+  const exportToExcel2 = () => {
+    console.log("DownloadData",DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+    const headersMap = {
+      vsCourseName: "Course Name",
+      vsCourseCode: "Course Code",
+      dtFromDate: "Course Start Date",
+      dtToDate: "Course End Date",
+      vsSectorName : "Sector Name ", 
+      vsTcName: "Tc Name ",
+    };
+
+    const formattedData = DownloadData.data.data.map((item:any) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item;
+        acc[headersMap[headerKey]] = item[itemKey] ?? " ";
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Course");
+    XLSX.writeFile(workbook, "CourseData.xlsx");
+  }
 
   // Handle search logic
   const handleSearch = (value: string) => {
@@ -135,7 +170,13 @@ const Course: React.FC = () => {
     setSearchValue("");
   };
 
-
+  const handleDownload = (value:number) => {
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+  }
   if (isLoading) {
     return <Loader />;
   }
@@ -272,13 +313,13 @@ const Course: React.FC = () => {
       <div>
               <div className="flex justify-between items-center mb-4">
                 <p className="text-2xl font-bold">Department Entries</p>
-                <button
-                  className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-                  onClick={() =>  exportToExcel()}
-                >
-                  <DownloadCloud size={18} />
-                  Download Report
-                </button>
+                <DownloadDropdownButton
+                  options={[
+                    { label: "All Value", value: 1 },
+                    { label: "Display Value", value: 2},
+                  ]}
+                  onDownload={handleDownload}
+                />
               </div>
               <CentralizedTable columns={columns} data={filteredData} pageSize={pageSize}
                 currentPage={currentPage}

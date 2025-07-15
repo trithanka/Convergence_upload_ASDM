@@ -262,7 +262,7 @@ const Assesment: React.FC = () => {
           <button
             className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
             onClick={exportToExcel}
-          >
+          > 
             <DownloadCloud size={18} />
             Download Report
           </button>

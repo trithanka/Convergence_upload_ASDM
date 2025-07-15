@@ -14,6 +14,7 @@ import Loader from "../components/ui/Loader";
 import { Column } from "react-table";
 import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
+import DownloadDropdownButton from "../components/downloadDown";
 
 const Target: React.FC = () => {
   const navigate = useNavigate();
@@ -44,6 +45,12 @@ const Target: React.FC = () => {
     queryFn: () => getTableData("target", searchKey, debouncedSearchValue, currentPage, pageSize),
   });
 
+  const { data: DownloadData } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("target", "","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
+  });
+
  useEffect(() => {
     if (isSuccess) {
       if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
@@ -70,6 +77,45 @@ const Target: React.FC = () => {
     setSearchValue(value);
   };
 
+  const handleDownload = (value:number) => {
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+  }
+  const exportToExcel2 = () => {
+    console.log("DownloadData",DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+    const headersMap = {
+      vsTargetNo: "Target No",
+      vsSchemeCode: "Scheme Code",
+      iTotalTarget: "Total Target",
+      dtTargetDate: "Target Date",
+      vsTargetType: "Target Type",
+      vsDepartmentName: "Department Name",
+    };
+
+    const formattedData = DownloadData.data.data.map((item:any) => {
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key]; // Ensure value is of type any
+
+
+
+        acc[headersMap[key as keyof typeof headersMap]] = value;
+        return acc;
+      }, {}); // Define an empty object as the initial value
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Target");
+
+    XLSX.writeFile(workbook, "TargetData.xlsx");
+  }
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
       alert("No data available to export");
@@ -236,13 +282,13 @@ const Target: React.FC = () => {
         <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
-          <button
-            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-            onClick={exportToExcel}
-          >
-            <DownloadCloud size={18} />
-            Download Report
-          </button>
+          <DownloadDropdownButton
+            options={[
+              { label: "All Value", value: 1 },
+              { label: "Display Value", value: 2},
+            ]}
+            onDownload={handleDownload}
+          />
         </div>
       </div>
 

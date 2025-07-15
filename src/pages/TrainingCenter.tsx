@@ -15,6 +15,7 @@ import { centerDuplicateColumns } from "../utils/tableColumns";
 import { Column } from "react-table";
 import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
+import Dropdown from "../components/ui/Dropdown";
 
 const TrainingCenter: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const TrainingCenter: React.FC = () => {
   const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
   const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
   const { statusColor } = useErrorStore();
-
+  const [selectedDownloadValue, setSelectedDownloadValue] = useState<number>(1);
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
   const {
@@ -47,6 +48,16 @@ const TrainingCenter: React.FC = () => {
     queryKey: ["tcData", searchKey, debouncedSearchValue, , currentPage, pageSize],
     queryFn: () => getTableData("TC", searchKey, debouncedSearchValue, currentPage, pageSize),
   });
+
+  const {
+    data: DownloadData,
+   
+  } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("TC", "","",1,totalCount,[],1,totalCount,"ownDept"),
+    enabled: !!totalCount,
+  });
+
 
   useEffect(() => {
     if (isSuccess) {
@@ -65,6 +76,63 @@ const TrainingCenter: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
+  const handleDownload = (value:number) => {
+    if(value===1){
+      exportToExcel2();
+    }else{
+      exportToExcel();
+    }
+  }
+
+  const exportToExcel2 = () => {
+    console.log("DownloadData",DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+    const headersMap = {
+      vsTcName: "Training Center Name",
+      // vsSpocEmail: "SPOC Email",
+      // iSpocContactNum: "SPOC Contact No",
+    
+      // vsBlock: "Block",
+     
+      // vsSpocName: "SPOC Name",
+      // vsTcCode: "Center Code",
+      vsLongitude: "Longitude",
+      vsLatitude: "Latitude",
+      vsTpName : "Training Partner Name",
+      vsTpAddress : "Training Partner Address",
+      vsAddress: "Address",
+      vsState: "State",
+      vsDistrict: "District",
+      vsDepartmentName: "Department Name"
+    };
+
+    const formattedData = DownloadData.data.data.map((item:any) => {
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key];
+
+
+        if (key === "dtSanctionDate" && value) {
+          const date = new Date(value);
+          value = isNaN(date.getTime())
+            ? value
+            : date.toLocaleDateString("en-GB");
+        }
+
+        acc[headersMap[key as keyof typeof headersMap]] = value;
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "TC");
+
+    XLSX.writeFile(workbook, "TCData.xlsx");
+    
+  }
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
       alert("No data available to export");
@@ -254,13 +322,28 @@ const TrainingCenter: React.FC = () => {
       <div>
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
-          <button
-            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-            onClick={exportToExcel}
-          >
-            <DownloadCloud size={18} />
-            Download Report
-          </button>
+          <div className="flex gap-4">
+        <div className="">
+          <Dropdown
+            options={[
+              { label: "All Value", value: 1 },
+              { label: "Display Value", value: 2},
+            ]}
+            onSelect={(option) => {
+              setSelectedDownloadValue(option.value);
+            }}
+            placeholder="Select Download Value"
+          />
+        </div>
+        <button 
+          className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+          onClick={()=>handleDownload(selectedDownloadValue)}
+        >
+          <DownloadCloud size={18} />
+          Download Report
+        </button>
+        </div>
+        
         </div>
         <CentralizedTable columns={columns} data={filteredData} pageSize={pageSize}
           currentPage={currentPage}
