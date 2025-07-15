@@ -18,7 +18,6 @@ import { Column } from "react-table";
 import { useErrorStore } from "../services/useErrorStore";
 import axiosInstance from "../services/state/api-setup/axiosInstance";
 import useAuthStore from "../utils/cookies";
-import Dropdown from "../components/ui/Dropdown";
 import DownloadDropdownButton from "../components/downloadDown";
 
 
@@ -74,7 +73,7 @@ const Batch: React.FC = () => {
   }, [fetchedData]);
 
 
-  const { data: DownloadData, isLoading: DownloadLoading, isSuccess: DownloadSuccess } = useQuery({
+  const { data: DownloadData} = useQuery({
     queryKey: ["DownloadData",totalCount],
     queryFn: () => getTableData("batch" ,"","",1,totalCount,[],1,totalCount,"ownDept"),
     enabled: !!totalCount,

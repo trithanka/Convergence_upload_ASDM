@@ -36,8 +36,9 @@ import { Column } from "react-table"; // Ensure this matches the library you're 
 import { useNavigate } from "react-router-dom";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
-import Dropdown from "../components/ui/Dropdown";
+
 import { getTableData } from "../services/state/api/tableDataApi";
+import DownloadDropdownButton from "../components/downloadDown";
 
 
 const Candidates: React.FC = () => {
@@ -91,7 +92,6 @@ const Candidates: React.FC = () => {
   const [currentPage, setCurrentPage,] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
-  const [selectedDownloadValue, setSelectedDownloadValue] = useState<number>(1);
 
 
 
@@ -138,7 +138,7 @@ const Candidates: React.FC = () => {
     }),
   });
 
-  const { data: DownloadData, isLoading: DownloadLoading, isSuccess: DownloadSuccess } = useQuery({
+  const { data: DownloadData } = useQuery({
     queryKey: ["DownloadData",totalCount],
     queryFn: () => getTableData("summaryReport" ,"","",1,totalCount,[],1,totalCount,"ownDept"),
     enabled: !!totalCount,
@@ -433,27 +433,13 @@ const Candidates: React.FC = () => {
         <p className="text-2xl font-bold"></p>
 
 
-        <div className="flex gap-4">
-        <div className="">
-          <Dropdown
-            options={[
-              { label: "All Value", value: 1 },
-              { label: "Display Value", value: 2},
-            ]}
-            onSelect={(option) => {
-              setSelectedDownloadValue(option.value);
-            }}
-            placeholder="Select Download Value"
-          />
-        </div>
-        <button 
-          className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-          onClick={()=>handleDownload(selectedDownloadValue)}
-        >
-          <DownloadCloud size={18} />
-          Download Report
-        </button>
-        </div>
+        <DownloadDropdownButton
+          options={[
+            { label: "All Value", value: 1 },
+            { label: "Display Value", value: 2},
+          ]}
+          onDownload={handleDownload}
+        />
         </div>
       {/* Table Component */}
       <SearchInputBox

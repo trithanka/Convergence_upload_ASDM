@@ -26,8 +26,7 @@ import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
 import { format } from "date-fns";
 import { getMasterData } from "../services/state/api/masterApi";
-import Dropdown from "../components/ui/Dropdown";
-import { exportToExcel } from "../utils/exportToexcel";
+import DownloadDropdownButton from "../components/downloadDown";
 const Candidate: React.FC = () => {
   const navigate = useNavigate();
 
@@ -84,7 +83,6 @@ const Candidate: React.FC = () => {
     }));
   };
 
-  const [selectedDownloadValue, setSelectedDownloadValue] = useState<number>(1);
 
   console.log(handleCheckboxChange);
 
@@ -658,29 +656,15 @@ const Candidate: React.FC = () => {
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
           <div className="flex gap-4">
-          <div className="flex items-center space-x-4">
-            <Dropdown 
-            options={[
-              { label: "All Value", value: 1 },
-              { label: "Display Value", value: 2},
-            ]}
-            onSelect={(option) => {
-              setSelectedDownloadValue(option.value);
-              console.log("Selected Download Value",option.value);
-            }}
-            placeholder="Select Download Value"
+           
+            <DownloadDropdownButton
+              options={[
+                { label: "All Value", value: 1 },
+                { label: "Display Value", value: 2},
+              ]}
+              onDownload={handleDownload}
             />
           </div>
-
-
-          <button
-            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-            onClick={()=>handleDownload(selectedDownloadValue)}
-          > 
-            <DownloadCloud size={18} />
-            Download Report
-          </button>
-        </div>
 </div>
 
         <div className="py-2 text-lg text-green-600">
