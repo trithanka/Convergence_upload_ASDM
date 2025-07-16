@@ -15,6 +15,11 @@ import { getMasterData } from "../services/state/api/masterApi";
 import CentralizedTable from "../components/CentralizedTable";
 import { candidateColumns } from "../utils/tableColumns";
 import { useNavigate } from "react-router-dom";
+import DownloadDropdownButton from "../components/downloadDown";
+import { format, formatDate } from "date-fns";
+import * as XLSX from "xlsx";
+
+
 const DisplayCountCandidate: React.FC = () => {
   const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState<string>("");
@@ -140,7 +145,6 @@ const DisplayCountCandidate: React.FC = () => {
       );
     },
   });
-
   useEffect(() => {
     if (isSuccess) {
       if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
@@ -153,6 +157,12 @@ const DisplayCountCandidate: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
+
+  const { data: DownloadData } = useQuery({
+    queryKey: ["DownloadData",totalCount],
+    queryFn: () => getTableData("candidate" ,"","",1,totalCount,[],1,totalCount,"ownDept",selectedBatchId),
+    enabled: !!totalCount,
+  });
 
 
   const handleDropdownSelect = (option: { label: string; value: string }) => {
@@ -187,6 +197,218 @@ const DisplayCountCandidate: React.FC = () => {
     // Navigate back to the batch page
     navigate("/batch");
   };
+
+  const handleDownload = (value: number) => {
+    console.log("Download value:", value);
+    if (value === 1) {
+       exportToExcel2();
+    } else {
+      exportToExcel();
+    }
+  };
+
+  const exportToExcel2 = () => {
+    console.log(DownloadData);
+    if (!DownloadData || DownloadData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsCandidateName: "Candidate Name",
+      vsDOB: "Date Of Birth",
+      UUID: "UUID(Aadhar last 4 DIGIT)",
+      // vsMobile: "Mobile",
+      vsDepartmentName: "Department Name",
+      // vsFatherName: "FATHER 2",
+      vsGenderName: "Gender",
+      // vsQualificaion: "Education attained",
+      // UUID: "UUID",
+      religion: "Religion",
+      caste: "Caste",
+      vsQualification: "Qualification",
+      disability: "Disability",
+      teaTribe: "Tea Tribe",
+      BPLcardHolder: "BPL Card Holder",
+      Minority: "Minority",
+      batchNo: "Batch No",
+      dropout: "Batch Dropout",
+      // SDMSBatchId: "SDMS Batch ID",
+      startDate: "Batch Start Date",
+      endDate: "Batch End Date",
+      courseName: "Course Name",
+      // courseCode: "Course Code",
+      TC: "TC Name ",
+      // tcPartnerCode: "TP Code",
+      // tcSpocName: "TC SPOC Name",
+      // tcSpocContactNo: "TC SPOC Contact No",
+      tcAddress: "TC Address",
+      // tcSpocEmail: "SPOC Email",
+      // tcVillage: "TC Village",
+      // tcCity: "TC City",
+      // tcState: "TC State",
+      // tcDistrict: "TC District",
+      // tcBlock: "TC Block",
+      // tcUlb: "TC ULB",
+      // smartId: "Smart ID",
+      // tcLongitude: "TC Longitude",
+      // tcLatitude: "TC Latitude",
+      // tcAssembly: "TC Asembly",
+      // tcLoksabha: "TC Loksabha",
+      TP:"TP Name",
+      // tpCode: "TP Code",
+      // tpSpocName: "TP SPOC Name",
+      // tpSpocContactNo: "TP SPOC Contact No",
+      // tpSpocEmail: "TP SPOC Email",
+      // state: "State",
+      // district: "Dsitrict",
+      tpAddress:"TP Address",
+      // tpVillage: "TP VIllage",
+      // tpCity: "TP CIty",
+      // tpBlock: "TP BLock",
+      // tpULB: "TP ULB",
+      // tpSmartId: "TP Smart ID",
+      sector: "Sector",
+      vsResult : "Result",
+      candidatePlaced: "Candidate PLaced",
+      // employeerName: "Employee Name",
+      // EmployeerContactNumber: "Employer Contact Number",
+      placementType: "Placement Type",
+      // placementState: "Placement State",
+      // placementDistrict: "Placement District",
+    };
+    const formatDate = (dateString: string) => {
+      if (!dateString) return "";
+      try {
+        return format(new Date(dateString), "dd/MM/yyyy");
+      } catch {
+        return dateString;
+      }
+    };
+
+    const formattedData = DownloadData.data.data.map((item :any) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item ;
+        let value = item[itemKey] ?? " ";
+        
+        // Format dates
+        if (["vsDOB", "startDate", "endDate"].includes(key)) {
+          acc[headersMap[headerKey]] = formatDate(value as string);
+          return acc;
+        }
+        
+        acc[headersMap[headerKey]] = value;
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "CandidateData.xlsx");
+  }; 
+
+
+  const exportToExcel = () => {
+    if (!fetchedData || fetchedData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+    const headersMap = {
+      vsCandidateName: "Candidate Name",
+      vsDOB: "Date Of Birth",
+      UUID: "UUID(Aadhar last 4 DIGIT)",
+      // vsMobile: "Mobile",
+      vsDepartmentName: "Department Name",
+      // vsFatherName: "FATHER 2",
+      vsGenderName: "Gender",
+      // vsQualificaion: "Education attained",
+      // UUID: "UUID",
+      religion: "Religion",
+      caste: "Caste",
+      vsQualification: "Qualification",
+      disability: "Disability",
+      teaTribe: "Tea Tribe",
+      BPLcardHolder: "BPL Card Holder",
+      Minority: "Minority",
+      batchNo: "Batch No",
+      dropout: "Batch Dropout",
+      // SDMSBatchId: "SDMS Batch ID",
+      startDate: "Batch Start Date",
+      endDate: "Batch End Date",
+      courseName: "Course Name",
+      // courseCode: "Course Code",
+      TC: "TC Name ",
+      // tcPartnerCode: "TP Code",
+      // tcSpocName: "TC SPOC Name",
+      // tcSpocContactNo: "TC SPOC Contact No",
+      tcAddress: "TC Address",
+      // tcSpocEmail: "SPOC Email",
+      // tcVillage: "TC Village",
+      // tcCity: "TC City",
+      // tcState: "TC State",
+      // tcDistrict: "TC District",
+      // tcBlock: "TC Block",
+      // tcUlb: "TC ULB",
+      // smartId: "Smart ID",
+      // tcLongitude: "TC Longitude",
+      // tcLatitude: "TC Latitude",
+      // tcAssembly: "TC Asembly",
+      // tcLoksabha: "TC Loksabha",
+      TP:"TP Name",
+      // tpCode: "TP Code",
+      // tpSpocName: "TP SPOC Name",
+      // tpSpocContactNo: "TP SPOC Contact No",
+      // tpSpocEmail: "TP SPOC Email",
+      // state: "State",
+      // district: "Dsitrict",
+      tpAddress:"TP Address",
+      // tpVillage: "TP VIllage",
+      // tpCity: "TP CIty",
+      // tpBlock: "TP BLock",
+      // tpULB: "TP ULB",
+      // tpSmartId: "TP Smart ID",
+      sector: "Sector",
+      vsResult : "Result",
+      candidatePlaced: "Candidate PLaced",
+      // employeerName: "Employee Name",
+      // EmployeerContactNumber: "Employer Contact Number",
+      placementType: "Placement Type",
+      // placementState: "Placement State",
+      // placementDistrict: "Placement District",
+    };
+
+    const formattedData = fetchedData.data.data.map((item :any) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item ;
+        let value = item[itemKey] ?? " ";
+        
+        // Format dates
+        if (["vsDOB", "startDate", "endDate"].includes(key)) {
+              acc[headersMap[headerKey]] =  formatDate(value as string  , "dd/MM/yyyy");
+          return acc;
+        }
+        
+        acc[headersMap[headerKey]] = value;
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "CandidateData.xlsx");
+  }; 
+
+
+
+  
 
   if (isLoading) {
     return <Loader />;
@@ -278,6 +500,17 @@ const DisplayCountCandidate: React.FC = () => {
         </div>
         <div className="py-2 text-lg text-green-600">
           Total Department Entries: {totalCount}
+        </div>
+        <div className="flex justify-end mb-4">
+        <DownloadDropdownButton
+          options={[
+            { label: "All Value", value: 1 },
+            { label: "Display Value", value: 2},
+          ]}
+          onDownload={handleDownload}
+          placeholder="Select Download Type"
+          buttonLabel="Download"
+        />
         </div>
         {/* Table Component */}
         <CentralizedTable
