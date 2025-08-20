@@ -81,7 +81,7 @@ const CandidateModal: React.FC = () => {
   ];
 
   const placementValue = watch("placed");
-  const vsResultValue = watch("vsResult");
+  // const vsResultValue = watch("vsResult");
   const bAssessedValue = watch("bAssessed");
   const bDropoutValue = watch("bDropout");
   const resultDeclare = watch("declared");
@@ -895,6 +895,70 @@ const CandidateModal: React.FC = () => {
                 )}
               />
             </div>
+
+
+
+
+
+
+            {  
+            Number(bDropoutValue) === 0   &&
+              <div className="col-span-1">
+              <Label text="Is Candidate Placed ?" />
+              <Controller
+                name="placed"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={placement}
+                    placeholder="-- Select --"
+                    className="w-full"
+                  />
+                )}
+              />
+              
+            </div>
+            }
+
+
+
+
+
+
+
+            {
+
+             Number(placementValue) === 1&&
+              <div className="col-span-2">
+              <Label text="Placement Type " />
+              <Controller
+                name="vsPlacementType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={placementType}
+                    placeholder="-- Select --"
+                    className="w-full"
+                  />
+                )}
+              />
+              
+              
+            </div>
+              
+
+            }
+
+
+
+
+
+
+
+
+
             { Number(bDropoutValue) === 0 &&
             <div className="col-span-1">
               <Label text="Is Assesment Complete ?" />
@@ -911,7 +975,17 @@ const CandidateModal: React.FC = () => {
                 )}
               />
             </div>
+            
+
+               
 }
+
+
+
+
+
+
+
                 {
                   Number(bAssessedValue) === 1 && 
                   <div className="col-span-1">
@@ -952,8 +1026,8 @@ const CandidateModal: React.FC = () => {
               </div>
             )}
 
-            {
-             vsResultValue === "Pass" &&
+            {/* {  
+            Number(bDropoutValue) === 0   &&
               <div className="col-span-1">
               <Label text="Is Candidate Placed ?" />
               <Controller
@@ -970,10 +1044,10 @@ const CandidateModal: React.FC = () => {
               />
               
             </div>
-            }
+            } */}
 
 
-            {
+            {/* {
 
              Number(placementValue) === 1&&
               <div className="col-span-2">
@@ -995,7 +1069,7 @@ const CandidateModal: React.FC = () => {
             </div>
               
 
-            }
+            } */}
      
           </>
         )}
