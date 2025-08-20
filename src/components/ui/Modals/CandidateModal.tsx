@@ -51,9 +51,9 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
     defaultValues: {
       vsCandidateName: '',
       vsDOB: '',
-      vsGender: '',
-      fklReligionId: '',
-      fklCategoryId: '',
+      vsGender: 0,
+      fklReligionId: 0,
+      fklCategoryId: 0,
       vsEducationAttained: '',
       fklIdType: 0,
       vsUUID: '',
@@ -61,28 +61,49 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
       bTeaTribe: 0,
       bBPLcardHolder: 0,
       bMinority: 0,
-      batchId: '',
+      batchId: 0,
       bDropout: 0,
       placed: 0,
       vsPlacementType: '',
       bAssessed: 0,
       vsResult: '',
-      declared: 0,
+      declared: '',
     },
   });
 
   // Fetch candidate data if editing
   const { data: candidateData, isSuccess } = useGetCandidateById(candidateId || '', !!candidateId);
 
-  // Fetch gender data for dropdown and prefill
+  // Fetch all master data for dropdowns
   const { data: genderData } = useQuery({
     queryKey: ["genderData", "gender"],
     queryFn: () => getMasterData("gender"),
   });
 
+  const { data: religionData } = useQuery({
+    queryKey: ["religionData", "religion"],
+    queryFn: () => getMasterData("religion"),
+  });
+
+  const { data: categoryData } = useQuery({
+    queryKey: ["categoryData", "category"],
+    queryFn: () => getMasterData("category"),
+  });
+
+  const { data: qualificationData } = useQuery({
+    queryKey: ["masterData", "qualification"],
+    queryFn: () => getMasterData("qualification"),
+  });
+
+  const { data: batchIdOptions } = useQuery({
+    queryKey: ["masterData", "batchIdOptions"],
+    queryFn: () => getMasterData("batchCandidate"),
+  });
+
   // Prefill form when candidateData is loaded
   useEffect(() => {
-    if (candidateId && isSuccess && candidateData && candidateData.length > 0 && genderData) {
+    if (candidateId && isSuccess && candidateData && candidateData.length > 0 &&
+      genderData && religionData && categoryData && qualificationData && batchIdOptions) {
       const candidate = candidateData[0]; // Get first candidate from array
 
       // Find the gender ID from the gender options based on vsGender value
@@ -91,34 +112,76 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
           g.pklGenderId.toString() === candidate.vsGender
       );
 
+      // Find the religion ID from religion options based on religion name
+      const religionOption = religionData?.data?.result?.religion?.find(
+        (r: { pklReligionId: number; vsReligionName: string }) =>
+          r.vsReligionName?.toLowerCase() === candidate.religion?.toLowerCase()
+      );
+
+      // Find the category ID from category options based on caste name
+      const categoryOption = categoryData?.data?.result?.category?.find(
+        (c: { pklCasteId: number; vsCasteName: string }) =>
+          c.vsCasteName?.toLowerCase() === candidate.caste?.toLowerCase()
+      );
+
+      // Find the qualification ID from qualification options based on education
+      // Try multiple possible field names for education data
+      const educationValue = candidate.vsEducationAttained || candidate.educationAttained || candidate.education;
+      const qualificationOption = qualificationData?.data?.result?.qualification?.find(
+        (q: { value: string | number; label: string }) => {
+          const qLabelLower = q.label?.toLowerCase();
+          const qValueLower = typeof q.value === 'string' ? q.value.toLowerCase() : String(q.value).toLowerCase();
+          const educationLower = educationValue?.toLowerCase();
+
+          return qLabelLower === educationLower || qValueLower === educationLower;
+        }
+      );
+
+      // Find the batch ID from batch options based on batch number
+      const batchOption = batchIdOptions?.data?.result?.batchCandidate?.find(
+        (b: { iBatchNumber: number; id: number }) =>
+          b.iBatchNumber.toString() === candidate.batchNo?.toString()
+      );
+
       // Map API response to form fields
       const formData = {
         vsCandidateName: candidate.vsCandidateName || '',
         vsDOB: candidate.vsDOB ? candidate.vsDOB.split(' ')[0] : '', // Extract date part
         vsGender: genderOption ? genderOption.pklGenderId : '',
-        fklReligionId: candidate.religion || '',
-        fklCategoryId: candidate.caste || '',
-        vsEducationAttained: candidate.vsEducationAttained || '',
+        fklReligionId: religionOption ? religionOption.pklReligionId : '',
+        fklCategoryId: categoryOption ? categoryOption.pklCasteId : '',
+        vsEducationAttained: qualificationOption ? qualificationOption.value : (educationValue || ''),
         fklIdType: candidate.UUID ? 1 : 0, // 1 if UUID exists, 0 if not
         vsUUID: candidate.UUID || '',
         bDisability: candidate.disability === 'YES' ? 1 : 0,
         bTeaTribe: candidate.teaTribe === 'YES' ? 1 : 0,
         bBPLcardHolder: candidate.BPLcardHolder === 'YES' ? 1 : 0,
         bMinority: candidate.Minority === 'YES' ? 1 : 0,
-        batchId: candidate.batchNo || '',
+        batchId: batchOption ? batchOption.id : '',
         bDropout: candidate.dropout === 'YES' ? 1 : 0,
         placed: candidate.candidatePlaced === 'YES' ? 1 : 0,
         vsPlacementType: candidate.placementType || '',
         bAssessed: candidate.assessmentComplete || 0,
         vsResult: candidate.vsResult || '',
-        declared: candidate.vsResult ? 1 : 0,
+        declared: candidate.vsResult ? '1' : '0',
       };
 
       console.log('Prefilling form with:', formData);
       console.log('Gender from API:', candidate.vsGender, 'Mapped to:', genderOption);
+      console.log('Religion from API:', candidate.religion, 'Mapped to:', religionOption);
+      console.log('Category from API:', candidate.caste, 'Mapped to:', categoryOption);
+      console.log('Education from API:', {
+        vsEducationAttained: candidate.vsEducationAttained,
+        educationAttained: candidate.educationAttained,
+        education: candidate.education,
+        used: educationValue
+      }, 'Mapped to:', qualificationOption);
+      console.log('Batch from API:', candidate.batchNo, 'Mapped to:', batchOption);
+      console.log('Available qualification options:', qualificationData?.data?.result?.qualification);
+      console.log('Full candidate object:', candidate);
       reset(formData);
     }
-  }, [candidateId, isSuccess, candidateData, genderData, reset]);
+  }, [candidateId, isSuccess, candidateData, genderData, religionData, categoryData, qualificationData, batchIdOptions, reset]);
   console.log("errors", errors);
 
   const resultType = [
@@ -173,11 +236,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
   //   }
   // }, [dob, setValue]);
 
-
-  const { data: qualificationData } = useQuery({
-    queryKey: ["masterData", "qualification"],
-    queryFn: () => getMasterData("qualification"),
-  });
+  // Create options for dropdowns
   console.log("------", qualificationData?.data?.result?.qualification);
 
   useEffect(() => {
@@ -193,11 +252,6 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
         value: gender.pklGenderId,
       })
     ) || [];
-
-  const { data: religionData } = useQuery({
-    queryKey: ["religionData", "religion"],
-    queryFn: () => getMasterData("religion"),
-  });
 
   useEffect(() => {
     if (religionData) {
@@ -224,19 +278,6 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
   //   }
   // }, [idTypeData]);
 
-
-
-  const { data: categoryData } = useQuery({
-    queryKey: ["categoryData", "category"],
-    queryFn: () => getMasterData("category"),
-  });
-
-  useEffect(() => {
-    if (categoryData) {
-      console.log("Fetched master data:", categoryData);
-    }
-  }, [categoryData]);
-
   const categoryOptions =
     categoryData?.data?.result?.category?.map(
       (category: { pklCasteId: number; vsCasteName: string }) => ({
@@ -249,19 +290,6 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
   //   queryKey: ["masterData", "state"],
   //   queryFn: () => getMasterData("state"),
   // });
-
-  const { data: batchIdOptions } = useQuery({
-    queryKey: ["masterData", "batchIdOptions"],
-    queryFn: () => getMasterData("batchCandidate"),
-  });
-
-  // const stateOptions =
-  //   masterData?.data?.result?.states?.map(
-  //     (states: { stateID: number; stateName: string }) => ({
-  //       label: states.stateName,
-  //       value: states.stateID,
-  //     })
-  //   ) || [];
 
   const batchOptions =
     batchIdOptions?.data?.result?.batchCandidate?.map(
@@ -454,7 +482,8 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
               <Input
                 {...field}
                 type="text"
-                className={errors.vsCandidateName ? "border-red-500" : ""}
+                disabled={!!candidateId}
+                className={`cursor-not-allowed ${errors.vsCandidateName ? "border-red-500" : ""}`}
               />
             )}
           />
@@ -477,6 +506,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="1"
                     checked={field.value === 1}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(1)}
                   />
                   Yes
@@ -487,6 +517,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="0"
                     checked={field.value === 0}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(0)}
                   />
                   No
@@ -516,6 +547,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                 <Input
                   {...field}
                   type="text"
+                  disabled={!!candidateId}
                   className={`border ${errors.vsUUID ? "border-red-500" : ""}`}
                   maxLength={4}
                   onChange={(e) => {
@@ -550,7 +582,8 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
               <Input
                 {...field}
                 type="date"
-                className="w-full"
+                disabled={!!candidateId && !!field.value}
+                className="w-full cursor-not-allowed"
                 max={format(new Date(), "yyyy-MM-dd")}
               />
             )}
@@ -575,6 +608,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
 
                   setValue("vsGender", selectedOption.value);
                 }}
+                disabled={!!candidateId}
                 className={errors.vsGender ? "border-red-500" : ""}
                 placeholder="-- Select Gender --"
               />
@@ -601,6 +635,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
 
                   setValue("fklReligionId", selectedOption.value);
                 }}
+                disabled={!!candidateId}
                 className={errors.fklReligionId ? "border-red-500" : ""}
                 placeholder="-- Select Religion --"
               />
@@ -627,6 +662,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
 
                   setValue("fklCategoryId", selectedOption.value);
                 }}
+                disabled={!!candidateId}
                 className={errors.fklCategoryId ? "border-red-500" : ""}
                 placeholder="-- Select Category--"
               />
@@ -653,7 +689,8 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                   field.onChange(selectedOption.value);
                   setValue("vsEducationAttained", selectedOption.value);
                 }}
-                className={errors.fklCategoryId ? "border-red-500" : ""}
+                disabled={!!candidateId && !!field.value}
+                className={errors.vsEducationAttained ? "border-red-500" : ""}
                 placeholder="-- Select Qualification--"
               />
             )}
@@ -796,6 +833,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="1"
                     checked={field.value === 1}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(1)}
                   />
                   Yes
@@ -805,6 +843,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="0"
                     checked={field.value === 0}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(0)}
                   />
                   No
@@ -829,6 +868,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="1"
                     checked={field.value === 1}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(1)}
                   />
                   Yes
@@ -838,6 +878,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="0"
                     checked={field.value === 0}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(0)}
                   />
                   No
@@ -863,6 +904,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="1"
                     checked={field.value === 1}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(1)}
                   />
                   Yes
@@ -872,6 +914,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="0"
                     checked={field.value === 0}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(0)}
                   />
                   No
@@ -897,6 +940,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="1"
                     checked={field.value === 1}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(1)}
                   />
                   Yes
@@ -906,6 +950,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                     type="radio"
                     value="0"
                     checked={field.value === 0}
+                    disabled={!!candidateId}
                     onChange={() => field.onChange(0)}
                   />
                   No

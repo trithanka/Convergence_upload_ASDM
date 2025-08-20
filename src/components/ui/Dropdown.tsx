@@ -17,6 +17,7 @@ type DropdownProps = {
   isOptionDisabled?: (option: DropdownOption) => boolean;
   value?: number | string; // Add value prop for controlled input
   onChange?: (value: number | string) => void; // Add onChange for react-hook-form
+  disabled?: boolean; // Add disabled prop
 };
 
 const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(
@@ -30,6 +31,7 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(
     placeholder = "Select an option",
     value,
     onChange,
+    disabled = false,
     ...props
   }, ref) => {
     const [searchText, setSearchText] = useState("");
@@ -121,16 +123,17 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(
       <div className="relative w-full" ref={ref} {...props}>
         {/* Dropdown Select Box */}
         <div
-          className={`w-full px-4 py-2.5 border border-gray-300 rounded-md bg-white cursor-pointer flex justify-between items-center ${className}`}
-          onClick={() => setIsOpen(!isOpen)}
-          onKeyDown={handleKeyDown}
-          tabIndex={0} // Makes it focusable for keyboard users
+          className={`w-full px-4 py-2.5 border border-gray-300 rounded-md bg-white flex justify-between items-center ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-400' : 'cursor-pointer'
+            } ${className}`}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          onKeyDown={!disabled ? handleKeyDown : undefined}
+          tabIndex={disabled ? -1 : 0} // Makes it focusable for keyboard users
         >
           <span>{selectedOption ? getOptionLabel(selectedOption) : placeholder}</span>
           <ChevronDown className="w-4 h-4 ml-1" />
         </div>
 
-        {isOpen && (
+        {isOpen && !disabled && (
           <div
             ref={dropdownMenuRef}
             className={`absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 ${dropdownDirection === "up" ? "bottom-full mb-1" : "top-full mt-1"
