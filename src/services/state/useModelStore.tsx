@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
+
 type ModalState = {
   isOpen: boolean;
   modalType: number | null;
   modalTitle: string;
   bulkName: string;
-
-
-  openModal: (type: number, title: string, bulkName: string  ) => void;
+  candidateId?: string | null;
+  openModal: (type: number, title: string, bulkName: string, candidateId?: string) => void;
   closeModal: () => void;
 };
 
@@ -16,10 +16,15 @@ const useModalStore = create<ModalState>((set) => ({
   modalType: null,
   modalTitle: '',
   bulkName: '',
- 
-
-  openModal: (type: number, title: string , bulkName: string , ) => set({ isOpen: true, modalType: type, modalTitle: title , bulkName:bulkName }),
-  closeModal: () => set({ isOpen: false, modalType: null, modalTitle: '', bulkName: ''  }), 
+  candidateId: null,
+  openModal: (type: number, title: string, bulkName: string, candidateId?: string) => set({
+    isOpen: true,
+    modalType: type,
+    modalTitle: title,
+    bulkName: bulkName,
+    candidateId: candidateId || null,
+  }),
+  closeModal: () => set({ isOpen: false, modalType: null, modalTitle: '', bulkName: '', candidateId: null }),
 }));
 
 export default useModalStore;

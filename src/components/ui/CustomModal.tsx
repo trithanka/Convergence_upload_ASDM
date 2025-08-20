@@ -22,7 +22,7 @@ import SectorModal from './Modals/SectorModal';
 
 
 const CustomModal: React.FC = () => {
-  const { isOpen, modalType, modalTitle, bulkName,  closeModal} = useModalStore();
+  const { isOpen, modalType, modalTitle, bulkName, candidateId, closeModal } = useModalStore();
 
 
 
@@ -39,7 +39,7 @@ const CustomModal: React.FC = () => {
       case 4:
         return <BatchModal />;
       case 5:
-        return <CandidateModal />;
+        return <CandidateModal candidateId={candidateId} />;
       case 6:
         return <TrainerModal />;
       case 7:
@@ -51,19 +51,15 @@ const CustomModal: React.FC = () => {
       case 10:
         return <InvoiceModal />;
       case 11:
-        return <BulkUploadModal bulkName={bulkName} />; 
+        return <BulkUploadModal bulkName={bulkName} />;
       case 12:
         return <TrainingCenterModel />;
       case 13:
         return <LoginCreationModal />;
-        case 14:
-          return <SectorModal />;
-
-        case 15:
-          return <NewCandidateModal />;
-          
-
-
+      case 14:
+        return <SectorModal />;
+      case 15:
+        return <NewCandidateModal />;
       default:
         return <p>No content available</p>;
     }
@@ -85,7 +81,7 @@ const CustomModal: React.FC = () => {
           </button>
         </div>
         {renderModalContent()}
-     
+
       </Box>
     </Modal>
   );

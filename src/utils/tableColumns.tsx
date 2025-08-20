@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { SummaryReportData } from "../types/summaryReport";
+import useModalStore from "../services/state/useModelStore";
 
 interface SchemeData {
   pklSchemeId: string;
@@ -35,7 +36,7 @@ export const schemeColumns: (
 ) => Column<SchemeData>[] = (_navigate) => [
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Name", accessor: "vsSchemeName" },
-  
+
   // { Header: "Scheme Type", accessor: "vsSchemeType" },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
   // { Header: "Fund Name", accessor: "vsFundName" },
@@ -63,7 +64,7 @@ export const schemeDuplicateColumns: (
   duplicateQuery: string[] // Accept duplicateQuery here
 ) => Column<SchemeDuplicateData>[] = (_navigate, duplicateQuery) => [
   // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  
+
   {
     Header: "Scheme Name",
     accessor: "vsSchemeName",
@@ -77,17 +78,17 @@ export const schemeDuplicateColumns: (
     ),
   },
   {
-      Header: "Scheme Code",
-      accessor: "vsSchemeCode",
-      Cell: ({ value }) => (
-        <span
-          className={duplicateQuery.includes("vsSchemeCode") ? "bg-yellow-200" : ""}
-        >
-          {value}
-        </span>
-      )
+    Header: "Scheme Code",
+    accessor: "vsSchemeCode",
+    Cell: ({ value }) => (
+      <span
+        className={duplicateQuery.includes("vsSchemeCode") ? "bg-yellow-200" : ""}
+      >
+        {value}
+      </span>
+    )
   },
- 
+
   // {
   //   Header: "Scheme Type",
   //   accessor: "vsSchemeType",
@@ -121,15 +122,15 @@ export const schemeDuplicateColumns: (
   //     </span>
   //   ),
   // },
-  { 
+  {
     Header: "Department Name",
     accessor: "vsDepartmentName",
     Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
         {value?.split(",").map((item, index) => (
-          <span 
-            key={index} 
-            style={{ 
+          <span
+            key={index}
+            style={{
               backgroundColor: "#cce5ff", // Highlight color (Yellow)
               padding: "5px 10px",
               borderRadius: "5px",
@@ -142,9 +143,9 @@ export const schemeDuplicateColumns: (
       </div>
     )
   }
-  
-  
-  
+
+
+
 
 ];
 
@@ -163,29 +164,29 @@ interface TargetData {
 export const targetColumns = (
   navigate: (path: string) => void
 ): Column<TargetData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Scheme Code", accessor: "vsSchemeCode" },
-  { Header: "Target Order Number", accessor: "vsTargetNo" },
-  { Header: "Target Type", accessor: "vsTargetType" },
-  {
-    Header: "Date Of Target",
-    accessor: "dtSanctionDate",
-    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
-  },
-  { Header: "Total Target", accessor: "iTotalTarget" },
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/target/${row.original.pklTargetId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Scheme Code", accessor: "vsSchemeCode" },
+    { Header: "Target Order Number", accessor: "vsTargetNo" },
+    { Header: "Target Type", accessor: "vsTargetType" },
+    {
+      Header: "Date Of Target",
+      accessor: "dtSanctionDate",
+      Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+    },
+    { Header: "Total Target", accessor: "iTotalTarget" },
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/target/${row.original.pklTargetId}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface CourseData {
   id: string;
@@ -204,37 +205,37 @@ interface CourseData {
 export const courseColumns = (
   navigate: (path: string) => void
 ): Column<CourseData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Sector Name", accessor: "vsSectorName" },
-  { Header: "Job Role Name", accessor: "vsCourseName" },
-  { Header: "QPNOS Code", accessor: "vsCourseCode" },
-  {
-    Header: "From Date",
-    accessor: "dtFromDate",
-    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
-  },
-  {
-    Header: "To Date",
-    accessor: "dtToDate",
-    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
-  },
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Sector Name", accessor: "vsSectorName" },
+    { Header: "Job Role Name", accessor: "vsCourseName" },
+    { Header: "QPNOS Code", accessor: "vsCourseCode" },
+    {
+      Header: "From Date",
+      accessor: "dtFromDate",
+      Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+    },
+    {
+      Header: "To Date",
+      accessor: "dtToDate",
+      Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+    },
 
-  // { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
-  // { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
+    // { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
+    // { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
 
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/target/${row.original.id}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/target/${row.original.id}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 
 
@@ -243,59 +244,59 @@ interface CourseDuplicateData {
   vsCourseName: string;
   vsCourseCode: string;
   departmentNames: string;
-  
+
   Action: unknown;
 }
 
 export const courseDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<CourseDuplicateData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
 
-  { Header: "Job Role Name", accessor: "vsCourseName" },
-  { Header: "QPNOS Code", accessor: "vsCourseCode" },
-  {
-    Header: "Department Name",
-    accessor: "departmentNames",
-    Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
-        {value?.split(",").map((item, index) => (
-          <span 
-            key={index} 
-            style={{ 
-              backgroundColor: "#cce5ff", // Highlight color (Yellow)
-              padding: "5px 10px",
-              borderRadius: "5px",
-              fontWeight: "bold"
-            }}
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    )
-  }
-  
-  
+    { Header: "Job Role Name", accessor: "vsCourseName" },
+    { Header: "QPNOS Code", accessor: "vsCourseCode" },
+    {
+      Header: "Department Name",
+      accessor: "departmentNames",
+      Cell: ({ value }) => (
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {value?.split(",").map((item, index) => (
+            <span
+              key={index}
+              style={{
+                backgroundColor: "#cce5ff", // Highlight color (Yellow)
+                padding: "5px 10px",
+                borderRadius: "5px",
+                fontWeight: "bold"
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )
+    }
 
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/target/${row.original.id}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+
+
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/target/${row.original.id}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface TrainingPartnerData {
   id: string;
   vsTpName: string;
- 
+
   iSpocContactNum: string;
   department_names: string;
   vsSpocName: string;
@@ -323,7 +324,7 @@ export const trainingColumns: (
   { Header: "Training Partner", accessor: "vsTpName" },
   { Header: "PAN", accessor: "vsPan" },
   // { Header: "SPOC Name", accessor: "vsSpocName" },
- 
+
   // { Header: "SPOC Contact", accessor: "iSpocContactNum" },
   { Header: "Address", accessor: "vsAddress" },
   // { Header: "State", accessor: "vsState" },
@@ -358,11 +359,11 @@ export const DuplicateTrainingColumns = (
       Header: "Department Name",
       accessor: "departmentNames",
       Cell: ({ value }) => (
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           {value?.split(",").map((item, index) => (
-            <span 
-              key={index} 
-              style={{ 
+            <span
+              key={index}
+              style={{
                 backgroundColor: "#cce5ff", // Highlight color (Yellow)
                 padding: "5px 10px",
                 borderRadius: "5px",
@@ -375,8 +376,8 @@ export const DuplicateTrainingColumns = (
         </div>
       )
     }
-    
-   
+
+
   ];
   // if (!isCrossDepartmentDuplicate) {
   //   columns.push(
@@ -430,28 +431,28 @@ interface TrainingCenterData {
 export const centerColumns = (
   navigate: (path: string) => void
 ): Column<TrainingCenterData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Training Partner", accessor: "vsTpName" },
-  { Header: "Training Center ", accessor: "vsTcName" },
-  { Header: "Center Address", accessor: "vsAddress" },
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Training Partner", accessor: "vsTpName" },
+    { Header: "Training Center ", accessor: "vsTcName" },
+    { Header: "Center Address", accessor: "vsAddress" },
 
- 
- 
-  { Header: "Center District", accessor: "vsDistrict" },
-  { Header: "Center State", accessor: "vsState" },
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/target/${row.original.pklTcId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+
+
+    { Header: "Center District", accessor: "vsDistrict" },
+    { Header: "Center State", accessor: "vsState" },
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/target/${row.original.pklTcId}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface TrainingCenterDuplicateData {
   pklTcId: number;
@@ -465,53 +466,53 @@ interface TrainingCenterDuplicateData {
 export const centerDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<TrainingCenterDuplicateData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "TC Name", accessor: "vsTcName" },
-  { Header: "Tp Name", accessor: "vsTpName" },
-  { Header: "District", accessor: "vsDistrictName" },
-  {
-    Header: "Latitude/Longitude",
-    accessor: "location",
-    Cell: ({ row }) => `${row.vsLatitude} , ${row.vsLongitude}`
-  },
-  
-  { Header: "Center Code", accessor: "vsTcCode" },
-  
-  {
-    Header: "Department Name",
-    accessor: "vsDepartmentName",
-    Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
-        {value?.split(",").map((item, index) => (
-          <span 
-            key={index} 
-            style={{ 
-              backgroundColor: "#cce5ff", // Highlight color (Yellow)
-              padding: "5px 10px",
-              borderRadius: "5px",
-              fontWeight: "bold"
-            }}
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    )
-  }
-  
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/target/${row.original.pklTcId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "TC Name", accessor: "vsTcName" },
+    { Header: "Tp Name", accessor: "vsTpName" },
+    { Header: "District", accessor: "vsDistrictName" },
+    {
+      Header: "Latitude/Longitude",
+      accessor: "location",
+      Cell: ({ row }) => `${row.vsLatitude} , ${row.vsLongitude}`
+    },
+
+    { Header: "Center Code", accessor: "vsTcCode" },
+
+    {
+      Header: "Department Name",
+      accessor: "vsDepartmentName",
+      Cell: ({ value }) => (
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {value?.split(",").map((item, index) => (
+            <span
+              key={index}
+              style={{
+                backgroundColor: "#cce5ff", // Highlight color (Yellow)
+                padding: "5px 10px",
+                borderRadius: "5px",
+                fontWeight: "bold"
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/target/${row.original.pklTcId}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface BatchData {
   pklBatchId: string;
@@ -529,60 +530,60 @@ interface BatchData {
 export const batchColumns = (
   navigate: (path: string) => void
 ): Column<BatchData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Batch ID", accessor: "iBatchNumber" },
-  { Header: " Batch Start Date", accessor: "dtStartDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
-  { Header: "Batch End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
-  // { Header: "Batch Size", accessor: "iBatchSize" },
-  { Header: "Training Center", accessor: "tcName" },
-  {Header :"Job Role " , accessor:"vsCourseName"},
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Batch ID", accessor: "iBatchNumber" },
+    { Header: " Batch Start Date", accessor: "dtStartDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
+    { Header: "Batch End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
+    // { Header: "Batch Size", accessor: "iBatchSize" },
+    { Header: "Training Center", accessor: "tcName" },
+    { Header: "Job Role ", accessor: "vsCourseName" },
 
-  // {Header :"Trainer Name " , accessor:"trainerName"},
-  // {Header :"Trainer PAN " , accessor:"trainerPAN"},
-  // {
-  //   Header: "Trainer",
-  //   accessor: "vsTrainerName",
-  // }
+    // {Header :"Trainer Name " , accessor:"trainerName"},
+    // {Header :"Trainer PAN " , accessor:"trainerPAN"},
+    // {
+    //   Header: "Trainer",
+    //   accessor: "vsTrainerName",
+    // }
 
-  // { Header: "SDMS  ID", accessor: "SDMSid" },
+    // { Header: "SDMS  ID", accessor: "SDMSid" },
 
-{
-  Header: "Candidate Count",
-  accessor: "totalCandidate", // Use simple string accessor
-  Cell: ({ row, value }: { row: any; value: any }) => {
-    // The CentralizedTable passes row directly (not row.original)
-    // So row is the actual data object
-    const rowData = row || {};
+    {
+      Header: "Candidate Count",
+      accessor: "totalCandidate", // Use simple string accessor
+      Cell: ({ row, value }: { row: any; value: any }) => {
+        // The CentralizedTable passes row directly (not row.original)
+        // So row is the actual data object
+        const rowData = row || {};
 
-    // Try to get candidate count from different possible fields
-    const count = value ||
-                  rowData.totalCandidate ||
-                  rowData.iBatchTarget ||
-                  rowData.candidateCount ||
-                  rowData.totalCandidates ||
-                  rowData.count ||
-                  "0";
+        // Try to get candidate count from different possible fields
+        const count = value ||
+          rowData.totalCandidate ||
+          rowData.iBatchTarget ||
+          rowData.candidateCount ||
+          rowData.totalCandidates ||
+          rowData.count ||
+          "0";
 
-    const batchId = rowData.iBatchNumber;
-    console.log("Batch ID:", batchId);
+        const batchId = rowData.iBatchNumber;
+        console.log("Batch ID:", batchId);
 
-    return (
-     <button
-  onClick={() => {
-    // Save batchId and count to localStorage
-    localStorage.setItem("selectedBatchId", batchId);
-    navigate(`/displayCountCandidate`);
-  }}
-  className="text-blue-500 hover:underline"
->
-  {count}
-</button>
-    );
-  },
-}
+        return (
+          <button
+            onClick={() => {
+              // Save batchId and count to localStorage
+              localStorage.setItem("selectedBatchId", batchId);
+              navigate(`/displayCountCandidate`);
+            }}
+            className="text-blue-500 hover:underline"
+          >
+            {count}
+          </button>
+        );
+      },
+    }
 
 
-];
+  ];
 
 interface AssessorsData {
   id: number;
@@ -598,83 +599,83 @@ interface AssessorsData {
 export const assessorsColumns = (
   navigate: (path: string) => void
 ): Column<AssessorsData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Assessor Name", accessor: "vsAssosserName" },
-  { Header: "PAN", accessor: "vsPan" },
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Assessor Name", accessor: "vsAssosserName" },
+    { Header: "PAN", accessor: "vsPan" },
 
-  { Header: "Mobile", accessor: "vsMobile" },
-  { Header: "Assessor Agency", accessor: "vsAssesmentAgency" },
-  {
-    Header: "Valid Upto",
-    accessor: "dtValidUpTo",
-    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
-  },
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/assessors/${row.original.id}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    { Header: "Mobile", accessor: "vsMobile" },
+    { Header: "Assessor Agency", accessor: "vsAssesmentAgency" },
+    {
+      Header: "Valid Upto",
+      accessor: "dtValidUpTo",
+      Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+    },
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/assessors/${row.original.id}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface AssessorsDuplicateData {
   id: number;
   AssessorName: string;
   vsPAN: string;
   departmentNames: string;
- 
+
   Action: unknown;
 }
 
 export const assessorsDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<AssessorsDuplicateData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Assessor Name", accessor: "AssessorName" },
-  { Header: "PAN", accessor: "vsPAN" },
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Assessor Name", accessor: "AssessorName" },
+    { Header: "PAN", accessor: "vsPAN" },
 
-  {
-    Header: "Department Name",
-    accessor: "departmentNames",
-    Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
-        {value?.split(",").map((item, index) => (
-          <span 
-            key={index} 
-            style={{ 
-              backgroundColor: "#cce5ff", // Highlight color (Yellow)
-              padding: "5px 10px",
-              borderRadius: "5px",
-              fontWeight: "bold"
-            }}
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    )
-  }
-  
-  
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/assessors/${row.original.id}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    {
+      Header: "Department Name",
+      accessor: "departmentNames",
+      Cell: ({ value }) => (
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {value?.split(",").map((item, index) => (
+            <span
+              key={index}
+              style={{
+                backgroundColor: "#cce5ff", // Highlight color (Yellow)
+                padding: "5px 10px",
+                borderRadius: "5px",
+                fontWeight: "bold"
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/assessors/${row.original.id}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface TrainerData {
   pklConvTrainerId: number;
@@ -689,77 +690,77 @@ interface TrainerData {
 export const trainerColumns = (
   navigate: (path: string) => void
 ): Column<TrainerData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  // { Header: "Trainer ID", accessor: "trainerId" },
-  { Header: "Trainer Name", accessor: "vsTrainerName" },
-  { Header: "Mobile", accessor: "vsMobile" },
-  { Header: "Email", accessor: "vsEmail" },
-  { Header: "IDCard", accessor: "vsPAN" },
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    // { Header: "Trainer ID", accessor: "trainerId" },
+    { Header: "Trainer Name", accessor: "vsTrainerName" },
+    { Header: "Mobile", accessor: "vsMobile" },
+    { Header: "Email", accessor: "vsEmail" },
+    { Header: "IDCard", accessor: "vsPAN" },
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface TrainerDuplicateData {
- 
+
   // trainerId: string;
   TrainerName: string;
   vsPAN: string;
   departmentNames: string;
- 
+
 }
 
 export const trainerDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<TrainerDuplicateData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Trainer Name", accessor: "TrainerName" },
-  { Header: "PAN", accessor: "vsPAN" },
-  {
-    Header: "Department Name",
-    accessor: "departmentNames",
-    Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
-        {value?.split(",").map((item, index) => (
-          <span 
-            key={index} 
-            style={{ 
-              backgroundColor: "#cce5ff", // Highlight color (Yellow)
-              padding: "5px 10px",
-              borderRadius: "5px",
-              fontWeight: "bold"
-            }}
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    )
-  }
-  
- 
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Trainer Name", accessor: "TrainerName" },
+    { Header: "PAN", accessor: "vsPAN" },
+    {
+      Header: "Department Name",
+      accessor: "departmentNames",
+      Cell: ({ value }) => (
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {value?.split(",").map((item, index) => (
+            <span
+              key={index}
+              style={{
+                backgroundColor: "#cce5ff", // Highlight color (Yellow)
+                padding: "5px 10px",
+                borderRadius: "5px",
+                fontWeight: "bold"
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface AssessmentData {
   pklConvAssessmentId: string;
@@ -781,67 +782,67 @@ interface AssessmentData {
 export const assessmentColumns = (
   navigate: (path: string) => void
 ): Column<AssessmentData>[] => [
-  // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Batch ID", accessor: "batchId" },
-  { Header: "SDMS Batch ID", accessor: "SDMSBatchId" },
-  // { Header: "Candidate ID", accessor: "candidateId" },
-  {
-    Header: "Assessment Date",
-    accessor: "dtAssessmentDate",
-    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? " ",
-  },
-  // { Header: "Agency", accessor: "vsAgency" },
+    // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Batch ID", accessor: "batchId" },
+    { Header: "SDMS Batch ID", accessor: "SDMSBatchId" },
+    // { Header: "Candidate ID", accessor: "candidateId" },
+    {
+      Header: "Assessment Date",
+      accessor: "dtAssessmentDate",
+      Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? " ",
+    },
+    // { Header: "Agency", accessor: "vsAgency" },
 
-  // { Header: "Accessor Name", accessor: "vsAccessorName" },
-  {
-    Header: "Result Date",
-    accessor: "dtResultDate",
-    Cell: ({ value }) =>
-      value ? moment(value).format("YYYY-MM-DD") : " ", // Check if value exists before formatting
-  },
-  // {
-  //   Header: "Marksheet",
-  //   accessor: "vsMarksheetUrl",
-  //   Cell: ({ row }) => (
-  //     <a
-  //       href={row.original.vsMarksheetUrl}
-  //       target="_blank"
-  //       rel="noopener noreferrer"
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </a>
-  //   ),
-  // },
-  // {
-  //   Header: "Certificate",
-  //   accessor: "vsCertificateUrl",
-  //   Cell: ({ row }) => (
-  //     <a
-  //       href={row.original.vsCertificateUrl}
-  //       target="_blank"
-  //       rel="noopener noreferrer"
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </a>
-  //   ),
-  // },
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() =>
-  //         navigate(`/assessment/${row.original.pklConvAssessmentId}`)
-  //       }
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // { Header: "Accessor Name", accessor: "vsAccessorName" },
+    {
+      Header: "Result Date",
+      accessor: "dtResultDate",
+      Cell: ({ value }) =>
+        value ? moment(value).format("YYYY-MM-DD") : " ", // Check if value exists before formatting
+    },
+    // {
+    //   Header: "Marksheet",
+    //   accessor: "vsMarksheetUrl",
+    //   Cell: ({ row }) => (
+    //     <a
+    //       href={row.original.vsMarksheetUrl}
+    //       target="_blank"
+    //       rel="noopener noreferrer"
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </a>
+    //   ),
+    // },
+    // {
+    //   Header: "Certificate",
+    //   accessor: "vsCertificateUrl",
+    //   Cell: ({ row }) => (
+    //     <a
+    //       href={row.original.vsCertificateUrl}
+    //       target="_blank"
+    //       rel="noopener noreferrer"
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </a>
+    //   ),
+    // },
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() =>
+    //         navigate(`/assessment/${row.original.pklConvAssessmentId}`)
+    //       }
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface PlacementData {
   pklConvPlacementId: string;
@@ -857,82 +858,82 @@ interface PlacementData {
 export const placementColumns = (
   navigate: (path: string) => void
 ): Column<PlacementData>[] => [
-  // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Batch ID", accessor: "batchId" },
-  { Header: "Candidate ID", accessor: "candidateId" },
-  { Header: "Candidate Name", accessor: "vsCandidateName" },
-  { Header: "Is Placed", accessor: "bIsCandidatePlaced" },
-  { Header: "Placement Type", accessor: "vsPlacementType" },
-  { Header: "Employer Name", accessor: "vsEmployeerName" },
+    // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Batch ID", accessor: "batchId" },
+    { Header: "Candidate ID", accessor: "candidateId" },
+    { Header: "Candidate Name", accessor: "vsCandidateName" },
+    { Header: "Is Placed", accessor: "bIsCandidatePlaced" },
+    { Header: "Placement Type", accessor: "vsPlacementType" },
+    { Header: "Employer Name", accessor: "vsEmployeerName" },
 
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() =>
-  //         navigate(`/placement/${row.original.pklConvPlacementId}`)
-  //       }
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() =>
+    //         navigate(`/placement/${row.original.pklConvPlacementId}`)
+    //       }
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface PlacementDuplicateData {
   vsCandidateName: string;
   vsDOB: string;
   departmentNames: string;
- 
+
   Action: unknown;
 }
 
 export const placementDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<PlacementDuplicateData>[] => [
-  // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Candidate Name", accessor: "vsCandidateName" },
-  { Header: "DOB", accessor: "vsDOB" },
-  {
-    Header: "Department Name",
-    accessor: "departmentNames",
-    Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
-        {value?.split(",").map((item, index) => (
-          <span 
-            key={index} 
-            style={{ 
-              backgroundColor: "#cce5ff", // Highlight color (Yellow)
-              padding: "5px 10px",
-              borderRadius: "5px",
-              fontWeight: "bold"
-            }}
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    )
-  }
-  
+    // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Candidate Name", accessor: "vsCandidateName" },
+    { Header: "DOB", accessor: "vsDOB" },
+    {
+      Header: "Department Name",
+      accessor: "departmentNames",
+      Cell: ({ value }) => (
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {value?.split(",").map((item, index) => (
+            <span
+              key={index}
+              style={{
+                backgroundColor: "#cce5ff", // Highlight color (Yellow)
+                padding: "5px 10px",
+                borderRadius: "5px",
+                fontWeight: "bold"
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )
+    }
 
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() =>
-  //         navigate(`/placement/${row.original.pklConvPlacementId}`)
-  //       }
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() =>
+    //         navigate(`/placement/${row.original.pklConvPlacementId}`)
+    //       }
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];
 
 interface DepartmentListData {
   id: string;
@@ -951,7 +952,7 @@ interface DepartmentListData {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const departmentListColumns: Column<DepartmentListData>[] = [
- 
+
   {
     Header: "Department Name",
     accessor: "departmentName",
@@ -977,7 +978,7 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
   //   accessor: "adminName",
   //   Cell: ({ value }) => value ?? "N/A",
   // },
- 
+
   {
     Header: "Last Login",
     accessor: "dtLastLogin",
@@ -986,9 +987,9 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
     //   if (!row || !row) {
     //     return <span style={{ color: "red" }}>No Data</span>;
     //   }
-  
+
     //   console.log("Row Original Data:", row);
-  
+
     //   return (
     //     <div className="flex flex-col items-center">
     //       <span style={{ color: row.bEnable === 0 ? "red" : "green" }}>
@@ -1002,13 +1003,13 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
     //   );
     // },
   }
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
 ];
 
 interface InvoiceData {
@@ -1026,30 +1027,30 @@ interface InvoiceData {
 export const invoiceColumns = (
   navigate: (path: string) => void
 ): Column<InvoiceData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Invoice Tranche", accessor: "vsInvoiceTranche" },
-  {
-    Header: "Date",
-    accessor: "vsInvoiceDate",
-    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
-  },
-  { Header: "Invoice Number", accessor: "vsInvoiceNo" },
-  { Header: "Amount", accessor: "fAmount" },
-  { Header: "Rate", accessor: "fRate" },
-  { Header: "Total Candidate", accessor: "iTotalCandidate" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/invoice/${row.original.pklConvInvoiceId}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
-];
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Invoice Tranche", accessor: "vsInvoiceTranche" },
+    {
+      Header: "Date",
+      accessor: "vsInvoiceDate",
+      Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+    },
+    { Header: "Invoice Number", accessor: "vsInvoiceNo" },
+    { Header: "Amount", accessor: "fAmount" },
+    { Header: "Rate", accessor: "fRate" },
+    { Header: "Total Candidate", accessor: "iTotalCandidate" },
+    {
+      Header: "Action",
+      accessor: "Action",
+      Cell: ({ row }) => (
+        <button
+          onClick={() => navigate(`/invoice/${row.original.pklConvInvoiceId}`)}
+          className="text-blue-500 hover:underline"
+        >
+          View
+        </button>
+      ),
+    },
+  ];
 
 export interface CandidateData {
   candidateId: string;
@@ -1072,69 +1073,67 @@ export interface CandidateData {
 export const candidateColumns = (
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
-  {
-    Header: "Candidate Name",
-    accessor: "vsCandidateName",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => (
-      <span className="capitalize">{value || " "}</span>
-    ),
-  },
-  {
-    Header: "Date Of Birth",
-    accessor: "vsDOB",
-    Cell: ({ value }: { value: string | undefined }) =>
-      value ? moment.utc(value).format("DD-MM-YYYY") : " ",
-  },
-  
-  
-  
-  
-  {
-    Header: "Caste",
-    accessor: "caste",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
-  },
-  {
-    Header: "Gender",
-    accessor: "vsGenderName",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
-  },
-  // {
-  //   Header: "Mobile",
-  //   accessor: "vsMobile",
-  //   Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
-  // },
-  {
-    Header: "Qualification",
-    accessor: "vsQualification",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
-  },
-
     {
-    Header: "Batch No",
-    accessor: "batchNo",
-    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
-  },
+      Header: "Candidate Name",
+      accessor: "vsCandidateName",
+      Cell: ({ value }: CellProps<CandidateData, string | undefined>) => (
+        <span className="capitalize">{value || " "}</span>
+      ),
+    },
+    {
+      Header: "Date Of Birth",
+      accessor: "vsDOB",
+      Cell: ({ value }: { value: string | undefined }) =>
+        value ? moment.utc(value).format("DD-MM-YYYY") : " ",
+    },
+    {
+      Header: "Caste",
+      accessor: "caste",
+      Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
+    },
+    {
+      Header: "Gender",
+      accessor: "vsGenderName",
+      Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
+    },
+    {
+      Header: "Qualification",
+      accessor: "vsQualification",
+      Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
+    },
+    {
+      Header: "Batch No",
+      accessor: "batchNo",
+      Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
+    },
+    // Actions column
+    {
+      Header: "Actions",
+      accessor: "Action",
+      Cell: function ActionsCell({ row }: any) {
+        const openModal = useModalStore((state) => state.openModal);
+        // Based on API response, the ID field is 'id'
+        const candidateId = row?.id || row?.candidateId || row?.original?.id || row?.original?.candidateId;
+        console.log("Row data:", row, "CandidateId:", candidateId);
 
-
-  // {
-  //   Header: "Aadhar (Last 4 Digit)",
-  //   accessor: "UUID",
-  //   Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || " ",
-  // },
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }: CellProps<CandidateData, unknown>) => (
-  //     <button
-  //       onClick={() => navigate(`/candidate/${row.original.candidateId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+        return (
+          <button
+            className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-700"
+            onClick={() => {
+              if (candidateId) {
+                openModal(5, "Edit Candidate", "candidate", String(candidateId));
+              } else {
+                console.error("No candidate ID found in row:", row);
+              }
+            }}
+            disabled={!candidateId}
+          >
+            Edit
+          </button>
+        );
+      },
+    },
+  ];
 
 interface DepartmentData {
   Id: number;
@@ -1155,78 +1154,78 @@ export const CrossCandidateColumns = (
   navigate: (path: string) => void,
   duplicateQuery: string[]
 ): Column<CandidateData>[] => [
- 
-  {
-    Header: "Candidate Name",
-    accessor: "vsCandidateName",
-    Cell: ({ value }) => (
-      <span
-        className={`capitalize ${duplicateQuery.includes("vsCandidateName") ? "bg-yellow-200 font-bold p-1 rounded" : ""}`}
-      >
-        {value}
-      </span>
-    ),
-  },
-  {
-    Header: "Date Of Birth",
-    accessor: "vsDOB",
-    Cell: ({ value }: { value: string }) => (
-      <span className={duplicateQuery.includes("vsDOB") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
-        {moment(value).format("DD-MM-YYYY")}
-      </span>
-    ),
-  },
-  {
-    Header: "UUID",
-    accessor: "vsUUID",
-    Cell: ({ value }: { value: string }) => (
-      <span className={duplicateQuery.includes("vsUUID") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
-      {value}
-      </span>
-    ),
-  },
-  {
-    Header: "Gender",
-    accessor: "vsGenderName",
-    Cell: ({ value }) => (
-      <span
-        className={`capitalize ${duplicateQuery.includes("vsGender") ? "bg-yellow-200 font-bold p-1 rounded" : ""}`}
-      >
-        {value}
-      </span>
-    ),
-  },
-  // {
-  //   Header: "Phone",
-  //   accessor: "vsMobile",
-  //   Cell: ({ value }: { value: string }) => (
-  //     <span className={duplicateQuery.includes("vsMobile") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
-  //       {value}
-  //     </span>
-  //   ),
-  // },
-  {
-    Header: "Department Name",
-    accessor: "vsDepartmentName",
-    Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-        {value?.split(",").map((item, index) => (
-          <span
-            key={index}
-            style={{
-              backgroundColor: duplicateQuery.includes("departmentNames") ? "#ffeb3b" : "#cce5ff", // Highlight if selected
-              padding: "5px 10px",
-              borderRadius: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    ),
-  },
-];
+
+    {
+      Header: "Candidate Name",
+      accessor: "vsCandidateName",
+      Cell: ({ value }) => (
+        <span
+          className={`capitalize ${duplicateQuery.includes("vsCandidateName") ? "bg-yellow-200 font-bold p-1 rounded" : ""}`}
+        >
+          {value}
+        </span>
+      ),
+    },
+    {
+      Header: "Date Of Birth",
+      accessor: "vsDOB",
+      Cell: ({ value }: { value: string }) => (
+        <span className={duplicateQuery.includes("vsDOB") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
+          {moment(value).format("DD-MM-YYYY")}
+        </span>
+      ),
+    },
+    {
+      Header: "UUID",
+      accessor: "vsUUID",
+      Cell: ({ value }: { value: string }) => (
+        <span className={duplicateQuery.includes("vsUUID") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
+          {value}
+        </span>
+      ),
+    },
+    {
+      Header: "Gender",
+      accessor: "vsGenderName",
+      Cell: ({ value }) => (
+        <span
+          className={`capitalize ${duplicateQuery.includes("vsGender") ? "bg-yellow-200 font-bold p-1 rounded" : ""}`}
+        >
+          {value}
+        </span>
+      ),
+    },
+    // {
+    //   Header: "Phone",
+    //   accessor: "vsMobile",
+    //   Cell: ({ value }: { value: string }) => (
+    //     <span className={duplicateQuery.includes("vsMobile") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
+    //       {value}
+    //     </span>
+    //   ),
+    // },
+    {
+      Header: "Department Name",
+      accessor: "vsDepartmentName",
+      Cell: ({ value }) => (
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {value?.split(",").map((item, index) => (
+            <span
+              key={index}
+              style={{
+                backgroundColor: duplicateQuery.includes("departmentNames") ? "#ffeb3b" : "#cce5ff", // Highlight if selected
+                padding: "5px 10px",
+                borderRadius: "5px",
+                fontWeight: "bold",
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+  ];
 
 
 
@@ -1239,24 +1238,24 @@ export const DuplicateCandidateColumns = (
     {
       Header: "Candidate Name",
       accessor: "vsCandidateName",
-        Cell: ({ value }) => value ? value : "N/A",
+      Cell: ({ value }) => value ? value : "N/A",
       Cell: ({ value }) => <span className="capitalize">{value}</span>,
     },
     {
       Header: "Date Of Birth",
       accessor: "vsDOB",
-        Cell: ({ value }) => value ? value : "N/A",
+      Cell: ({ value }) => value ? value : "N/A",
       Cell: ({ value }: { value: string }) =>
         moment(value).format("DD-MM-YYYY"),
     },
-    { Header: "Age", accessor: "iAge",  Cell: ({ value }) => value ? value : "N/A" },
-    { Header: "Gender", accessor: "pklGenderId",  Cell: ({ value }) => value ? value : "N/A" },
-    { Header: "Mobile", accessor: "vsMobile",  Cell: ({ value }) => value ? value : "N/A" },
-    { Header: "Qualification", accessor: "pklQualificationId",  Cell: ({ value }) => value ? value : "N/A" },
+    { Header: "Age", accessor: "iAge", Cell: ({ value }) => value ? value : "N/A" },
+    { Header: "Gender", accessor: "pklGenderId", Cell: ({ value }) => value ? value : "N/A" },
+    { Header: "Mobile", accessor: "vsMobile", Cell: ({ value }) => value ? value : "N/A" },
+    { Header: "Qualification", accessor: "pklQualificationId", Cell: ({ value }) => value ? value : "N/A" },
     {
       Header: "Department",
       accessor: "department_names",
-        Cell: ({ value }) => value ? value : "N/A",
+      Cell: ({ value }) => value ? value : "N/A",
       Cell: ({ value }) => {
         return value ? value : "N/A";
       },
@@ -1322,39 +1321,39 @@ export const sectorColumns = (): Column<SectorData>[] => [
 export const summaryColumns = (
   navigate: (path: string) => void
 ): Column<SummaryReportData>[] => [
-  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  // { Header: "Trainer ID", accessor: "trainerId" },
-  { Header: "Scheme Name", accessor: "vsSchemeName" },
-  // { Header: "Total Training Candidate", accessor: "itotalTrainingCandidate" },
-  { Header: "Financial Year", accessor: "dtFinancialYear" },
-  { Header: "Total Target", accessor: "itotalTarget" },
-  { Header: "Total Job Role Count", accessor: "iTotalJobRoleCount" },
-  { Header: "Male Count", accessor: "iMaleCount" },
-  { Header: "Female Count", accessor: "iFemaleCount" },
-  { Header: "General Count", accessor: "iGeneralCount" },
-  { Header: "SC Count", accessor: "iScCount" },
-  { Header: "ST Count", accessor: "iStHCount" },
- 
-  { Header: "OBC Count", accessor: "iObcCount" },
+    // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+    // { Header: "Trainer ID", accessor: "trainerId" },
+    { Header: "Scheme Name", accessor: "vsSchemeName" },
+    // { Header: "Total Training Candidate", accessor: "itotalTrainingCandidate" },
+    { Header: "Financial Year", accessor: "dtFinancialYear" },
+    { Header: "Total Target", accessor: "itotalTarget" },
+    { Header: "Total Job Role Count", accessor: "iTotalJobRoleCount" },
+    { Header: "Male Count", accessor: "iMaleCount" },
+    { Header: "Female Count", accessor: "iFemaleCount" },
+    { Header: "General Count", accessor: "iGeneralCount" },
+    { Header: "SC Count", accessor: "iScCount" },
+    { Header: "ST Count", accessor: "iStHCount" },
 
-  { Header: "Minority Count", accessor: "iMinorityCount" },
-  { Header: "Tea Tribe Count", accessor: "iTeaTribeCount" },
-  { Header: "PwD Count", accessor: "iPwdCount" },
-  { Header: "Total Certified Candidate", accessor: "itotalCertifiedCandidate" },
-  { Header: "Total Placed Candidate", accessor: "itotalPlacedCandidate" },
+    { Header: "OBC Count", accessor: "iObcCount" },
+
+    { Header: "Minority Count", accessor: "iMinorityCount" },
+    { Header: "Tea Tribe Count", accessor: "iTeaTribeCount" },
+    { Header: "PwD Count", accessor: "iPwdCount" },
+    { Header: "Total Certified Candidate", accessor: "itotalCertifiedCandidate" },
+    { Header: "Total Placed Candidate", accessor: "itotalPlacedCandidate" },
 
 
 
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => (
-  //     <button
-  //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
-  //       className="text-blue-500 hover:underline"
-  //     >
-  //       View
-  //     </button>
-  //   ),
-  // },
-];
+    // {
+    //   Header: "Action",
+    //   accessor: "Action",
+    //   Cell: ({ row }) => (
+    //     <button
+    //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
+    //       className="text-blue-500 hover:underline"
+    //     >
+    //       View
+    //     </button>
+    //   ),
+    // },
+  ];

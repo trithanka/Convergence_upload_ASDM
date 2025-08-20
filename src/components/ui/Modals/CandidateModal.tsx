@@ -19,10 +19,15 @@ import {
 import Dropdown from "../Dropdown";
 import { submitCandidateForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
-import { format, isAfter} from "date-fns";
+import { format, isAfter } from "date-fns";
 // import { Autocomplete, TextField } from "@mui/material";
 
-const CandidateModal: React.FC = () => {
+import { useGetCandidateById } from '../../../services/state/api/getCandidateById';
+interface CandidateModalProps {
+  candidateId?: string | null;
+}
+
+const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
   const { closeModal } = useModalStore();
   // const [isSameAddress, setIsSameAddress] = useState(true);
   // const [stateId, setStateId] = useState<number | null>(null);
@@ -39,10 +44,81 @@ const CandidateModal: React.FC = () => {
     control,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<candidateFormData>({
     resolver: joiResolver(candidateSchema),
+    defaultValues: {
+      vsCandidateName: '',
+      vsDOB: '',
+      vsGender: '',
+      fklReligionId: '',
+      fklCategoryId: '',
+      vsEducationAttained: '',
+      fklIdType: 0,
+      vsUUID: '',
+      bDisability: 0,
+      bTeaTribe: 0,
+      bBPLcardHolder: 0,
+      bMinority: 0,
+      batchId: '',
+      bDropout: 0,
+      placed: 0,
+      vsPlacementType: '',
+      bAssessed: 0,
+      vsResult: '',
+      declared: 0,
+    },
   });
+
+  // Fetch candidate data if editing
+  const { data: candidateData, isSuccess } = useGetCandidateById(candidateId || '', !!candidateId);
+
+  // Fetch gender data for dropdown and prefill
+  const { data: genderData } = useQuery({
+    queryKey: ["genderData", "gender"],
+    queryFn: () => getMasterData("gender"),
+  });
+
+  // Prefill form when candidateData is loaded
+  useEffect(() => {
+    if (candidateId && isSuccess && candidateData && candidateData.length > 0 && genderData) {
+      const candidate = candidateData[0]; // Get first candidate from array
+
+      // Find the gender ID from the gender options based on vsGender value
+      const genderOption = genderData?.data?.result?.gender?.find(
+        (g: { pklGenderId: number; vsGenderName: string }) =>
+          g.pklGenderId.toString() === candidate.vsGender
+      );
+
+      // Map API response to form fields
+      const formData = {
+        vsCandidateName: candidate.vsCandidateName || '',
+        vsDOB: candidate.vsDOB ? candidate.vsDOB.split(' ')[0] : '', // Extract date part
+        vsGender: genderOption ? genderOption.pklGenderId : '',
+        fklReligionId: candidate.religion || '',
+        fklCategoryId: candidate.caste || '',
+        vsEducationAttained: candidate.vsEducationAttained || '',
+        fklIdType: candidate.UUID ? 1 : 0, // 1 if UUID exists, 0 if not
+        vsUUID: candidate.UUID || '',
+        bDisability: candidate.disability === 'YES' ? 1 : 0,
+        bTeaTribe: candidate.teaTribe === 'YES' ? 1 : 0,
+        bBPLcardHolder: candidate.BPLcardHolder === 'YES' ? 1 : 0,
+        bMinority: candidate.Minority === 'YES' ? 1 : 0,
+        batchId: candidate.batchNo || '',
+        bDropout: candidate.dropout === 'YES' ? 1 : 0,
+        placed: candidate.candidatePlaced === 'YES' ? 1 : 0,
+        vsPlacementType: candidate.placementType || '',
+        bAssessed: candidate.assessmentComplete || 0,
+        vsResult: candidate.vsResult || '',
+        declared: candidate.vsResult ? 1 : 0,
+      };
+
+      console.log('Prefilling form with:', formData);
+      console.log('Gender from API:', candidate.vsGender, 'Mapped to:', genderOption);
+      reset(formData);
+    }
+  }, [candidateId, isSuccess, candidateData, genderData, reset]);
   console.log("errors", errors);
 
   const resultType = [
@@ -57,16 +133,16 @@ const CandidateModal: React.FC = () => {
     { value: "Fail", label: "Fail" },
   ];
 
-  const placement =[
+  const placement = [
     { value: "", label: "-- Select Placement --", disabled: true },
     { value: 1, label: "Yes" },
-    { value: 0,label: "No" },
+    { value: 0, label: "No" },
   ]
 
   const placementType = [
     { value: "", label: "-- Select Placement Type --", disabled: true },
     { value: "Wage-Employement", label: "Wage-Employement" },
-    { value:"Self-Employement", label: "Self-Employement" },
+    { value: "Self-Employement", label: "Self-Employement" },
   ]
 
   const assesmentType = [
@@ -103,11 +179,6 @@ const CandidateModal: React.FC = () => {
     queryFn: () => getMasterData("qualification"),
   });
   console.log("------", qualificationData?.data?.result?.qualification);
-
-  const { data: genderData } = useQuery({
-    queryKey: ["genderData", "gender"],
-    queryFn: () => getMasterData("gender"),
-  });
 
   useEffect(() => {
     if (genderData) {
@@ -194,8 +265,8 @@ const CandidateModal: React.FC = () => {
 
   const batchOptions =
     batchIdOptions?.data?.result?.batchCandidate?.map(
-      (item: { iBatchNumber: number , id: number}) => ({
-        label: String(item.iBatchNumber), 
+      (item: { iBatchNumber: number, id: number }) => ({
+        label: String(item.iBatchNumber),
         value: item.id,
       })
     ) || [];
@@ -459,7 +530,7 @@ const CandidateModal: React.FC = () => {
         )}
 
 
-       
+
 
         <div>
           <Label text="Date Of Birth" required />
@@ -597,18 +668,18 @@ const CandidateModal: React.FC = () => {
 
 
 
-      
-
-
-        
 
 
 
 
 
-        
-      
-{/*         
+
+
+
+
+
+
+        {/*         
         <div className="col-span-1">
           <Label text="Age" required />
           <Controller
@@ -669,10 +740,10 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsGender.message}</p>
           )}
         </div> */}
-     
 
 
-        
+
+
 
         {/* <div className="col-span-1">
           <Label text="Mobile Number" required />
@@ -709,10 +780,10 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsEmail.message}</p>
           )}
         </div> */}
-       
+
 
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
-      
+
         <div className="col-span-2">
           <Label text=" Is  Personally Disabled ?" />
           <Controller
@@ -779,7 +850,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-      
+
         <div className="col-span-2">
           <Label text="Is BPL Card Holder ?" />
           <Controller
@@ -813,7 +884,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-    
+
         <div className="col-span-2">
           <Label text="Is belong to Minority Community ?" />
           <Controller
@@ -851,7 +922,7 @@ const CandidateModal: React.FC = () => {
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
 
         <div className="col-span-3">
-          <Label text="Enroll in Batch "  />
+          <Label text="Enroll in Batch " />
           <Controller
             name="batchId"
             control={control}
@@ -869,18 +940,18 @@ const CandidateModal: React.FC = () => {
                 className={errors.batchId ? "border-red-500" : ""}
                 placeholder="-- Select Batch--"
               />
-            
+
             )}
           />
           {errors.batchId && (
             <p className="text-red-500">{errors.batchId.message}</p>
           )}
         </div>
-        
+
 
         {watch("batchId") && (
           <>
-          <div className="col-span-1">
+            <div className="col-span-1">
               <Label text="Is Dropout ?" />
               <Controller
                 name="bDropout"
@@ -901,24 +972,24 @@ const CandidateModal: React.FC = () => {
 
 
 
-            {  
-            Number(bDropoutValue) === 0   &&
+            {
+              Number(bDropoutValue) === 0 &&
               <div className="col-span-1">
-              <Label text="Is Candidate Placed ?" />
-              <Controller
-                name="placed"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={placement}
-                    placeholder="-- Select --"
-                    className="w-full"
-                  />
-                )}
-              />
-              
-            </div>
+                <Label text="Is Candidate Placed ?" />
+                <Controller
+                  name="placed"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={placement}
+                      placeholder="-- Select --"
+                      className="w-full"
+                    />
+                  )}
+                />
+
+              </div>
             }
 
 
@@ -929,25 +1000,25 @@ const CandidateModal: React.FC = () => {
 
             {
 
-             Number(placementValue) === 1&&
+              Number(placementValue) === 1 &&
               <div className="col-span-2">
-              <Label text="Placement Type " />
-              <Controller
-                name="vsPlacementType"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={placementType}
-                    placeholder="-- Select --"
-                    className="w-full"
-                  />
-                )}
-              />
-              
-              
-            </div>
-              
+                <Label text="Placement Type " />
+                <Controller
+                  name="vsPlacementType"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={placementType}
+                      placeholder="-- Select --"
+                      className="w-full"
+                    />
+                  )}
+                />
+
+
+              </div>
+
 
             }
 
@@ -959,53 +1030,53 @@ const CandidateModal: React.FC = () => {
 
 
 
-            { Number(bDropoutValue) === 0 &&
-            <div className="col-span-1">
-              <Label text="Is Assesment Complete ?" />
-              <Controller
-                name="bAssessed"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={assesmentType}
-                    placeholder="-- Select --"
-                    className="w-full"
-                  />
-                )}
-              />
-            </div>
-            
-
-               
-}
+            {Number(bDropoutValue) === 0 &&
+              <div className="col-span-1">
+                <Label text="Is Assesment Complete ?" />
+                <Controller
+                  name="bAssessed"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={assesmentType}
+                      placeholder="-- Select --"
+                      className="w-full"
+                    />
+                  )}
+                />
+              </div>
 
 
+
+            }
 
 
 
 
 
-                {
-                  Number(bAssessedValue) === 1 && 
-                  <div className="col-span-1">
-                  <Label text="Is Result Declared ?" />
-                  <Controller
-                    name="declared"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={resultType}
-                        placeholder="-- Select --"
-                        className="w-full"
-                      />
-                    )}
-                  />
-                  {errors.bAssessed && <p className="text-red-500">{errors.bAssessed.message}</p>}
-                </div>
-                }
-          
+
+
+            {
+              Number(bAssessedValue) === 1 &&
+              <div className="col-span-1">
+                <Label text="Is Result Declared ?" />
+                <Controller
+                  name="declared"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={resultType}
+                      placeholder="-- Select --"
+                      className="w-full"
+                    />
+                  )}
+                />
+                {errors.bAssessed && <p className="text-red-500">{errors.bAssessed.message}</p>}
+              </div>
+            }
+
 
             {Number(resultDeclare) === 1 && (
               <div className="col-span-1">
@@ -1070,10 +1141,10 @@ const CandidateModal: React.FC = () => {
               
 
             } */}
-     
+
           </>
         )}
-        
+
 
         {/* 
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
@@ -1906,7 +1977,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div> */}
 
-        
+
         <div className="col-span-1 md:col-span-2 lg:col-span-5 mb-4">
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-red-500 text-sm mb-2">* Required fields</p>
@@ -1915,16 +1986,16 @@ const CandidateModal: React.FC = () => {
               </p>
               <p className="text-sm"><span className="font-semibold">Aadhar: <span className="text-red-600" >*</span></span> Select "Yes" or "No".
 
-                
+
                 <span className="text-red-600">Note:  If the candidate's Aadhar exists, select "Yes" and enter the last 4 digits of the Aadhar number.
-                If the candidate's Aadhar does not exist, select "No" and enter the candidate's mobile number.</span>
+                  If the candidate's Aadhar does not exist, select "No" and enter the candidate's mobile number.</span>
               </p>
               <p className="text-sm"><span className="font-semibold">Date of Birth:
- <span className="text-red-600" >*</span></span>  Select a valid Date of Birth from the calendar.
+                <span className="text-red-600" >*</span></span>  Select a valid Date of Birth from the calendar.
 
               </p>
               <p className="text-sm"><span className="font-semibold">Gender / Religion / Category / Education Attained:
- <span className="text-red-600" >*</span></span>   Choose a valid option from the dropdown list.
+                <span className="text-red-600" >*</span></span>   Choose a valid option from the dropdown list.
 
 
               </p>
@@ -1933,14 +2004,14 @@ const CandidateModal: React.FC = () => {
 
               </p>
               <p className="text-sm"><span className="font-semibold">Additional Information (if enrolled in a batch):
-: <span className="text-red-600" >*</span></span> Provide the following details if the candidate is enrolled in a batch:
+                : <span className="text-red-600" >*</span></span> Provide the following details if the candidate is enrolled in a batch:
                 <span className="text-red-600">    Assessment Completion Status: Indicate whether the assessment is completed.</span>
                 <span className="text-red-600">    Result Declaration: Indicate whether the result is declared.</span>
                 <span className="text-red-600">        Placement Details: If the candidate has passed the assessment, enter the placement details..</span>
               </p>
             </div>
-            </div>
           </div>
+        </div>
 
 
 
