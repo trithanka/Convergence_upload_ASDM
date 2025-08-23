@@ -195,11 +195,11 @@ const Candidate: React.FC = () => {
   };
 
 
-  const handleDownload= (value:number)=>{
-    console.log("Selected Download Value",value);
-    if(value===1){
+  const handleDownload = (value: number) => {
+    console.log("Selected Download Value", value);
+    if (value === 1) {
       exportToExcel2();
-    }else{
+    } else {
       exportToExcel();
     }
 
@@ -207,14 +207,14 @@ const Candidate: React.FC = () => {
   }
 
   const { data: DownloadData } = useQuery({
-    queryKey: ["DownloadData",totalCount],
-    queryFn: () => getTableData("candidate" ,"","",1,totalCount,[],1,totalCount,"ownDept"),
+    queryKey: ["DownloadData", totalCount],
+    queryFn: () => getTableData("candidate", "", "", 1, totalCount, [], 1, totalCount, "ownDept"),
     enabled: !!totalCount,
   });
 
 
-  console.log("DownloadData",DownloadData);
-  
+  console.log("DownloadData", DownloadData);
+
   const exportToExcel2 = () => {
     console.log(DownloadData);
     if (!DownloadData || DownloadData.length === 0) {
@@ -264,21 +264,21 @@ const Candidate: React.FC = () => {
       // tcLatitude: "TC Latitude",
       // tcAssembly: "TC Asembly",
       // tcLoksabha: "TC Loksabha",
-      TP:"TP Name",
+      TP: "TP Name",
       // tpCode: "TP Code",
       // tpSpocName: "TP SPOC Name",
       // tpSpocContactNo: "TP SPOC Contact No",
       // tpSpocEmail: "TP SPOC Email",
       // state: "State",
       // district: "Dsitrict",
-      tpAddress:"TP Address",
+      tpAddress: "TP Address",
       // tpVillage: "TP VIllage",
       // tpCity: "TP CIty",
       // tpBlock: "TP BLock",
       // tpULB: "TP ULB",
       // tpSmartId: "TP Smart ID",
       sector: "Sector",
-      vsResult : "Result",
+      vsResult: "Result",
       candidatePlaced: "Candidate PLaced",
       // employeerName: "Employee Name",
       // EmployeerContactNumber: "Employer Contact Number",
@@ -287,29 +287,102 @@ const Candidate: React.FC = () => {
       // placementDistrict: "Placement District",
     };
 
-    const formattedData = DownloadData.data.data.map((item :any) => {
+    const formattedData = DownloadData.data.data.map((item: any) => {
       return Object.keys(headersMap).reduce((acc, key) => {
         const headerKey = key as keyof typeof headersMap;
-        const itemKey = key as keyof typeof item ;
+        const itemKey = key as keyof typeof item;
         let value = item[itemKey] ?? " ";
-        
+
         // Format dates
         if (["vsDOB", "startDate", "endDate"].includes(key)) {
           acc[headersMap[headerKey]] = formatDate(value as string);
           return acc;
         }
-        
+
         acc[headersMap[headerKey]] = value;
         return acc;
       }, {} as Record<string, unknown>);
     });
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+    // Apply cell protection to system-generated fields (read-only)
+    // Lock system-generated fields: UUID, Department Name, Batch No, Batch Start Date, Batch End Date, Course Name, TC Name, TC Address, TP Name, TP Address, Sector
+    const protectedFields = [
+      "UUID(Aadhar last 4 DIGIT)", "Department Name", "Batch No", "Batch Start Date",
+      "Batch End Date", "Course Name", "TC Name ", "TC Address", "TP Name", "TP Address", "Sector"
+    ];
+
+    // Set protection for header row
+    protectedFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Lock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: true };
+
+        // Lock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: true };
+        }
+      }
+    });
+
+    // Allow editing for user input fields
+    const editableFields = [
+      "Candidate Name", "Date Of Birth", "Gender", "Religion", "Caste", "Qualification",
+      "Disability", "Tea Tribe", "BPL Card Holder", "Minority", "Batch Dropout", "Result", "Candidate PLaced", "Placement Type"
+    ];
+    editableFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Unlock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: false };
+
+        // Unlock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: false };
+        }
+      }
+    });
+
+    // Enable sheet protection
+    worksheet['!protect'] = {
+      password: 'mypassword',
+      selectLockedCells: true,
+      selectUnlockedCells: true,
+      formatCells: false,
+      formatColumns: false,
+      formatRows: false,
+      insertColumns: false,
+      insertRows: false,
+      deleteColumns: false,
+      deleteRows: false,
+      sort: false,
+      autoFilter: false,
+      pivotTables: false
+    };
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
 
     XLSX.writeFile(workbook, "CandidateData.xlsx");
-  }; 
+  };
 
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
@@ -358,21 +431,21 @@ const Candidate: React.FC = () => {
       // tcLatitude: "TC Latitude",
       // tcAssembly: "TC Asembly",
       // tcLoksabha: "TC Loksabha",
-      TP:"TP Name",
+      TP: "TP Name",
       // tpCode: "TP Code",
       // tpSpocName: "TP SPOC Name",
       // tpSpocContactNo: "TP SPOC Contact No",
       // tpSpocEmail: "TP SPOC Email",
       // state: "State",
       // district: "Dsitrict",
-      tpAddress:"TP Address",
+      tpAddress: "TP Address",
       // tpVillage: "TP VIllage",
       // tpCity: "TP CIty",
       // tpBlock: "TP BLock",
       // tpULB: "TP ULB",
       // tpSmartId: "TP Smart ID",
       sector: "Sector",
-      vsResult : "Result",
+      vsResult: "Result",
       candidatePlaced: "Candidate PLaced",
       // employeerName: "Employee Name",
       // EmployeerContactNumber: "Employer Contact Number",
@@ -384,26 +457,99 @@ const Candidate: React.FC = () => {
     const formattedData = filteredData.map((item) => {
       return Object.keys(headersMap).reduce((acc, key) => {
         const headerKey = key as keyof typeof headersMap;
-        const itemKey = key as keyof typeof item ;
+        const itemKey = key as keyof typeof item;
         let value = item[itemKey] ?? " ";
-        
+
         // Format dates
         if (["vsDOB", "startDate", "endDate"].includes(key)) {
           acc[headersMap[headerKey]] = formatDate(value as string);
           return acc;
         }
-        
+
         acc[headersMap[headerKey]] = value;
         return acc;
       }, {} as Record<string, unknown>);
     });
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+    // Apply cell protection to system-generated fields (read-only)
+    // Lock system-generated fields: UUID, Department Name, Batch No, Batch Start Date, Batch End Date, Course Name, TC Name, TC Address, TP Name, TP Address, Sector
+    const protectedFields = [
+      "UUID(Aadhar last 4 DIGIT)", "Department Name", "Batch No", "Batch Start Date",
+      "Batch End Date", "Course Name", "TC Name ", "TC Address", "TP Name", "TP Address", "Sector"
+    ];
+
+    // Set protection for header row
+    protectedFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Lock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: true };
+
+        // Lock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: true };
+        }
+      }
+    });
+
+    // Allow editing for user input fields
+    const editableFields = [
+      "Candidate Name", "Date Of Birth", "Gender", "Religion", "Caste", "Qualification",
+      "Disability", "Tea Tribe", "BPL Card Holder", "Minority", "Batch Dropout", "Result", "Candidate PLaced", "Placement Type"
+    ];
+    editableFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Unlock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: false };
+
+        // Unlock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: false };
+        }
+      }
+    });
+
+    // Enable sheet protection
+    worksheet['!protect'] = {
+      password: 'mypassword',
+      selectLockedCells: true,
+      selectUnlockedCells: true,
+      formatCells: false,
+      formatColumns: false,
+      formatRows: false,
+      insertColumns: false,
+      insertRows: false,
+      deleteColumns: false,
+      deleteRows: false,
+      sort: false,
+      autoFilter: false,
+      pivotTables: false
+    };
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
 
     XLSX.writeFile(workbook, "CandidateData.xlsx");
-  }; 
+  };
 
   const exportToExcelDuplicate = () => {
     if (
@@ -435,6 +581,73 @@ const Candidate: React.FC = () => {
     );
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+    // Apply cell protection to system-generated fields (read-only)
+    // Lock system-generated fields: UUID, Department Name
+    const protectedFields = ["UUID", "Department Name"];
+
+    // Set protection for header row
+    protectedFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Lock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: true };
+
+        // Lock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: true };
+        }
+      }
+    });
+
+    // Allow editing for user input fields
+    const editableFields = ["Candidate Name", "Date Of Birth", "Gender"];
+    editableFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Unlock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: false };
+
+        // Unlock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: false };
+        }
+      }
+    });
+
+    // Enable sheet protection
+    worksheet['!protect'] = {
+      password: 'mypassword',
+      selectLockedCells: true,
+      selectUnlockedCells: true,
+      formatCells: false,
+      formatColumns: false,
+      formatRows: false,
+      insertColumns: false,
+      insertRows: false,
+      deleteColumns: false,
+      deleteRows: false,
+      sort: false,
+      autoFilter: false,
+      pivotTables: false
+    };
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
 
@@ -656,16 +869,16 @@ const Candidate: React.FC = () => {
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
           <div className="flex gap-4">
-           
+
             <DownloadDropdownButton
               options={[
                 { label: "All Value", value: 1 },
-                { label: "Display Value", value: 2},
+                { label: "Display Value", value: 2 },
               ]}
               onDownload={handleDownload}
             />
           </div>
-</div>
+        </div>
 
         <div className="py-2 text-lg text-green-600">
           Total Department Entries: {totalCount}
@@ -771,7 +984,7 @@ const Candidate: React.FC = () => {
             </button>
           </div>
         </div>
-   
+
         <CentralizedTable
           columns={duplicateTablecolumns}
           data={duplicateData}

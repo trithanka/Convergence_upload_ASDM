@@ -24,26 +24,26 @@ import DownloadDropdownButton from "../components/downloadDown";
 
 const Batch: React.FC = () => {
 
-  const [searchValue, ] = useState<string>("");
+  const [searchValue,] = useState<string>("");
   const [totalCount, setTotalCount] = useState<number>(0);
   const [filteredData, setFilteredData] = useState([]);
   const navigate = useNavigate();
-  const [searchKey, ] = useState<string>("");
+  const [searchKey,] = useState<string>("");
 
   const [selectedBatchId, setSelectedBatchId] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 1000);
-    const errorMessage = useErrorStore((state) => state.errorMessage);
-    const successMessage = useErrorStore((state) => state.successMessage);
-    const { bulkName } = useErrorStore();
+  const errorMessage = useErrorStore((state) => state.errorMessage);
+  const successMessage = useErrorStore((state) => state.successMessage);
+  const { bulkName } = useErrorStore();
 
 
-    const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
-    const clearSuccessMessage = useErrorStore(
-      (state) => state.clearSuccessMessage
-    );
-    const { statusColor } = useErrorStore();
+  const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
+  const clearSuccessMessage = useErrorStore(
+    (state) => state.clearSuccessMessage
+  );
+  const { statusColor } = useErrorStore();
 
-    const columns = useMemo<Column<any>[]>(() => batchColumns(navigate) as Column<any>[], [navigate]);
+  const columns = useMemo<Column<any>[]>(() => batchColumns(navigate) as Column<any>[], [navigate]);
 
 
   const { data: fetchedData, isSuccess, isLoading } = useQuery({
@@ -58,7 +58,7 @@ const Batch: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
-  console.log("totalCount",totalCount);
+  console.log("totalCount", totalCount);
 
   // Create batch ID options from fetched data
   const batchIdOptions = useMemo(() => {
@@ -73,18 +73,18 @@ const Batch: React.FC = () => {
   }, [fetchedData]);
 
 
-  const { data: DownloadData} = useQuery({
-    queryKey: ["DownloadData",totalCount],
-    queryFn: () => getTableData("batch" ,"","",1,totalCount,[],1,totalCount,"ownDept"),
+  const { data: DownloadData } = useQuery({
+    queryKey: ["DownloadData", totalCount],
+    queryFn: () => getTableData("batch", "", "", 1, totalCount, [], 1, totalCount, "ownDept"),
     enabled: !!totalCount,
   });
-  console.log("DownloadData",DownloadData);
+  console.log("DownloadData", DownloadData);
 
 
-  const handleDownload = (value:number) => {
-    if(value===1){
+  const handleDownload = (value: number) => {
+    if (value === 1) {
       exportToExcel2();
-    }else{
+    } else {
       exportToExcel();
     }
   }
@@ -97,15 +97,15 @@ const Batch: React.FC = () => {
 
     const headersMap = {
       iBatchNumber: "Batch ID",
-      iBatchTarget : "Batch Target",
-      dtStartDate : "Start Date",
-      dtEndDate : "End Date",
-      tcName : "Training Center Name",
-      tcAddress : "Training Center Address",
-      vsCourseName : "Course Name",
-      vsTargetNo : "Target No",
+      iBatchTarget: "Batch Target",
+      dtStartDate: "Start Date",
+      dtEndDate: "End Date",
+      tcName: "Training Center Name",
+      tcAddress: "Training Center Address",
+      vsCourseName: "Course Name",
+      vsTargetNo: "Target No",
       // vsSchemeType: "Scheme Type",
-    
+
       // vsFundName: "Fund Name",
       // vsSchemeFundingType: "Funding Type",
       // vsSchemeFUndingRatio: "Funding Ratio",
@@ -114,7 +114,7 @@ const Batch: React.FC = () => {
       // vsDepartmentName: "Department Name",
     };
 
-    const formattedData = DownloadData.data.data.map((item:any) => {
+    const formattedData = DownloadData.data.data.map((item: any) => {
       return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
         let value: any = item[key];
 
@@ -132,66 +132,200 @@ const Batch: React.FC = () => {
     });
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+    // Apply cell protection to system-generated fields (read-only)
+    // Lock Batch ID, Start Date, End Date, Training Center Name, Training Center Address, Course Name
+    const protectedFields = ["Batch ID", "Start Date", "End Date", "Training Center Name", "Training Center Address", "Course Name"];
+
+    // Set protection for header row
+    protectedFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Lock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: true };
+
+        // Lock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: true };
+        }
+      }
+    });
+
+    // Allow editing for user input fields (Batch Target, Target No)
+    const editableFields = ["Batch Target", "Target No"];
+    editableFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Unlock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: false };
+
+        // Unlock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: false };
+        }
+      }
+    });
+
+    // Enable sheet protection
+    worksheet['!protect'] = {
+      password: 'mypassword',
+      selectLockedCells: true,
+      selectUnlockedCells: true,
+      formatCells: false,
+      formatColumns: false,
+      formatRows: false,
+      insertColumns: false,
+      insertRows: false,
+      deleteColumns: false,
+      deleteRows: false,
+      sort: false,
+      autoFilter: false,
+      pivotTables: false
+    };
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
 
     XLSX.writeFile(workbook, "batchdata.xlsx");
-    
+
   }
 
 
 
 
 
-    const exportToExcel = () => {
-      if (!filteredData || filteredData.length === 0) {
-        alert("No data available to export");
-        return;
-      }
-  
-      const headersMap = {
-        iBatchNumber: "Batch ID",
-        iBatchTarget : "Batch Target",
-        dtStartDate : "Start Date",
-        dtEndDate : "End Date",
-        tcName : "Training Center Name",
-        tcAddress : "Training Center Address",
-        vsCourseName : "Course Name",
-        vsTargetNo : "Target No",
-        // vsSchemeType: "Scheme Type",
-      
-        // vsFundName: "Fund Name",
-        // vsSchemeFundingType: "Funding Type",
-        // vsSchemeFUndingRatio: "Funding Ratio",
-        // sanctionOrderNo: "Sanction Order No",
-        // dtSanctionDate: "Sanction Date",
-        // vsDepartmentName: "Department Name",
-      };
-  
-      const formattedData = filteredData.map((item) => {
-        return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
-          let value: any = item[key];
-  
-  
-          if (key === "dtStartDate" || key === "dtEndDate" && value) {
-            const date = new Date(value);
-            value = isNaN(date.getTime())
-              ? value
-              : date.toLocaleDateString("en-GB");
-          }
-  
-          acc[headersMap[key as keyof typeof headersMap]] = value;
-          return acc;
-        }, {});
-      });
-  
-      const worksheet = XLSX.utils.json_to_sheet(formattedData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
-  
-      XLSX.writeFile(workbook, "batchdata.xlsx");
+  const exportToExcel = () => {
+    if (!filteredData || filteredData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+    const headersMap = {
+      iBatchNumber: "Batch ID",
+      iBatchTarget: "Batch Target",
+      dtStartDate: "Start Date",
+      dtEndDate: "End Date",
+      tcName: "Training Center Name",
+      tcAddress: "Training Center Address",
+      vsCourseName: "Course Name",
+      vsTargetNo: "Target No",
+      // vsSchemeType: "Scheme Type",
+
+      // vsFundName: "Fund Name",
+      // vsSchemeFundingType: "Funding Type",
+      // vsSchemeFUndingRatio: "Funding Ratio",
+      // sanctionOrderNo: "Sanction Order No",
+      // dtSanctionDate: "Sanction Date",
+      // vsDepartmentName: "Department Name",
     };
-  
+
+    const formattedData = filteredData.map((item) => {
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key];
+
+
+        if (key === "dtStartDate" || key === "dtEndDate" && value) {
+          const date = new Date(value);
+          value = isNaN(date.getTime())
+            ? value
+            : date.toLocaleDateString("en-GB");
+        }
+
+        acc[headersMap[key as keyof typeof headersMap]] = value;
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+    // Apply cell protection to system-generated fields (read-only)
+    // Lock Batch ID, Start Date, End Date, Training Center Name, Training Center Address, Course Name
+    const protectedFields = ["Batch ID", "Start Date", "End Date", "Training Center Name", "Training Center Address", "Course Name"];
+
+    // Set protection for header row
+    protectedFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Lock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: true };
+
+        // Lock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: true };
+        }
+      }
+    });
+
+    // Allow editing for user input fields (Batch Target, Target No)
+    const editableFields = ["Batch Target", "Target No"];
+    editableFields.forEach((header) => {
+      const colIndex = Object.values(headersMap).indexOf(header);
+      if (colIndex !== -1) {
+        const colLetter = XLSX.utils.encode_col(colIndex);
+        // Unlock header cell
+        if (!worksheet[`${colLetter}1`]) {
+          worksheet[`${colLetter}1`] = {};
+        }
+        worksheet[`${colLetter}1`].l = { locked: false };
+
+        // Unlock all data cells in this column
+        for (let row = 2; row <= formattedData.length + 1; row++) {
+          const cellRef = `${colLetter}${row}`;
+          if (!worksheet[cellRef]) {
+            worksheet[cellRef] = {};
+          }
+          worksheet[cellRef].l = { locked: false };
+        }
+      }
+    });
+
+    // Enable sheet protection
+    worksheet['!protect'] = {
+      password: 'mypassword',
+      selectLockedCells: true,
+      selectUnlockedCells: true,
+      formatCells: false,
+      formatColumns: false,
+      formatRows: false,
+      insertColumns: false,
+      insertRows: false,
+      deleteColumns: false,
+      deleteRows: false,
+      sort: false,
+      autoFilter: false,
+      pivotTables: false
+    };
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "batchdata.xlsx");
+  };
+
 
 
 
@@ -346,8 +480,8 @@ const Batch: React.FC = () => {
               placeholder="Select Batch ID"
             />
 
-              {
-                selectedBatchId && (
+            {
+              selectedBatchId && (
                 <button
                   className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
                   onClick={() => {
@@ -358,12 +492,12 @@ const Batch: React.FC = () => {
                   Clear
                 </button>
               )
-              }
+            }
 
 
-           
 
-          
+
+
           </div>
           <div className="flex gap-1">
             <TemplateDownloadButton
@@ -388,22 +522,22 @@ const Batch: React.FC = () => {
             />
           </div>
         </div>
-      </div> 
-       <div className="flex justify-between items-center mb-4">
-                <p className="text-2xl font-bold">Batch Entries </p>
+      </div>
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-2xl font-bold">Batch Entries </p>
 
 
-                  <DownloadDropdownButton
-                    options={[
-                      { label: "All Value", value: 1 },
-                      { label: "Display Value", value: 2},
-                    ]}
-                    onDownload={handleDownload}
-                  />
+        <DownloadDropdownButton
+          options={[
+            { label: "All Value", value: 1 },
+            { label: "Display Value", value: 2 },
+          ]}
+          onDownload={handleDownload}
+        />
 
 
-              
-              </div>
+
+      </div>
 
       <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
     </>
