@@ -15,7 +15,7 @@ export const useUpdateCandidateAPI = () => {
   return useMutation<CandidateResponse, Error, CandidateFormData>({
     mutationFn: async (data: CandidateFormData) => {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/manualupload/candidate`,
+        `${import.meta.env.VITE_API_URL}/manual-file-upload/update`,
         {
           method: "PUT",
           headers: {
