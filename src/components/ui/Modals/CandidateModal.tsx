@@ -23,6 +23,7 @@ import { format, isAfter } from "date-fns";
 // import { Autocomplete, TextField } from "@mui/material";
 
 import { useGetCandidateById } from '../../../services/state/api/getCandidateById';
+import { useUpdateCandidateAPI } from "../../../services/state/api/updateCandidateAPI";
 interface CandidateModalProps {
   candidateId?: string | null;
 }
@@ -100,6 +101,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
     queryFn: () => getMasterData("batchCandidate"),
   });
 
+   
   // Prefill form when candidateData is loaded
   useEffect(() => {
     if (candidateId && isSuccess && candidateData && candidateData.length > 0 &&
@@ -439,6 +441,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
   // });
 
   const selectedIdType = watch("fklIdType");
+   const updateCandidate = useUpdateCandidateAPI();
 
   const mutation = useMutation({
     mutationFn: submitCandidateForm,
@@ -460,10 +463,25 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
       toast.error(errorMessage);
     },
   });
-
   const onSubmit = (data: candidateFormData) => {
-    mutation.mutate(data);
+    console.log('Form submitted with data:', data);
+    console.log('candidateId:', candidateId);
+
+    if(!!candidateId){
+      console.log('Updating candidate...');
+      updateCandidate.mutate({
+        ...data,
+        id: candidateId,
+      });
+    }
+    else {
+      console.log('Creating new candidate...');
+      mutation.mutate(data);
+    }
   };
+
+
+
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -536,13 +554,6 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
             <Controller
               name="vsUUID"
               control={control}
-              rules={{
-                required: "Aadhar Number is required.",
-                pattern: {
-                  value: /^\d{4}$/,
-                  message: "Aadhar Number must be exactly 4 digits.",
-                },
-              }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -977,6 +988,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                 options={batchOptions}
                 getOptionLabel={(option) => option.label}
                 getOptionValue={(option) => option.value}
+                 disabled={!!candidateId}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
 
@@ -2061,15 +2073,27 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
 
 
         {/* Submit Button */}
-        <div className="col-span-2 md:col-span-2 lg:col-span-5 flex justify-end bg-gray-100 p-4 rounded-xl">
-          <Button
-            text="Submit"
-            loadingText="Submitting..."
-            loading={mutation.isPending}
+        { candidateId ? (
+          <div className="col-span-2 md:col-span-2 lg:col-span-5 flex justify-end bg-gray-100 p-4 rounded-xl">
+            <Button
+              text="Update"
+              loadingText="Updating..."
+              loading={updateCandidate.isPending}
+              disabled={false}
+            />
+          </div>
+        ) : (
+          <div className="col-span-2 md:col-span-2 lg:col-span-5 flex justify-end bg-gray-100 p-4 rounded-xl">
+            <Button
+              text="Submit"
+              loadingText="Submitting..."
+              loading={mutation.isPending}
+              disabled={false}
+            />
+          </div>
+        )}
+       
 
-            disabled={false}
-          />
-        </div>
       </form>
 
     </div>

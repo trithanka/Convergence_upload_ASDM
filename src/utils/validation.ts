@@ -500,7 +500,7 @@ export const candidateSchema = Joi.object({
     "string.empty": "Candidate Name is required.",
   }),
   bAssessed : Joi.number().optional(),
-  vsResult : Joi.string().optional(),
+  vsResult : Joi.string().allow('').optional(),
   vsPlacementType : Joi.optional(),
   vsDOB: Joi.date().optional().label("Date of Birth").messages({
     "date.base": "Date of Birth must be a valid date.",
@@ -526,11 +526,12 @@ export const candidateSchema = Joi.object({
     "any.required": "Category ID is required.",
   }),
   vsUUID: Joi.when("fklIdType", {
-    is: 1, 
+    is: 1,
     then: Joi.string().required().label("UUID").messages({
       "any.required": "UUID is required.",
+      "string.empty": "UUID is required.",
     }),
-    otherwise: Joi.string().optional(), 
+    otherwise: Joi.string().allow('').optional(),
   }),
   // vsMobile: Joi.string()
   // .pattern(/^[0-9]{10}$/)
