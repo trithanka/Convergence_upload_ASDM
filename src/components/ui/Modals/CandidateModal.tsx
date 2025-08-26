@@ -445,7 +445,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
 
   const mutation = useMutation({
     mutationFn: submitCandidateForm,
-    onSuccess: (data) => {
+    onSuccess: (data ) => {
       if (data?.success) {
         closeModal();
         toast.success(data.message || "Candidate submitted successfully!");
@@ -464,18 +464,17 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
     },
   });
   const onSubmit = (data: candidateFormData) => {
-    console.log('Form submitted with data:', data);
-    console.log('candidateId:', candidateId);
-
+   
     if(!!candidateId){
-      console.log('Updating candidate...');
+      
       updateCandidate.mutate({
         ...data,
-        id: candidateId,
+        candidateBasicId: candidateId,
       });
+      closeModal();
     }
     else {
-      console.log('Creating new candidate...');
+ 
       mutation.mutate(data);
     }
   };

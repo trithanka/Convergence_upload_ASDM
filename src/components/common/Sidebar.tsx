@@ -20,16 +20,17 @@ const Sidebar = ({
     left: number;
   } | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const menuRefs = useRef<(HTMLDivElement | null)[]>([]); 
+  const menuRefs = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
+
 
   const routeTitles: { [key: string]: string } = {
     "/Dashboard": "Dashboard",
     "/Scheme": "Scheme",
     "/Assessors": "Assessors",
     "/Trainer": "Trainer",
-    
+
   };
 
   const currentPageTitle = routeTitles[location.pathname] || "Default Title";
@@ -51,12 +52,12 @@ const Sidebar = ({
       if (item.link.startsWith("http")) {
         // Get the token from cookies
         const token = Cookies.get("token"); // <-- replace with actual cookie name
-  
+
         // Append token as query parameter if it exists
         const url = token
           ? `${item.link}${item.link.includes("?") ? "&" : "?"}token=${encodeURIComponent(token)}`
           : item.link;
-  
+
         // Open the external link in a new tab
         window.open(url, item.target || "_blank", item.rel || "noopener noreferrer");
       } else {
@@ -66,17 +67,29 @@ const Sidebar = ({
   };
 
   const handleSubMenuClick = (subItem: { name?: string; link?: string }) => {
+
+   
+
     if (subItem.link) {
-      navigate(subItem.link);
+      if (subItem.link.startsWith("http")) {
+        // external link -> open in new tab
+        const token = Cookies.get("token");
+        const url = token
+          ? `${subItem.link}${subItem.link.includes("?") ? "&" : "?"}token=${encodeURIComponent(token)}`
+          : subItem.link;
+        window.open(url, "_blank", "noopener,noreferrer");
+      } else {
+        // internal link -> use router navigation
+        navigate(subItem.link);
+      }
     }
   };
-
   const calculateSubMenuPosition = (index: number) => {
     if (menuRefs.current[index]) {
       const { top, left } = menuRefs.current[index]!.getBoundingClientRect();
       setSubMenuPosition({
         top: top + window.scrollY,
-        left: left + window.scrollX + (isCollapsed ? 60 : 0), 
+        left: left + window.scrollX + (isCollapsed ? 60 : 0),
       });
     }
   };
@@ -102,9 +115,8 @@ const Sidebar = ({
 
   return (
     <div
-      className={`flex flex-col h-screen bg-gradient-to-br bg-theme-primary text-white shadow-xl border-xlg-blue-400 ${
-        isCollapsed ? "w-20" : "w-64"
-      } transition-all duration-300`}
+      className={`flex flex-col h-screen bg-gradient-to-br bg-theme-primary text-white shadow-xl border-xlg-blue-400 ${isCollapsed ? "w-20" : "w-64"
+        } transition-all duration-300`}
     >
       <div className="flex items-center justify flex-shrink-0 bg-white border-b border-gray-950 ">
         <img
@@ -131,15 +143,14 @@ const Sidebar = ({
             <div
               ref={(el) => (menuRefs.current[index] = el)}
               onMouseEnter={() => calculateSubMenuPosition(index)}
-              className={`flex items-center p-4 cursor-pointer hover:bg-theme-primary-hover ${
-                (item.link === location.pathname ||
+              className={`flex items-center p-4 cursor-pointer hover:bg-theme-primary-hover ${(item.link === location.pathname ||
                   (item.subItems &&
                     item.subItems.some(
                       (subItem) => subItem.link === location.pathname
                     ))) &&
                 "bg-theme-primary-active"
-              }`}
-              onClick={() => handleMenuClick(item)} 
+                }`}
+              onClick={() => handleMenuClick(item)}
             >
               <div className="h-6 w-6 overflow-hidden">
                 {item.icon && <item.icon className="w-6 h-6" />}
@@ -163,9 +174,9 @@ const Sidebar = ({
                 style={
                   subMenuPosition
                     ? {
-                        top: `${subMenuPosition.top}px`, 
-                        left: `${subMenuPosition.left}px`, 
-                      }
+                      top: `${subMenuPosition.top}px`,
+                      left: `${subMenuPosition.left}px`,
+                    }
                     : {}
                 }
                 className="fixed hidden group-hover:block bg-theme-primary shadow-lg z-10"

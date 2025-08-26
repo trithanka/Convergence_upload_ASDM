@@ -39,6 +39,7 @@ const useAuthStore = create<AuthStore>()(
 
         set({ token, userDetails, isAuthenticated: true });
 
+
         // Clear any existing timer
         if (logoutTimer) clearTimeout(logoutTimer);
 
@@ -48,6 +49,16 @@ const useAuthStore = create<AuthStore>()(
           Cookies.remove('token', { path: '/' });
           Cookies.remove('userDetails', { path: '/' });
         }, expiryTime - new Date().getTime());
+      },
+
+      getAuth: () => {
+        const token = Cookies.get('token');
+        const userDetails = Cookies.get('userDetails');
+
+        if (token && userDetails) {
+          return { token, userDetails: JSON.parse(userDetails), isAuthenticated: true };
+        }
+        return { isAuthenticated: false };
       },
 
       clearAuth: () => {

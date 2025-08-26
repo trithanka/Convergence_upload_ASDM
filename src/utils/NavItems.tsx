@@ -1,15 +1,19 @@
 import {
   Home, Table2, Book, User2, Group, 
   // Settings2,
+  LayoutDashboard,
   Target, 
   UserPlus,
   Landmark,
 } from "lucide-react";
 import { ElementType } from "react";
+import Cookies from "js-cookie";
 
 interface NavSubItems {
   name?: string;
   link?: string;
+  target?: string;
+  rel?: string;
 }
 
 interface NavItem {
@@ -21,20 +25,51 @@ interface NavItem {
   rel?: string;
 }
 
+const encoded = Cookies.get("userDetails");
+
+let department: string | null = null;
+
+if (encoded) {
+  try {
+    const decoded = decodeURIComponent(encoded);
+    const obj = JSON.parse(decoded);
+    department = obj.vsDepartmentName;
+  } catch (err) {
+    console.error("Failed to parse user details from cookies", err);
+  }
+}
+
 export const NavItems: NavItem[] = [
   {
     name: "Department Status",
     link: "/Dashboard",
     icon: Home,
   },
-  {
+
+     ...(department === "Assam Skill Development Mission"
+    ? [
+        {
+          name: "Convergence Dashboard",
+          icon: LayoutDashboard,
+          target: "_blank",
+          subItems: [
+            { name: "v1", link: "https://convergence_v1.skillmissionassam.org/" },
+            { name: "v2", link: "https://convergence.skillmissionassam.org/" },
+          ],
+        },
+      ]
+    : [
+
+        {
     name :"Convergence Dashboard",
     link: "https://convergence_v1.skillmissionassam.org/",
     target: "_blank",
     rel:"noopener noreferrer",
-    icon: Home,
+    icon: LayoutDashboard,
 
   },
+    ]),
+
   {
     name: "Summary Report",
     link: "/SummaryReport",

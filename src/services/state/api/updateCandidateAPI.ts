@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { candidateFormData } from "../../../utils/formTypes";
+import { toast } from "react-toastify";
 
 export type CandidateFormData = candidateFormData & {
   id?: string;
@@ -17,7 +18,7 @@ export const useUpdateCandidateAPI = () => {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/manual-file-upload/update`,
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
@@ -29,6 +30,10 @@ export const useUpdateCandidateAPI = () => {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Failed to update candidate");
       }
+
+    else{
+      toast.success("Candidate updated successfully");
+    }
 
       return response.json();
     },

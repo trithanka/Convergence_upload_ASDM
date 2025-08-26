@@ -179,6 +179,7 @@ export interface targetFormData {
 
 export interface candidateFormData {
   totalCandidateTrainned: number;
+  candidateBasicId : string
   candidateId: string;
   FinalcialYear: string;
   schemeName: string;
