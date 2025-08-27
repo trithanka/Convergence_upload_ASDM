@@ -74,6 +74,12 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
 
   // Fetch candidate data if editing
   const { data: candidateData, isSuccess } = useGetCandidateById(candidateId || '', !!candidateId);
+const haveBatchNos = (candidateData ?? [])
+ .filter((i: any) => i?.batchNo) 
+  .map((i: any) => i.batchNo);
+
+console.log("haveBatchNos", haveBatchNos);
+
 
   // Fetch all master data for dropdowns
   const { data: genderData } = useQuery({
@@ -987,7 +993,7 @@ const CandidateModal: React.FC<CandidateModalProps> = ({ candidateId }) => {
                 options={batchOptions}
                 getOptionLabel={(option) => option.label}
                 getOptionValue={(option) => option.value}
-                 disabled={!!candidateId}
+                disabled={!!haveBatchNos.length}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
 

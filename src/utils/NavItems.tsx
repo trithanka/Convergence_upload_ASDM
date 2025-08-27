@@ -53,8 +53,8 @@ export const NavItems: NavItem[] = [
           icon: LayoutDashboard,
           target: "_blank",
           subItems: [
-            { name: "v1", link: "https://convergence_v1.skillmissionassam.org/" },
-            { name: "v2", link: "https://convergence.skillmissionassam.org/" },
+            { name: "Dashboard old", link: "https://convergence_v1.skillmissionassam.org/" },
+            { name: "Dashboard new", link: "https://convergence.skillmissionassam.org/" },
           ],
         },
       ]

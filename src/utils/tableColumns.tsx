@@ -1111,7 +1111,7 @@ export const candidateColumns = (
       Header: "Actions",
       accessor: "Action",
       Cell: function ActionsCell({ row }: any) {
-        const openModal = useModalStore((state) => state.openModal);
+        const openModal = useModalStore.getState().openModal;
         // Based on API response, the ID field is 'id'
         const candidateId = row?.id || row?.candidateId || row?.original?.id || row?.original?.candidateId;
         console.log("Row data:", row, "CandidateId:", candidateId);
