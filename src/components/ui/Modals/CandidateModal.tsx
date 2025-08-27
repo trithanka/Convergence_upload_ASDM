@@ -7,7 +7,7 @@ import Button from "../SubmitButton";
 import { toast } from "react-toastify";
 import { candidateSchema } from "../../../utils/validation";
 import { candidateFormData } from "../../../utils/formTypes";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Select from "../Select";
 import {
   // getBranchByBank,
@@ -155,6 +155,7 @@ const haveBatchNos = (candidateData ?? [])
         (b: { iBatchNumber: number; id: number }) =>
           b.iBatchNumber.toString() === candidate.batchNo?.toString()
       );
+       const queryClient = new QueryClient();
 
       // Map API response to form fields
       const formData = {
@@ -482,19 +483,10 @@ const haveBatchNos = (candidateData ?? [])
         ...data,
         candidateBasicId: candidateId,
       });
-      //@ts-ignore
-      
-      if(updateCandidate.success){
-        toast.success("Candidate updated successfully");
+         
         closeModal();
-      }
-      else {
-        toast.error("Failed to update candidate");
-        closeModal();
-      }
-    }
-      else {
-
+        queryClient.invalidateQueries({ queryKey: ["candidateData"] });
+    } else {
       mutation.mutate(data);
     }
   };
