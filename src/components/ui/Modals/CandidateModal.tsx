@@ -78,8 +78,13 @@ const haveBatchNos = (candidateData ?? [])
  .filter((i: any) => i?.batchNo) 
   .map((i: any) => i.batchNo);
 
-console.log("haveBatchNos", haveBatchNos);
 
+  const haveDropOut = (candidateData ?? [])
+    .filter((i: any) => i?.dropout)
+    .map((i: any) => i.dropout);
+
+
+    console.log("dropout", haveDropOut);
 
   // Fetch all master data for dropdowns
   const { data: genderData } = useQuery({
@@ -1018,6 +1023,7 @@ console.log("haveBatchNos", haveBatchNos);
               <Controller
                 name="bDropout"
                 control={control}
+                disabled={haveDropOut.includes("YES")}
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -1041,6 +1047,7 @@ console.log("haveBatchNos", haveBatchNos);
                 <Controller
                   name="placed"
                   control={control}
+                  disabled={haveDropOut.includes("YES")}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -1068,6 +1075,7 @@ console.log("haveBatchNos", haveBatchNos);
                 <Controller
                   name="vsPlacementType"
                   control={control}
+                  disabled={haveDropOut.includes("YES")}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -1098,6 +1106,7 @@ console.log("haveBatchNos", haveBatchNos);
                 <Controller
                   name="bAssessed"
                   control={control}
+                  disabled={haveDropOut.includes("YES")}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -1126,6 +1135,7 @@ console.log("haveBatchNos", haveBatchNos);
                 <Controller
                   name="declared"
                   control={control}
+                  disabled={haveDropOut.includes("YES")}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -1146,6 +1156,7 @@ console.log("haveBatchNos", haveBatchNos);
                 <Controller
                   name="vsResult"
                   control={control}
+                  disabled={haveDropOut.includes("YES")}
                   render={({ field }) => (
                     <Select
                       {...field}
