@@ -482,10 +482,19 @@ const haveBatchNos = (candidateData ?? [])
         ...data,
         candidateBasicId: candidateId,
       });
-      closeModal();
+      //@ts-ignore
+      
+      if(updateCandidate.success){
+        toast.success("Candidate updated successfully");
+        closeModal();
+      }
+      else {
+        toast.error("Failed to update candidate");
+        closeModal();
+      }
     }
-    else {
- 
+      else {
+
       mutation.mutate(data);
     }
   };

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { candidateFormData } from "../../../utils/formTypes";
-import { toast } from "react-toastify";
+
+import Cookies from "js-cookie";
 
 export type CandidateFormData = candidateFormData & {
   id?: string;
@@ -13,6 +14,7 @@ export type CandidateResponse = {
 };
 
 export const useUpdateCandidateAPI = () => {
+  const token = Cookies.get("token");
   return useMutation<CandidateResponse, Error, CandidateFormData>({
     mutationFn: async (data: CandidateFormData) => {
       const response = await fetch(
@@ -21,6 +23,7 @@ export const useUpdateCandidateAPI = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(data),
         }
@@ -30,12 +33,9 @@ export const useUpdateCandidateAPI = () => {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Failed to update candidate");
       }
-
-    else{
-      toast.success("Candidate updated successfully");
-    }
-
+      
       return response.json();
+
     },
   });
 };
