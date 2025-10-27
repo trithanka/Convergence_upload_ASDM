@@ -6,6 +6,7 @@ import useAuthStore from "../../utils/cookies";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import bg from "../../assets/bg-2.jpg"
+import { Link } from "react-router-dom";
 
 
 const Login = () => {
@@ -74,6 +75,7 @@ const Login = () => {
                 </p>
               </div>
               <form onSubmit={handleLogin} className="grid gap-2">
+
                 <div>
                   <label className="block mb-2 text-sm font-medium text-gray-600">
                     Select Login Type
@@ -123,6 +125,11 @@ const Login = () => {
                 >
                   {loading ? "Signing in..." : "Sign In"}
                 </button>
+                <div className="mt-4  justify-center text-center">
+                  <Link to="https://convergence.skillmissionassam.org" className="text-sm text-theme-primary hover:underline">
+                    Convergence Dashboard
+                  </Link>
+                </div>
               </form>
             </div>
           </div>

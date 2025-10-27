@@ -7,7 +7,7 @@ import {
   Landmark,
 } from "lucide-react";
 import { ElementType } from "react";
-import Cookies from "js-cookie";
+
 
 interface NavSubItems {
   name?: string;
@@ -25,19 +25,9 @@ interface NavItem {
   rel?: string;
 }
 
-const encoded = Cookies.get("userDetails");
 
-let department: string | null = null;
 
-if (encoded) {
-  try {
-    const decoded = decodeURIComponent(encoded);
-    const obj = JSON.parse(decoded);
-    department = obj.vsDepartmentName;
-  } catch (err) {
-    console.error("Failed to parse user details from cookies", err);
-  }
-}
+
 
 export const NavItems: NavItem[] = [
   {
@@ -46,21 +36,9 @@ export const NavItems: NavItem[] = [
     icon: Home,
   },
 
-     ...(department === "Assam Skill Development Mission"
-    ? [
-        {
-          name: "Convergence Dashboard",
-          icon: LayoutDashboard,
-          target: "_blank",
-          subItems: [
-            { name: "Dashboard old", link: "https://convergence_v1.skillmissionassam.org/" },
-            { name: "Dashboard new", link: "https://convergence.skillmissionassam.org/" },
-          ],
-        },
-      ]
-    : [
+     
 
-        {
+   {
     name :"Convergence Dashboard",
     link: "https://convergence_v1.skillmissionassam.org/",
     target: "_blank",
@@ -68,7 +46,7 @@ export const NavItems: NavItem[] = [
     icon: LayoutDashboard,
 
   },
-    ]),
+    
 
   {
     name: "Summary Report",

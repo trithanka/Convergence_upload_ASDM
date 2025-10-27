@@ -1,0 +1,184 @@
+import {
+  Home, Table2, Book, User2, Group,
+  LayoutDashboard,
+  Target,
+  UserPlus,
+  Landmark,
+} from "lucide-react";
+import { ElementType } from "react";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+
+export interface NavSubItems {
+  name?: string;
+  link?: string;
+  target?: string;
+  rel?: string;
+}
+
+export interface NavItem {
+  name?: string;
+  link?: string;
+  icon?: ElementType;
+  subItems?: NavSubItems[];
+  target?: string;
+  rel?: string;
+}
+
+// Function to get department from cookies with proper error handling
+const getDepartmentFromCookies = (): string | null => {
+  const encoded = Cookies.get("userDetails");
+  if (!encoded) return null;
+
+  try {
+    const decoded = decodeURIComponent(encoded);
+    const obj = JSON.parse(decoded);
+    return obj.vsDepartmentName || null;
+  } catch (err) {
+    console.error("Failed to parse user details from cookies", err);
+    return null;
+  }
+};
+
+// Custom hook to manage navigation state
+export const useNavItems = () => {
+  const [navItems, setNavItems] = useState<NavItem[]>([]);
+
+  useEffect(() => {
+    const updateNavItems = () => {
+      const department = getDepartmentFromCookies();
+      const items: NavItem[] = [
+        {
+          name: "Department Status",
+          link: "/Dashboard",
+          icon: Home,
+        }
+      ];
+
+      // Conditionally add Convergence Dashboard based on department
+      if (department === "Assam Skill Development Mission") {
+        items.push({
+          name: "Convergence Dashboard",
+          icon: LayoutDashboard,
+          target: "_blank",
+          subItems: [
+            { name: "v1", link: "https://convergence_v1.skillmissionassam.org/", target: "_blank", rel: "noopener noreferrer" },
+            { name: "v2", link: "https://convergence.skillmissionassam.org/", target: "_blank", rel: "noopener noreferrer" },
+          ],
+        });
+      } else {
+        items.push({
+          name: "Convergence Dashboard",
+          link: "https://convergence_v1.skillmissionassam.org/",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          icon: LayoutDashboard,
+        });
+      }
+
+      // Add common items
+      items.push(
+        {
+          name: "Summary Report",
+          link: "/SummaryReport",
+          icon: UserPlus,
+        },
+        {
+          name: "Schemes",
+          link: "/Scheme",
+          icon: Table2,
+        },
+        {
+          name: "Targets",
+          link: "/Target",
+          icon: Target,
+        },
+        {
+          name: "Job Role",
+          link: "/Course",
+          icon: Book,
+        },
+        {
+          name: "Training Entity",
+          link: "",
+          icon: Landmark,
+          subItems: [
+            { name: "Training Partner", link: "/TrainingPartner" },
+            { name: "Training Center", link: "/TrainingCenter" },
+          ],
+        },
+        {
+          name: "Batches",
+          link: "/Batch",
+          icon: Group,
+        },
+        {
+          name: "Candidates",
+          link: "/Candidate",
+          icon: User2,
+        }
+      );
+
+      setNavItems(items);
+    };
+
+    // Initial update
+    updateNavItems();
+
+    // Set up polling interval to check for cookie changes
+    const intervalId = setInterval(updateNavItems, 1000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array since we're polling
+
+  return navItems;
+};
+
+// For backward compatibility and static access
+export const NavItems: NavItem[] = [
+  {
+    name: "Department Status",
+    link: "/Dashboard",
+    icon: Home,
+  },
+  {
+    name: "Summary Report",
+    link: "/SummaryReport",
+    icon: UserPlus,
+  },
+  {
+    name: "Schemes",
+    link: "/Scheme",
+    icon: Table2,
+  },
+  {
+    name: "Targets",
+    link: "/Target",
+    icon: Target,
+  },
+  {
+    name: "Job Role",
+    link: "/Course",
+    icon: Book,
+  },
+  {
+    name: "Training Entity",
+    link: "",
+    icon: Landmark,
+    subItems: [
+      { name: "Training Partner", link: "/TrainingPartner" },
+      { name: "Training Center", link: "/TrainingCenter" },
+    ],
+  },
+  {
+    name: "Batches",
+    link: "/Batch",
+    icon: Group,
+  },
+  {
+    name: "Candidates",
+    link: "/Candidate",
+    icon: User2,
+  }
+];
